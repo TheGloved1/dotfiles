@@ -1,0 +1,16 @@
+[Unit]
+Description=glovedweb
+
+[Service]
+ExecStart=nodemon web.js
+WorkingDirectory=/home/gloves/projects/web/
+Restart=always
+User=root
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+Type=simple
+StandardOutput=file:logs.txt
+StandardError=file:logs.txt
+
+[Install]
+WantedBy=multi-user.target

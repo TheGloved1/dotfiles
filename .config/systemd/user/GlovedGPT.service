@@ -1,0 +1,12 @@
+[Unit]
+Description=GlovedBot AI for Gloves Discord Server
+
+
+[Service]
+ExecStart=/home/gloves/GlovedGPT.sh
+Type=simple
+Restart=always
+
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=VSCode Server
+
+
+[Service]
+ExecStart=/home/gloves/VSCodeServer.sh
+Type=simple
+Restart=always
+
+
+[Install]
+WantedBy=default.target

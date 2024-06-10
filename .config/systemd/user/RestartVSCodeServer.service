@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart VSCode Server
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl restart VSCodeServer.service

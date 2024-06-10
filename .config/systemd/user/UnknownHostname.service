@@ -1,0 +1,10 @@
+[Unit]
+Description=Fixes unknown hostname on boot
+
+
+[Service]
+ExecStart=/home/gloves/FixHostname.sh
+
+
+[Install]
+WantedBy=default.target
