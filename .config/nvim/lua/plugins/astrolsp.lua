@@ -53,6 +53,16 @@ return {
       -- the key is the server that is being setup with `lspconfig`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
       -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end, -- or a custom handler function can be passed
+      prettierd = function()
+        require("null-ls").register(require("null-ls").builtins.formatting.prettierd.with {
+          condition = function(utils)
+            return utils.root_has_file "package.json"
+                or utils.root_has_file ".prettierrc"
+                or utils.root_has_file ".prettierrc.json"
+                or utils.root_has_file ".prettierrc.js"
+          end,
+        })
+      end,
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {

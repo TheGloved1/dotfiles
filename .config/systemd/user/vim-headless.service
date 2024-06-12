@@ -1,0 +1,9 @@
+[Unit]
+Description=Vim Headless Service
+
+[Service]
+ExecStart=vim --headless --listen localhost:6666
+Restart=always
+
+[Install]
+WantedBy=default.target

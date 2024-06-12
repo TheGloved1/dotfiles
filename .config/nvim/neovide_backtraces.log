@@ -1,0 +1,60 @@
+2024-06-12 01:36:55 - Neovide panicked with the message 'Failed to create winit event loop: Os(OsError { line: 80, file: "/home/gloves/.cargo/registry/src/index.crates.io-6f17d22bba15001f/winit-0.29.15/src/platform_impl/linux/wayland/event_loop/mod.rs", error: WaylandError(Connection(NoCompositor)) })'. (File: src/window/mod.rs; Line: 126, Column: 38)
+   0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: __libc_start_main
+  12: <unknown>
+
+2024-06-12 01:37:04 - Neovide panicked with the message 'Failed to create winit event loop: Os(OsError { line: 80, file: "/home/gloves/.cargo/registry/src/index.crates.io-6f17d22bba15001f/winit-0.29.15/src/platform_impl/linux/wayland/event_loop/mod.rs", error: WaylandError(Connection(NoCompositor)) })'. (File: src/window/mod.rs; Line: 126, Column: 38)
+   0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: __libc_start_main
+  12: <unknown>
+
+2024-06-12 01:37:15 - Neovide panicked with the message 'Failed to create winit event loop: Os(OsError { line: 80, file: "/home/gloves/.cargo/registry/src/index.crates.io-6f17d22bba15001f/winit-0.29.15/src/platform_impl/linux/wayland/event_loop/mod.rs", error: WaylandError(Connection(NoCompositor)) })'. (File: src/window/mod.rs; Line: 126, Column: 38)
+   0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: __libc_start_main
+  12: <unknown>
+
+2024-06-12 01:37:19 - Neovide panicked with the message 'Failed to create winit event loop: Os(OsError { line: 80, file: "/home/gloves/.cargo/registry/src/index.crates.io-6f17d22bba15001f/winit-0.29.15/src/platform_impl/linux/wayland/event_loop/mod.rs", error: WaylandError(Connection(NoCompositor)) })'. (File: src/window/mod.rs; Line: 126, Column: 38)
+   0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: __libc_start_main
+  12: <unknown>
+

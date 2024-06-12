@@ -9,6 +9,7 @@ return {
   { "rcarriga/nvim-notify",      enabled = false },
   {
     "echasnovski/mini.animate",
+    lazy = true,
     event = "VeryLazy",
     opts = function(_, opts)
       opts.scroll = {
@@ -21,11 +22,9 @@ return {
     lazy = true,
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-lua/plenary.nvim" },
     build = "cd formatter && npm ci && npm run build",
-    opts = function(_, opts)
-      opts = {
-        on_save_enabled = true,
-      }
-      require("tailwind-sorter").setup(opts)
+    config = function()
+      local tailwindsorter = require "tailwind-sorter"
+      tailwindsorter.on_save_enabled = true
     end,
   },
   {
@@ -42,7 +41,7 @@ return {
   },
   {
     "goolord/alpha-nvim",
-    enabled = false,
+    enabled = true,
     opts = function(_, opts)
       -- customize the dashboard header
       opts.section.header.val = {
@@ -96,47 +95,6 @@ return {
         -- disable for .vim files, but it work for another filetypes
         Rule("a", "a", "-vim")
       )
-    end,
-  },
-  {
-    "nvimdev/dashboard-nvim",
-    event = "VimEnter",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = function(_, opts)
-      opts = {
-        theme = "hyper",
-        config = {
-          packages = { enablk = true },
-          project = { enable = true, limit = 8, icon = "", label = "Projects", action = "Telescope find_files cwd=" },
-          week_header = {
-            enable = true,
-          },
-          shortcut = {
-            { desc = "󰊳 Update", group = "@property", action = "Lazy update", key = "u" },
-            {
-              icon = " ",
-              icon_hl = "@variable",
-              desc = "Files",
-              group = "Label",
-              action = "Telescope find_files",
-              key = "f",
-            },
-            {
-              desc = " Apps",
-              group = "DiagnosticHint",
-              action = "Telescope app",
-              key = "a",
-            },
-            {
-              desc = " dotfiles",
-              group = "Number",
-              action = "Telescope dotfiles",
-              key = "d",
-            },
-          },
-        },
-      }
-      return opts
     end,
   },
 }
