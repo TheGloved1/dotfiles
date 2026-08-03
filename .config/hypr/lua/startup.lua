@@ -1,10 +1,3 @@
--- ==================================================
---  KoolDots (2026)
---  Project URL: https://github.com/LinuxBeginnings
---  License: GNU GPLv3
---  SPDX-License-Identifier: GPL-3.0-or-later
--- ==================================================
-
 -- Converted from:
 -- - config/hypr/configs/Startup_Apps.conf
 -- - config/hypr/UserConfigs/Startup_Apps.conf
@@ -48,7 +41,7 @@ local startup_commands = {
 	"sh $HOME/.config/hypr/scripts/ApplyThemeMode.sh",
 	"sh " .. scriptsDir .. "/WaybarStartup.sh",
 	-- Cursor refresh
-	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-Bibata-Catppuccin-Mocha-Lavender}" "${HYPRCURSOR_SIZE:-24}"\'',
+	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-Catppuccin-Mocha-Lavender}" "${HYPRCURSOR_SIZE:-24}"\'',
 	"qs -c overview",
 	"hypridle",
 	scriptsDir .. "/Hyprsunset.sh init",

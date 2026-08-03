@@ -1,10 +1,3 @@
--- ==================================================
---  KoolDots (2026)
---  Project URL: https://github.com/LinuxBeginnings
---  License: GNU GPLv3
---  SPDX-License-Identifier: GPL-3.0-or-later
--- ==================================================
-
 local dsp = hl.dsp or hl
 
 local function exec_cmd(cmd)

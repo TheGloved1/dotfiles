@@ -1,10 +1,3 @@
--- ==================================================
---  KoolDots (2026)
---  Project URL: https://github.com/LinuxBeginnings
---  License: GNU GPLv3
---  SPDX-License-Identifier: GPL-3.0-or-later
--- ==================================================
-
 -- Converted from config/hypr/UserConfigs/UserDecorations.conf.
 -- Wallust colors loaded dynamically at startup via user_decorations_helper.lua.
 

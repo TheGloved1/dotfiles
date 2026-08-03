@@ -1,10 +1,3 @@
--- ==================================================
---  KoolDots (2026)
---  Project URL: https://github.com/LinuxBeginnings
---  License: GNU GPLv3
---  SPDX-License-Identifier: GPL-3.0-or-later
--- ==================================================
-
 -- Loads split system/user-editable Lua override files.
 -- System files are loaded from ~/.config/hypr/configs (with UserConfigs fallback for legacy setups).
 local configHome = os.getenv("XDG_CONFIG_HOME") or ((os.getenv("HOME") or "") .. "/.config")
@@ -53,16 +46,6 @@ local function load_optional(path)
 	return false
 end
 local loaded_user_split = false
-
--- Load the canonical env-var module (lua/env.lua) so that hl.env() values
--- are applied regardless of whether the split configs/system_env.lua exists.
-do
-	local envPath = hyprDir .. "/lua/env.lua"
-	local ok, eerr = pcall(dofile, envPath)
-	if not ok and eerr and tostring(eerr):find("No such file or directory", 1, true) == nil then
-		print("[WARN] Unable to load env module " .. envPath .. ": " .. tostring(eerr))
-	end
-end
 
 local system_files = {
 	"system_env.lua",

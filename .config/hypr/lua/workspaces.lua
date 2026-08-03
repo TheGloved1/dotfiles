@@ -1,16 +1,7 @@
--- ==================================================
---  KoolDots (2026)
---  Project URL: https://github.com/LinuxBeginnings
---  License: GNU GPLv3
---  SPDX-License-Identifier: GPL-3.0-or-later
--- ==================================================
+-- Workspace rules: assign specific layouts to workspaces.
+-- Default layout is "scrolling" (set in settings.lua).
+-- These rules ensure workspaces 4-6 explicitly use scrolling.
 
--- Converted from config/hypr/workspaces.conf.
--- No active workspace rules are currently enabled in the source file.
-
--- Example:
--- hl.workspace_rule({ workspace = "1", monitor = "eDP-1" })
--- hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", layout = "scrolling" })
--- hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", layout = "dwindle" })
--- hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", layout = "master" })
--- hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", layout = "monocle" })
+hl.workspace_rule({ workspace = "4", monitor = "HDMI-A-1", layout = "scrolling" })
+hl.workspace_rule({ workspace = "5", monitor = "HDMI-A-1", layout = "scrolling" })
+hl.workspace_rule({ workspace = "6", monitor = "HDMI-A-1", layout = "scrolling" })

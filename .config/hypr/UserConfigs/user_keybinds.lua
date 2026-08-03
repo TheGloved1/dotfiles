@@ -63,6 +63,9 @@ unbind("SUPER", "H")
 unbind("SUPER", "J")
 unbind("SUPER", "K")
 
+-- Unbind SUPER+SHIFT+H (rebinding to MoveWrap.sh)
+unbind("SUPER SHIFT", "H")
+
 -- Unbind D and SPACE (swapping)
 unbind("SUPER", "D")
 unbind("SUPER", "SPACE")
@@ -82,8 +85,8 @@ bind("SUPER SHIFT", "left", exec_cmd("movewindow l"), { description = "Move wind
 bind("SUPER SHIFT", "right", exec_cmd("movewindow r"), { description = "Move window right" })
 bind("SUPER SHIFT", "up", exec_cmd("movewindow u"), { description = "Move window up" })
 bind("SUPER SHIFT", "down", exec_cmd("movewindow d"), { description = "Move window down" })
-bind("SUPER SHIFT", "H", exec_cmd("movewindow l"), { description = "Move window left" })
-bind("SUPER SHIFT", "L", exec_cmd("movewindow r"), { description = "Move window right" })
+bind("SUPER SHIFT", "H", exec_cmd(scriptsDir .. "/MoveWrap.sh l"), { description = "Move window left" })
+bind("SUPER SHIFT", "L", exec_cmd(scriptsDir .. "/MoveWrap.sh r"), { description = "Move window right" })
 bind("SUPER SHIFT", "K", exec_cmd(scriptsDir .. "/MoveWrap.sh u"), { description = "Move window up / prev workspace" })
 bind(
 	"SUPER SHIFT",
