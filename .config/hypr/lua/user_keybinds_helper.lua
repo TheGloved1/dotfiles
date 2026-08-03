@@ -1,34 +1,36 @@
 local dsp = hl.dsp or hl
 
----@param cmd string
----@return table dispatch_entry
-local function exec_cmd(cmd)
-  if dsp and dsp.exec_cmd then
-    return dsp.exec_cmd(cmd)
-  end
-  return function() hl.exec_cmd(cmd) end
-end
-
 ---@param value any
 ---@return string
 local function shell_quote(value)
   return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
----@param command string
----@return table dispatch_entry
-local function raw_dispatch_cmd(command)
-  if dsp and dsp.exec_raw then
-    return dsp.exec_raw(tostring(command))
-  end
-  local expression = "hl.dsp.exec_raw(" .. string.format("%q", tostring(command)) .. ")"
-  return exec_cmd("hyprctl dispatch " .. shell_quote(expression))
-end
-
 ---@param value string|nil
 ---@return string
 local function trim(value)
   return (value or ""):gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+--- Wrap a shell command in a function that survives Lua state reloads.
+--- Uses os.execute to shell out — no Lua closures capturing state.
+---@param cmd string Shell command to run on keypress
+---@return fun()
+local function exec_cmd(cmd)
+  local c = trim(cmd)
+  return function()
+    os.execute(c .. " &")
+  end
+end
+
+--- Wrap a hyprctl dispatch call in a function that survives reloads.
+---@param command string hyprctl dispatcher expression (e.g. "killactive")
+---@return fun()
+local function raw_dispatch_cmd(command)
+  local c = trim(command)
+  return function()
+    os.execute("hyprctl dispatch " .. c .. " >/dev/null 2>&1 &")
+  end
 end
 
 ---@param mods string
@@ -116,30 +118,23 @@ local function direction(value)
   return directions[trim(value)] or trim(value)
 end
 
----@param factory fun(): table|nil
-local function dispatch_factory_safely(factory)
-  pcall(function()
-    local dispatcher = factory()
-    if dispatcher then
-      hl.dispatch(dispatcher)
-    end
-  end)
-end
-
 ---@param name string
 ---@param args string
----@return table dispatch_entry|nil
+---@return fun()
 local function dispatch(name, args)
   local window_api = (dsp and dsp.window) or hl.window or {}
   name = trim(name)
   args = trim(args)
 
+  -- Exec: shell commands
   if args:match("^exec%s*,") then
     return exec_cmd(trim(args:gsub("^exec%s*,", "", 1)))
   end
   if name == "exec" then
     return exec_cmd(args)
   end
+
+  -- Kill: try native, fallback to hyprctl
   if name == "killactive" then
     if window_api.close then
       return window_api.close()
@@ -149,6 +144,8 @@ local function dispatch(name, args)
     end
     return raw_dispatch_cmd("killactive")
   end
+
+  -- Fullscreen: try native, fallback to hyprctl
   if name == "fullscreen" then
     if window_api.fullscreen then
       if args == "1" then
@@ -157,42 +154,62 @@ local function dispatch(name, args)
       return window_api.fullscreen({ mode = "fullscreen" })
     end
     if args == "1" then
-      return exec_cmd("hyprctl dispatch 'hl.dsp.window.fullscreen({ mode = \"maximized\" })'")
+      return raw_dispatch_cmd("fullscreen maximized")
     end
-    return exec_cmd("hyprctl dispatch 'hl.dsp.window.fullscreen({ mode = \"fullscreen\" })'")
+    return raw_dispatch_cmd("fullscreen")
   end
+
+  -- Lua API dispatchers: need closures capturing DSP references
   if name == "movefocus" and dsp and dsp.focus then
+    local dir = direction(args)
     return function()
-      dispatch_factory_safely(function()
-        return dsp.focus({ direction = direction(args) })
+      pcall(function()
+        local dispatcher = dsp.focus({ direction = dir })
+        if dispatcher then
+          hl.dispatch(dispatcher)
+        end
       end)
     end
   end
   if name == "movewindow" and window_api.move then
+    local dir = direction(args)
     return function()
-      dispatch_factory_safely(function()
-        return window_api.move({ direction = direction(args) })
+      pcall(function()
+        local dispatcher = window_api.move({ direction = dir })
+        if dispatcher then
+          hl.dispatch(dispatcher)
+        end
       end)
     end
   end
   if name == "workspace" and dsp and dsp.focus then
-    return function() hl.dispatch(dsp.focus({ workspace = workspace_value(args) })) end
+    local ws = workspace_value(args)
+    return function()
+      hl.dispatch(dsp.focus({ workspace = ws }))
+    end
   end
   if name == "movetoworkspace" and window_api.move then
-    return function() hl.dispatch(window_api.move({ workspace = workspace_value(args) })) end
+    local ws = workspace_value(args)
+    return function()
+      hl.dispatch(window_api.move({ workspace = ws }))
+    end
   end
   if name == "movetoworkspacesilent" and window_api.move then
-    return function() hl.dispatch(window_api.move({ workspace = workspace_value(args), follow = false })) end
+    local ws = workspace_value(args)
+    return function()
+      hl.dispatch(window_api.move({ workspace = ws, follow = false }))
+    end
   end
   if name == "togglefloating" and window_api.float then
-    return function() hl.dispatch(window_api.float({ action = "toggle" })) end
+    return function()
+      hl.dispatch(window_api.float({ action = "toggle" }))
+    end
   end
   if name == "resizewindow" and window_api.resize then
     return window_api.resize()
   end
-  if name == "resizeactive" then
-    return raw_dispatch_cmd("resizeactive " .. args)
-  end
+
+  -- Everything else: hyprctl dispatch
   if args ~= "" then
     return raw_dispatch_cmd(name .. " " .. args)
   end
@@ -201,7 +218,7 @@ end
 
 ---@param mods string
 ---@param key string
----@param fn function
+---@param fn string|function Dispatcher string or Lua function
 ---@param opts table|nil
 local function bind(mods, key, fn, opts)
   local seen = {}

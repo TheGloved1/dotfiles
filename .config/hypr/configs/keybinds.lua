@@ -1,11 +1,11 @@
 local helper = dofile(os.getenv("HOME") .. "/.config/hypr/lua/user_keybinds_helper.lua")
----@type fun(cmd: string): table
+---@type fun(cmd: string): unknown
 local exec_cmd = helper.exec_cmd
 ---@type fun(mods: string, key: string, fn: function, opts: table|nil)
 local bind = helper.bind
 ---@type fun(mods: string, key: string)
 local unbind = helper.unbind
----@type fun(name: string, args: string): table|nil
+---@type fun(name: string, args: string): nil|unknown
 local dispatch = helper.dispatch
 
 local scriptsDir = (os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")) .. "/hypr/scripts"
@@ -140,12 +140,7 @@ bind(
 	exec_cmd("$HOME/.config/hypr/scripts/WallpaperEffects.sh"),
 	{ description = "wallpaper effects" }
 )
-bind(
-	"CTRL ALT",
-	"W",
-	exec_cmd("$HOME/.config/hypr/scripts/WallpaperRandom.sh"),
-	{ description = "random wallpaper" }
-)
+bind("CTRL ALT", "W", exec_cmd("$HOME/.config/hypr/scripts/WallpaperRandom.sh"), { description = "random wallpaper" })
 bind("SUPER CTRL", "O", dispatch("setprop", "active opaque toggle"), { description = "toggle active window opacity" })
 bind("SUPER SHIFT", "K", exec_cmd("$HOME/.config/hypr/scripts/KeyBinds.sh"), { description = "search keybinds" })
 bind("SUPER SHIFT", "A", exec_cmd("$HOME/.config/hypr/scripts/Animations.sh"), { description = "animations menu" })
@@ -522,7 +517,12 @@ bind("SUPER SHIFT", "down", exec_cmd("movewindow d"), { description = "Move wind
 bind("SUPER SHIFT", "H", exec_cmd(scriptsDir .. "/MoveWrap.sh l"), { description = "Move window left" })
 bind("SUPER SHIFT", "L", exec_cmd(scriptsDir .. "/MoveWrap.sh r"), { description = "Move window right" })
 bind("SUPER SHIFT", "K", exec_cmd(scriptsDir .. "/MoveWrap.sh u"), { description = "Move window up / prev workspace" })
-bind("SUPER SHIFT", "J", exec_cmd(scriptsDir .. "/MoveWrap.sh d"), { description = "Move window down / next workspace" })
+bind(
+	"SUPER SHIFT",
+	"J",
+	exec_cmd(scriptsDir .. "/MoveWrap.sh d"),
+	{ description = "Move window down / next workspace" }
+)
 
 bind("SUPER", "A", exec_cmd("movecurrentworkspacetomonitor l"), { description = "Move workspace left" })
 bind("SUPER", "F", exec_cmd("movecurrentworkspacetomonitor r"), { description = "Move workspace right" })
@@ -531,7 +531,16 @@ bind("SUPER CTRL", "A", exec_cmd(scriptsDir .. "/OverviewToggle.sh"), { descript
 bind("SUPER CTRL", "F", exec_cmd("fullscreen 1"), { description = "Maximize window" })
 
 bind("SUPER", "D", exec_cmd("togglefloating"), { description = "Toggle float" })
-bind("SUPER", "SPACE", exec_cmd("pkill rofi || true; " .. scriptsDir .. "/RofiFocusedWallpaperLink.sh >/dev/null 2>&1 || true; rofi -show drun -modi drun,filebrowser,run,window"), { description = "App launcher" })
+bind(
+	"SUPER",
+	"SPACE",
+	exec_cmd(
+		"pkill rofi || true; "
+			.. scriptsDir
+			.. "/RofiFocusedWallpaperLink.sh >/dev/null 2>&1 || true; rofi -show drun -modi drun,filebrowser,run,window"
+	),
+	{ description = "App launcher" }
+)
 
 bind("SUPER", "H", exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh focus-left"), { description = "Focus left" })
 bind("SUPER", "J", exec_cmd(scriptsDir .. "/FocusWrap.sh d"), { description = "Focus down / next workspace" })
@@ -540,7 +549,17 @@ bind("SUPER", "L", exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh focus-right
 
 bind("SUPER", "slash", exec_cmd(scriptsDir .. "/KeyHints.sh"), { description = "Help / cheat sheet" })
 
-bind("SUPER", "bracketleft", exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh cycle-next"), { description = "Cycle next (layout-aware)" })
-bind("SUPER", "bracketright", exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh cycle-prev"), { description = "Cycle previous (layout-aware)" })
+bind(
+	"SUPER",
+	"bracketleft",
+	exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh cycle-next"),
+	{ description = "Cycle next (layout-aware)" }
+)
+bind(
+	"SUPER",
+	"bracketright",
+	exec_cmd(scriptsDir .. "/LayoutKeybindDispatch.sh cycle-prev"),
+	{ description = "Cycle previous (layout-aware)" }
+)
 
 bind("SUPER", "P", exec_cmd("hyprpicker -a -f hex --lowercase-hex"), { description = "Color picker" })
