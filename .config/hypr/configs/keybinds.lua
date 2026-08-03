@@ -73,7 +73,7 @@ bind(
 bind(
 	"SUPER SHIFT",
 	"B",
-	exec_cmd("$HOME/.config/hypr/UserScripts/RainbowBorders-low-cpu.sh  --run-once"),
+	exec_cmd("$HOME/.config/hypr/scripts/RainbowBorders-low-cpu.sh  --run-once"),
 	{ description = "Set static Rainbow Border" }
 )
 bind(
@@ -128,7 +128,7 @@ bind(
 	exec_cmd("$HOME/.config/hypr/scripts/Hyprsunset.sh toggle"),
 	{ description = "Toggle Hyprsunset - night light" }
 )
-bind("SUPER SHIFT", "M", exec_cmd("$HOME/.config/hypr/UserScripts/RofiBeats.sh"), { description = "online music" })
+bind("SUPER SHIFT", "M", exec_cmd("$HOME/.config/hypr/scripts/RofiBeats.sh"), { description = "online music" })
 bind("SUPER", "W", exec_cmd("$HOME/.config/hypr/scripts/WallpaperSelect.sh"), { description = "select wallpaper" })
 bind(
 	"SUPER SHIFT",
@@ -139,7 +139,7 @@ bind(
 bind(
 	"CTRL ALT",
 	"W",
-	exec_cmd("$HOME/.config/hypr/UserScripts/WallpaperRandom.sh"),
+	exec_cmd("$HOME/.config/hypr/scripts/WallpaperRandom.sh"),
 	{ description = "random wallpaper" }
 )
 bind("SUPER CTRL", "O", dispatch("setprop", "active opaque toggle"), { description = "toggle active window opacity" })
@@ -163,7 +163,7 @@ bind(
 	exec_cmd("$HOME/.config/hypr/scripts/Tak0-Per-Window-Switch.sh"),
 	{ description = "switch keyboard layout per-window", locked = true }
 )
-bind("SUPER ALT", "C", exec_cmd("$HOME/.config/hypr/UserScripts/RofiCalc.sh"), { description = "calculator" })
+bind("SUPER ALT", "C", exec_cmd("$HOME/.config/hypr/scripts/RofiCalc.sh"), { description = "calculator" })
 bind(
 	"SUPER CTRL",
 	"F9",
