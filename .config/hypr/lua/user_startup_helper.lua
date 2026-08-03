@@ -1,7 +1,14 @@
+---@param value any
+---@return string
 local function shell_quote(value)
 	return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
+---@param cmd string
+---@param opts table|nil
+---@field session string|nil Hyprland instance signature override
+---@field marker_prefix string|nil Temp directory prefix for marker files
+---@field log_prefix string|nil Temp directory prefix for log files
 local function exec_once(cmd, opts)
 	-- Why this wrapper exists:
 	-- 1) Enforce once-per-Hypr-session startup behavior using marker files.

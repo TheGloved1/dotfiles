@@ -1,5 +1,7 @@
 local dsp = hl.dsp or hl
 
+---@param cmd string
+---@return table dispatch_entry
 local function exec_cmd(cmd)
   if dsp and dsp.exec_cmd then
     return dsp.exec_cmd(cmd)
@@ -7,10 +9,14 @@ local function exec_cmd(cmd)
   return function() hl.exec_cmd(cmd) end
 end
 
+---@param value any
+---@return string
 local function shell_quote(value)
   return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
+---@param command string
+---@return table dispatch_entry
 local function raw_dispatch_cmd(command)
   if dsp and dsp.exec_raw then
     return dsp.exec_raw(tostring(command))
@@ -19,10 +25,15 @@ local function raw_dispatch_cmd(command)
   return exec_cmd("hyprctl dispatch " .. shell_quote(expression))
 end
 
+---@param value string|nil
+---@return string
 local function trim(value)
   return (value or ""):gsub("^%s+", ""):gsub("%s+$", "")
 end
 
+---@param mods string
+---@param key string
+---@return string
 local function chord(mods, key)
   mods = trim(mods):gsub("%s+", " + ")
   key = trim(key)
@@ -32,6 +43,9 @@ local function chord(mods, key)
   return mods .. " + " .. key
 end
 
+---@param key string
+---@param mods string|nil
+---@return string[]
 local function key_variants(key, mods)
   key = trim(key):gsub("^xf86", "XF86")
   local key_aliases = {
@@ -79,11 +93,15 @@ local function key_variants(key, mods)
   return { key }
 end
 
+---@param value string
+---@return number|string
 local function workspace_value(value)
   value = trim(value)
   return tonumber(value) or value
 end
 
+---@param value string
+---@return string
 local function direction(value)
   local directions = {
     l = "left",
@@ -98,6 +116,7 @@ local function direction(value)
   return directions[trim(value)] or trim(value)
 end
 
+---@param factory fun(): table|nil
 local function dispatch_factory_safely(factory)
   pcall(function()
     local dispatcher = factory()
@@ -107,6 +126,9 @@ local function dispatch_factory_safely(factory)
   end)
 end
 
+---@param name string
+---@param args string
+---@return table dispatch_entry|nil
 local function dispatch(name, args)
   local window_api = (dsp and dsp.window) or hl.window or {}
   name = trim(name)
@@ -177,6 +199,10 @@ local function dispatch(name, args)
   return raw_dispatch_cmd(name)
 end
 
+---@param mods string
+---@param key string
+---@param fn function
+---@param opts table|nil
 local function bind(mods, key, fn, opts)
   local seen = {}
   for _, key_variant in ipairs(key_variants(key, mods)) do
@@ -192,6 +218,8 @@ local function bind(mods, key, fn, opts)
   end
 end
 
+---@param mods string
+---@param key string
 local function unbind(mods, key)
   if hl.unbind then
     local seen = {}
