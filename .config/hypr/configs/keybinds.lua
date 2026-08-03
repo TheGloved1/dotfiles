@@ -1,7 +1,11 @@
 local helper = dofile(os.getenv("HOME") .. "/.config/hypr/lua/user_keybinds_helper.lua")
+---@type fun(cmd: string): table
 local exec_cmd = helper.exec_cmd
+---@type fun(mods: string, key: string, fn: function, opts: table|nil)
 local bind = helper.bind
+---@type fun(mods: string, key: string)
 local unbind = helper.unbind
+---@type fun(name: string, args: string): table|nil
 local dispatch = helper.dispatch
 
 local scriptsDir = (os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")) .. "/hypr/scripts"

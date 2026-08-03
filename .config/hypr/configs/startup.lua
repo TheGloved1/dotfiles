@@ -1,4 +1,5 @@
 local helper = dofile(os.getenv("HOME") .. "/.config/hypr/lua/user_startup_helper.lua")
+---@type fun(cmd: string, opts: table|nil)
 local exec_once = helper.exec_once
 
 -- Wallpaper (with sleep for startup)
