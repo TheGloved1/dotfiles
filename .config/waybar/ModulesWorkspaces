@@ -11,9 +11,9 @@
 	"all-outputs": true,
 	"format": "{icon}",
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
     "persistent-workspaces": {
       "*": 5
 	},
@@ -28,9 +28,9 @@
 	"all-outputs": true,
 	"format": "{icon}",
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
     "persistent-workspaces": {
       "*": 5
 	},
@@ -52,9 +52,9 @@
 	"active-only": false,
 	"all-outputs": true,
 	"format": "{icon}",
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
 	"show-special": false,
     "persistent-workspaces": {
       "*": 5
@@ -94,9 +94,9 @@
 	"all-outputs": true,
 	"format": "{icon}",
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
     "persistent-workspaces": {
       "*": 5
 	},
@@ -120,9 +120,9 @@
 	"format": " {name} {icon} ",
 	//"format": " {icon} ",
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
 	"all-outputs": true,
 	"sort-by-number": true,
 	"format-icons": {
@@ -146,9 +146,9 @@
 	"all-outputs": true,
 	"format": "{icon}",
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
     "persistent-workspaces": {
       "*": 5
 	},
@@ -171,9 +171,9 @@
 	"warp-on-scroll": false,
 	"sort-by-number": true,
 	"show-special": false,
-	"on-click": "activate",
-	"on-scroll-up": "hyprctl dispatch workspace e+1",
-	"on-scroll-down": "hyprctl dispatch workspace e-1",
+	"on-click": "~/.config/hypr/scripts/WsSwitch.sh {id}",
+	"on-scroll-up": "~/.config/hypr/scripts/WsScroll.sh next",
+	"on-scroll-down": "~/.config/hypr/scripts/WsScroll.sh prev",
 	"format": "{icon} {windows}",
 	"format-window-separator": " ",
 	"window-rewrite-default": " <span foreground='#ff0000'>✘</span> ",
