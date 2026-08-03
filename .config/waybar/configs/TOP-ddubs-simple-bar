@@ -1,0 +1,53 @@
+/* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */
+
+// ### DEFAULT Laptop  - Top ### //
+{
+"include": [
+  "$HOME/.config/waybar/Modules",
+  "$HOME/.config/waybar/ModulesWorkspaces",
+  "$HOME/.config/waybar/ModulesCustom",
+  "$HOME/.config/waybar/ModulesGroups",
+  "$HOME/.config/waybar/UserModules",
+  ],
+"layer": "top",
+//"mode": "dock",
+"exclusive": true,
+"passthrough": false,
+"position": "top",
+"spacing": 6,
+"fixed-center": true,
+"ipc": true,
+"margin-top": 6,
+"margin-left": 6,
+"margin-right": 6,
+
+"modules-left": [
+	"custom/separator#blank",
+	"custom/hypr_layout",
+	"custom/separator#blank",
+	"hyprland/window",
+	],
+
+"modules-center": [
+	"custom/separator#blank",
+	"custom/swaync",
+	"hyprland/workspaces#rw",
+	"clock",
+	"idle_inhibitor",
+	],
+
+"modules-right": [
+	"pulseaudio",
+	"pulseaudio#microphone",
+	"custom/separator#blank",
+	"tray",
+	"custom/separator#blank",
+	"custom/weather2",
+	"cpu",
+	"memory",
+	"temperature",
+	"battery",
+	"group/status",
+	"custom/separator#blank",
+	],
+}

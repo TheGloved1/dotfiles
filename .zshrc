@@ -1,0 +1,420 @@
+
+# Add ~/.local/bin to PATH (for oh-my-posh and other local binaries)
+export PATH="$HOME/.local/bin:$PATH"
+
+# oh-my-posh prompt
+eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/theme.omp.json)"
+
+# Zoxide
+eval "$(zoxide init zsh)"
+
+# Zsh plugins (standalone, not tied to oh-my-zsh)
+source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+
+# Custom Aliases
+alias wbreload="$HOME/.config/hypr/scripts/WaybarReload.sh"
+alias hyprconf="nvim $HOME/.config/hypr"
+alias chmodx='chmod +x'
+alias exemake='chmod +x'
+alias neoconf="nvim $HOME/.config/nvim"
+
+# Git aliases (ported from oh-my-zsh git plugin)
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit --verbose'
+alias gca='git commit --verbose --all'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gst='git status'
+alias gss='git status --short'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl='git pull'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gpsup='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
+alias gb='git branch'
+alias gba='git branch --all'
+alias glo='git log --oneline --decorate'
+alias glog='git log --oneline --decorate --graph'
+alias glol='git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"'
+alias grb='git rebase'
+alias grbi='git rebase --interactive'
+alias gm='git merge'
+alias gsta='git stash push'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias grv='git remote --verbose'
+alias gcl='git clone --recurse-submodules'
+alias gclean='git clean --interactive -d'
+alias grh='git reset HEAD'
+alias grhh='git reset HEAD --hard'
+
+# Arch Linux aliases (ported from oh-my-zsh archlinux plugin)
+alias pacupg='sudo pacman -Syu'
+alias pacin='sudo pacman -S'
+alias pacins='sudo pacman -U'
+alias pacrem='sudo pacman -Rns'
+alias paclean='sudo pacman -Sc'
+alias pacrep='pacman -Si'
+alias pacreps='pacman -Ss'
+alias pacloc='pacman -Qi'
+alias paclocs='pacman -Qs'
+alias paclsorphans='sudo pacman -Qdt'
+alias pacrmorphans='sudo pacman -Rs $(pacman -Qtdq)'
+alias pacdebug='pacman -Qtdq | grep -i debug'
+alias pacmir='sudo pacman -Syy'
+alias pacown='pacman -Qo'
+alias pacfiles='pacman -F'
+alias yaupg='yay -Syu'
+alias yain='yay -S'
+alias yarem='yay -Rns'
+alias yareps='yay -Ss'
+alias yaloc='yay -Qi'
+alias yalocs='yay -Qs'
+alias yaycon='yay --noconfirm'
+alias yayf="yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -5"
+
+pac() {
+  case "$1" in
+    install|i)
+      [[ $# -lt 2 ]] && echo "Usage: pac install <package(s)>" && return 1
+      shift
+      sudo pacman -S "$@"
+      ;;
+    remove|rm)
+      [[ $# -lt 2 ]] && echo "Usage: pac remove <package(s)>" && return 1
+      shift
+      sudo pacman -Rns "$@"
+      ;;
+    update)
+      sudo pacman -Sy
+      ;;
+    upgrade|up)
+      sudo pacman -Syu
+      ;;
+    search|s)
+      [[ $# -lt 2 ]] && echo "Usage: pac search <query>" && return 1
+      pacman -Ss "$2"
+      ;;
+    info)
+      [[ $# -lt 2 ]] && echo "Usage: pac info <package>" && return 1
+      pacman -Si "$2"
+      ;;
+    list|ls)
+      if [[ $# -ge 2 ]]; then
+        pacman -Qs "$2"
+      else
+        pacman -Q
+      fi
+      ;;
+    show)
+      [[ $# -lt 2 ]] && echo "Usage: pac show <package>" && return 1
+      pacman -Qi "$2"
+      ;;
+    files)
+      [[ $# -lt 2 ]] && echo "Usage: pac files <package>" && return 1
+      pacman -Ql "$2"
+      ;;
+    owns|own)
+      [[ $# -lt 2 ]] && echo "Usage: pac owns <file>" && return 1
+      pacman -Qo "$2"
+      ;;
+    orphans)
+      pacman -Qdt
+      ;;
+    autoremove)
+      local orphans=(${(f)"$(pacman -Qdtq)"})
+      if [[ $#orphans -eq 0 ]]; then
+        echo "No orphaned packages to remove"
+        return
+      fi
+      local selected=(${(f)"$(printf '%s\n' $orphans | fzf --multi --prompt="Select packages to remove > " --header="Orphaned packages (Ctrl-A to select all)")"})
+      if [[ $#selected -gt 0 ]]; then
+        sudo pacman -Rns $selected
+      else
+        echo "Nothing selected"
+      fi
+      ;;
+    clean)
+      sudo pacman -Sc
+      ;;
+    refresh)
+      sudo pacman -Syy
+      ;;
+    help|h|-h|--help|"")
+      echo "pac — pacman wrapper with apt-like syntax"
+      echo ""
+      echo "Usage: pac <command> [arguments]"
+      echo ""
+      echo "Commands:"
+      echo "  install, i   <pkg(s)>     Install package(s)"
+      echo "  remove, rm   <pkg(s)>     Remove package(s) with deps & config"
+      echo "  search, s    <query>      Search repos"
+      echo "  info         <pkg>        Show detailed repo info"
+      echo "  update                     Sync package databases"
+      echo "  upgrade, up               Full system upgrade"
+      echo "  list, ls     [pkg]        List installed packages (filter by pkg)"
+      echo "  show         <pkg>        Show installed package details"
+      echo "  files        <pkg>        List files owned by package"
+      echo "  owns, own    <path>       Find which package owns a file"
+      echo "  orphans                     List orphaned packages"
+      echo "  autoremove                 Remove orphaned packages"
+      echo "  clean                      Clean package cache"
+      echo "  refresh                    Force refresh package databases"
+      echo "  help, h                     Show this help message"
+      echo ""
+      echo "For AUR packages, use 'aur' (yay wrapper) instead."
+      ;;
+    *)
+      echo "Unknown command: $1"
+      echo "Run 'pac help' for usage."
+      return 1
+      ;;
+  esac
+}
+alias pm='pac'
+
+_aur_is_aur() {
+  pacman -Si "$1" &>/dev/null
+  [[ $? -ne 0 ]]
+}
+
+aur() {
+  case "$1" in
+    install|i)
+      [[ $# -lt 2 ]] && echo "Usage: aur install <package(s)>" && return 1
+      shift
+      yay -Sa "$@"
+      ;;
+    remove|rm)
+      [[ $# -lt 2 ]] && echo "Usage: aur remove <package(s)>" && return 1
+      shift
+      for pkg in "$@"; do
+        _aur_is_aur "$pkg" || { echo "$pkg is not an AUR package"; return 1 }
+      done
+      yay -Rns "$@"
+      ;;
+    update)
+      yay -Sy
+      ;;
+    upgrade|up)
+      local aur_pkgs=$(comm -12 <(yay -Quq | sort) <(pacman -Qmq | sort))
+      if [[ -n "$aur_pkgs" ]]; then
+        yay -S $aur_pkgs
+      else
+        echo "No AUR packages to upgrade"
+      fi
+      ;;
+    search|s)
+      [[ $# -lt 2 ]] && echo "Usage: aur search <query>" && return 1
+      yay -Ssa "$2"
+      ;;
+    info)
+      [[ $# -lt 2 ]] && echo "Usage: aur info <package>" && return 1
+      _aur_is_aur "$2" || { echo "$2 is not an AUR package"; return 1 }
+      yay -Si "$2"
+      ;;
+    list|ls)
+      if [[ $# -ge 2 ]]; then
+        pacman -Qms "$2"
+      else
+        pacman -Qm
+      fi
+      ;;
+    show)
+      [[ $# -lt 2 ]] && echo "Usage: aur show <package>" && return 1
+      _aur_is_aur "$2" || { echo "$2 is not an AUR package"; return 1 }
+      yay -Qi "$2"
+      ;;
+    files)
+      [[ $# -lt 2 ]] && echo "Usage: aur files <package>" && return 1
+      _aur_is_aur "$2" || { echo "$2 is not an AUR package"; return 1 }
+      yay -Ql "$2"
+      ;;
+    owns|own)
+      [[ $# -lt 2 ]] && echo "Usage: aur owns <file>" && return 1
+      local owner=$(yay -Qo "$2" 2>/dev/null | awk '{print $NF}')
+      [[ -z "$owner" ]] && echo "No package owns $2" && return 1
+      _aur_is_aur "$owner" || { echo "$owner is not an AUR package"; return 1 }
+      echo "$owner owns $2"
+      ;;
+    orphans)
+      comm -12 <(pacman -Qmq | sort) <(pacman -Qdtq | sort)
+      ;;
+    autoremove)
+      local orphans=(${(f)"$(comm -12 <(pacman -Qmq | sort) <(pacman -Qdtq | sort))"})
+      if [[ $#orphans -eq 0 ]]; then
+        echo "No AUR orphans to remove"
+        return
+      fi
+      local selected=(${(f)"$(printf '%s\n' $orphans | fzf --multi --prompt="Select AUR packages to remove > " --header="Orphaned AUR packages (Ctrl-A to select all)")"})
+      if [[ $#selected -gt 0 ]]; then
+        sudo pacman -Rns $selected
+      else
+        echo "Nothing selected"
+      fi
+      ;;
+    clean)
+      yay -Sc
+      ;;
+    refresh)
+      yay -Syy
+      ;;
+    help|h|-h|--help|"")
+      echo "aur — yay wrapper with apt-like syntax (AUR packages only)"
+      echo ""
+      echo "Usage: aur <command> [arguments]"
+      echo ""
+      echo "Commands:"
+      echo "  install, i   <pkg(s)>     Install package(s) from the AUR"
+      echo "  remove, rm   <pkg(s)>     Remove AUR package(s) with deps & config"
+      echo "  search, s    <query>      Search AUR for packages"
+      echo "  info         <pkg>        Show detailed AUR package info"
+      echo "  update                     Sync package databases"
+      echo "  upgrade, up               Upgrade installed AUR packages"
+      echo "  list, ls     [pkg]        List installed AUR packages (filter by pkg)"
+      echo "  show         <pkg>        Show installed AUR package details"
+      echo "  files        <pkg>        List files owned by AUR package"
+      echo "  owns, own    <path>       Find which AUR package owns a file"
+      echo "  orphans                     List orphaned AUR packages"
+      echo "  autoremove                 Remove orphaned AUR packages"
+      echo "  clean                      Clean package cache (all packages)"
+      echo "  refresh                    Force refresh package databases"
+      echo "  help, h                     Show this help message"
+      echo ""
+      echo "For official repo packages only, use 'pac' (pacman wrapper) instead."
+      ;;
+    *)
+      echo "Unknown command: $1"
+      echo "Run 'aur help' for usage."
+      return 1
+      ;;
+  esac
+}
+
+# Reload shell
+alias reload='clear && exec zsh'
+
+# Display Pokemon-colorscripts
+# Project page: https://gitlab.com/phoneybadger/pokemon-colorscripts#on-other-distros-and-macos
+#pokemon-colorscripts --no-title -s -r #without fastfetch
+pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+
+# fastfetch. Will be disabled if above colorscript was chosen to install
+#fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
+
+# Set-up icons for files/directories in terminal using lsd
+alias ls='lsd'
+alias l='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
+
+# Set-up FZF key bindings (CTRL R for fuzzy history finder)
+source <(fzf --zsh)
+
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
+# Configure TMUX to open a new session if none exists and open a window in that session if it does exist
+tmux() {
+  if [ -z $TMUX ]; then
+    if command tmux has-session -t TMUX 2>/dev/null; then
+      command tmux new-window -t TMUX
+      command tmux attach -t TMUX
+    else
+      command tmux new -s TMUX
+    fi
+  fi
+}
+
+# Add a file/folder to dotfiles and stow it
+dota() {
+  if [[ "${1:-}" == "update" ]]; then
+    local dg="$HOME/dotfiles"
+    if ! git -C "$dg" diff --quiet || ! git -C "$dg" diff --cached --quiet; then
+      git -C "$dg" add -A
+      git -C "$dg" commit -m "chore: update dotfiles"
+      git -C "$dg" push
+      echo "Committed and pushed dotfiles updates"
+    else
+      echo "No changes in dotfiles"
+    fi
+    return
+  fi
+
+  local src="${1/#\~/$HOME}"
+  [[ "$src" != /* ]] && src="$HOME/$src"
+  src="$(realpath "$src")"
+
+  local rel="${src#$HOME/dotfiles/}"
+  local re_add=false
+  if [[ "$rel" != "$src" ]]; then
+    re_add=true
+  else
+    rel="${src#$HOME/}"
+    [[ "$rel" == "$src" ]] && { echo "Not in \$HOME"; return 1 }
+    [[ -e "$HOME/dotfiles/$rel" ]] && re_add=true
+  fi
+
+  if $re_add; then
+    local target="$HOME/$rel"
+    echo "$rel already in dotfiles; re-adding to sync..."
+
+    if [[ -L "$target" ]]; then
+      rm -f "$target"
+      mv "$HOME/dotfiles/$rel" "$target"
+    elif [[ -d "$target" ]]; then
+      while IFS= read -r -d '' link; do
+        if [[ "$(realpath -m "$(dirname "$link")/$(readlink "$link")" 2>/dev/null)" == "$HOME/dotfiles/$rel"* ]]; then
+          rm -f "$link"
+        fi
+      done < <(find "$target" -type l -print0 2>/dev/null)
+      find "$target" -depth -type d -empty -delete 2>/dev/null || true
+      cp -a "$HOME/dotfiles/$rel/." "$target/"
+      rm -rf "$HOME/dotfiles/$rel"
+    else
+      mv "$HOME/dotfiles/$rel" "$target"
+    fi
+
+    git -C "$HOME/dotfiles" rm -rf "$rel" 2>/dev/null || true
+
+    local d="$HOME/dotfiles/$(dirname "$rel")"
+    while [[ "$d" != "$HOME/dotfiles" ]]; do
+      rmdir "$d" 2>/dev/null || true
+      d="$(dirname "$d")"
+    done
+
+    echo "Restored; re-adding..."
+    src="$(realpath "$target")"
+    rel="${src#$HOME/}"
+  fi
+
+  local link target newtarget
+  while IFS= read -r link; do
+    target="$(readlink "$link")"
+    if [[ "$target" == /* ]]; then
+      newtarget="$(realpath -m --relative-to="$(dirname "$link")" "$target")"
+      ln -sfn "$newtarget" "$link"
+      echo "Rewrote $link -> $newtarget"
+    fi
+  done < <(find "$src" -type l)
+
+  mkdir -p "$HOME/dotfiles/$(dirname "$rel")"
+  mv "$src" "$HOME/dotfiles/$rel"
+  if ! (cd "$HOME/dotfiles" && stow --no-folding .); then
+    mv "$HOME/dotfiles/$rel" "$src"
+    echo "stow failed; moved $rel back" >&2
+    return 1
+  fi
+  git -C "$HOME/dotfiles" add "$rel"
+  git -C "$HOME/dotfiles" commit -m "feat: add $rel"
+  git -C "$HOME/dotfiles" push
+  echo "Stowed, committed, and pushed $rel"
+}

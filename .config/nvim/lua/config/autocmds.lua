@@ -1,0 +1,67 @@
+-- Autocmds are automatically loaded on the VeryLazy event
+-- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
+--
+-- Add any additional autocmds here
+-- with `vim.api.nvim_create_autocmd`
+--
+-- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
+-- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+
+local group = vim.api.nvim_create_augroup("autoindent_format", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = group,
+  pattern = { "*.conf" },
+  callback = function()
+    if vim.bo.filetype ~= "hyprlang" then
+      return
+    end
+    local save_cindent = vim.bo.cindent
+    vim.bo.cindent = true
+    pcall(vim.cmd, "silent! retab")
+    pcall(vim.cmd, "silent! normal! mzgg=G`z")
+    vim.bo.cindent = save_cindent
+  end,
+})
+
+local persistence = require("persistence")
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "PersistenceSavePre",
+  callback = function()
+    vim.cmd("Neotree close")
+  end,
+})
+
+if vim.fn.argc(-1) ~= 0 then
+  local arg = vim.fn.fnamemodify(vim.fn.argv(0), ":p")
+  local stat = vim.uv.fs_stat(arg)
+  if stat and stat.type == "directory" then
+    vim.fn.chdir(arg)
+  end
+end
+
+local has_file_arg = vim.fn.argc(-1) ~= 0
+  and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p"))
+  and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p")).type ~= "directory"
+
+vim.defer_fn(function()
+  if vim.fn.argc(-1) == 0 or has_file_arg then
+    return
+  end
+  local file = persistence.current()
+  if vim.fn.filereadable(file) ~= 1 then
+    file = persistence.current({ branch = false })
+  end
+  if file and vim.fn.filereadable(file) == 1 then
+    local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+    vim.ui.select({ "    Load Session", "    Continue" }, {
+      prompt = "Session found for " .. dir .. ":",
+    }, function(choice)
+      if choice == "    Load Session" then
+        vim.cmd("Neotree close")
+        persistence.load()
+      end
+    end)
+  end
+end, 100)

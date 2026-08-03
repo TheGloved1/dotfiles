@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/gloves/.config/discord/app-1.0.151/Discord
+Hidden=false
+NoDisplay=false
+Name=Discord
+Icon=/home/gloves/.config/discord/app-1.0.151/discord.png
+Comment=Text and voice chat for gamers.
+X-GNOME-Autostart-enabled=true

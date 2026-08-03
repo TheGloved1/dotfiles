@@ -1,0 +1,13 @@
+[Unit]
+Description=Palworld Dedicated Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/gloves/.local/share/Steam/steamapps/common/PalServer
+ExecStart=/home/gloves/.local/share/Steam/steamapps/common/PalServer/PalServer.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
