@@ -25,10 +25,9 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "catppuccin-mocha-lavender")
 hl.env("XCURSOR_SIZE", "24")
 
--- User defaults applied as env (parity with 01-UserDefaults.conf env entries).
--- KOOLDOTS_DEFAULTS is populated by lua/user_defaults.lua (loaded before this).
+-- DEFAULTS is populated by lua/defaults.lua (loaded before this).
 do
-	local defaults = rawget(_G, "KOOLDOTS_DEFAULTS") or {}
+	local defaults = DEFAULTS or {}
 	if defaults.edit and defaults.edit ~= "" then
 		hl.env("EDITOR", defaults.edit)
 	end

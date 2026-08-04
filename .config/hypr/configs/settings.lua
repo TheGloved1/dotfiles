@@ -1,10 +1,14 @@
--- Converted from:
--- - config/hypr/configs/SystemSettings.conf
--- - config/hypr/UserConfigs/UserSettings.conf (currently empty)
-
-local scriptsDir = "$HOME/.config/hypr/scripts"
-
 hl.config({
+	general = {
+		resize_on_border = true,
+		layout = "scrolling",
+	},
+	scrolling = {
+		column_width = 0.90,
+		fullscreen_on_one_column = true,
+		direction = "right",
+		follow_focus = true,
+	},
 	dwindle = {
 		preserve_split = true,
 		smart_resizing = true,
@@ -15,9 +19,6 @@ hl.config({
 		precise_mouse_move = true,
 		special_scale_factor = 0.8,
 	},
-})
-
-hl.config({
 	master = {
 		new_status = "slave",
 		new_on_top = false,
@@ -30,25 +31,25 @@ hl.config({
 		drop_at_cursor = true,
 		always_keep_position = false,
 	},
-})
-
-hl.config({
-	scrolling = {
-		column_width = 0.90,
-		fullscreen_on_one_column = true,
-		direction = "right",
-		follow_focus = true,
+	cursor = {
+		sync_gsettings_theme = true,
+		no_hardware_cursors = 0,
+		enable_hyprcursor = true,
+		warp_on_change_workspace = 2,
+		no_warps = true,
+		no_break_fs_vrr = false,
+		min_refresh_rate = 24,
+		hotspot_padding = 1,
+		inactive_timeout = 0,
+		default_monitor = "",
+		zoom_factor = 1.0,
+		zoom_rigid = false,
+		zoom_detached_camera = true,
+		hide_on_key_press = true,
+		hide_on_touch = false,
+		hide_on_tablet = false,
+		use_cpu_buffer = false,
 	},
-})
-
-hl.config({
-	general = {
-		resize_on_border = true,
-		layout = "scrolling",
-	},
-})
-
-hl.config({
 	input = {
 		kb_layout = "us",
 		kb_variant = "",
@@ -79,9 +80,6 @@ hl.config({
 			left_handed = 0,
 		},
 	},
-})
-
-hl.config({
 	gestures = {
 		workspace_swipe_distance = 300,
 		workspace_swipe_touch = false,
@@ -94,21 +92,11 @@ hl.config({
 		workspace_swipe_use_r = false,
 		close_max_timeout = 100,
 	},
-})
-
-hl.gesture({
-	fingers = 3,
-	direction = "vertical",
-	action = "workspace",
-})
-
-hl.gesture({
-	fingers = 4,
-	direction = "down",
-	action = "float",
-})
-
-hl.config({
+	binds = {
+		workspace_back_and_forth = true,
+		allow_workspace_cycles = true,
+		pass_mouse_when_bound = true,
+	},
 	misc = {
 		force_default_wallpaper = 0,
 		disable_hyprland_logo = true,
@@ -125,51 +113,26 @@ hl.config({
 		allow_session_lock_restore = true,
 		on_focus_under_fullscreen = 1,
 	},
-})
-
-hl.config({
-	binds = {
-		workspace_back_and_forth = true,
-		allow_workspace_cycles = true,
-		pass_mouse_when_bound = true,
-	},
-})
-
-hl.config({
 	xwayland = {
 		enabled = true,
 		force_zero_scaling = true,
 	},
-})
-
-hl.config({
 	render = {
 		direct_scanout = 0,
 	},
 })
 
-hl.config({
-	cursor = {
-		sync_gsettings_theme = true,
-		no_hardware_cursors = 0,
-		enable_hyprcursor = true,
-		warp_on_change_workspace = 2,
-		no_warps = true,
-		no_break_fs_vrr = false,
-		min_refresh_rate = 24,
-		hotspot_padding = 1,
-		inactive_timeout = 0,
-		default_monitor = "",
-		zoom_factor = 1.0,
-		zoom_rigid = false,
-		zoom_detached_camera = true,
-		hide_on_key_press = true,
-		hide_on_touch = false,
-		hide_on_tablet = false,
-		use_cpu_buffer = false,
-	},
+hl.gesture({
+	fingers = 3,
+	direction = "vertical",
+	action = "workspace",
 })
 
+hl.gesture({
+	fingers = 4,
+	direction = "down",
+	action = "float",
+})
 
 -- Dynamic cursor plugin configuration
 if hl.plugin.dynamic_cursors then

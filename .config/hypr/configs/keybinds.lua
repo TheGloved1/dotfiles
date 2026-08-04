@@ -16,7 +16,6 @@ local script = function(name)
 	return scriptsDir .. "/" .. name
 end
 
--- Converted from configs/Keybinds.conf
 bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default browser" })
 bind("SUPER + A", exec(script("OverviewToggle.sh")), { description = "desktop overview" })
 bind("SUPER + Return", exec(script("LaunchTerminal.sh") .. " " .. term), { description = "Open terminal" })
