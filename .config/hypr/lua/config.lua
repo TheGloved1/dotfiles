@@ -33,6 +33,9 @@ local function apply_qt_style_fallbacks()
 	end
 end
 
+---Load lua files
+---@param path string path to file
+---@return boolean
 local function load_optional(path)
 	local ok, err = pcall(dofile, path)
 	if ok then
@@ -44,22 +47,26 @@ local function load_optional(path)
 	return false
 end
 
-local config_files = {
-	"defaults.lua",
-	"env.lua",
-	"startup.lua",
-	"window_rules.lua",
-	"layer_rules.lua",
-	"keybinds.lua",
-	"settings.lua",
-	"animations.lua",
-	"decorations.lua",
-	"laptops.lua",
-	"monitors.lua",
-	"workspaces.lua",
-}
+---Scan for lua files
+---@param dir string Dir to search in
+local function scan_lua_files(dir)
+	local files = {}
+	local pipe = io.popen('ls -1 "' .. dir .. '" 2>/dev/null', "r")
+	if not pipe then
+		return files
+	end
+	for line in pipe:lines() do
+		if line:match("%.lua$") then
+			files[#files + 1] = line
+		end
+	end
+	pipe:close()
+	table.sort(files)
+	return files
+end
 
-for _, file in ipairs(config_files) do
+-- Load lua config files
+for _, file in ipairs(scan_lua_files(configsDir)) do
 	load_optional(configsDir .. "/" .. file)
 end
 
