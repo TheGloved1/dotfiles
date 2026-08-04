@@ -379,7 +379,7 @@
 ---@alias HL.MonitorSelector string|integer|HL.Monitor
 ---@alias HL.WorkspaceSelector string|integer|HL.Workspace
 ---@alias HL.WindowSelector string|integer|HL.Window
----@alias HL.Vec2Like HL.Vec2|{x:number, y:number}|{number, number}|string
+---@alias HL.Vec2Like HL.Vec2|{x:number, y:number}|{number: number}|string
 ---@alias HL.CssGap integer|{top?:integer, right?:integer, bottom?:integer, left?:integer}
 ---@alias HL.Gradient string|{colors:string[], angle?:number}
 

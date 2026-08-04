@@ -1,16 +1,15 @@
--- /* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */  #
--- Hypridle 
+-- Hypridle
 -- Original config submitted by https://github.com/SherLock707
 
 local iDIR = os.getenv("HOME") .. "/.config/swaync/images/ja.png"
 
 hl.config({
-    general = {
-        lock_cmd = "pidof hyprlock || hyprlock",
-        before_sleep_cmd = "loginctl lock-session",
-        after_sleep_cmd = "hyprctl dispatch dpms on",
-        ignore_dbus_inhibit = false,
-    },
+	general = {
+		lock_cmd = "pidof hyprlock || hyprlock",
+		before_sleep_cmd = "loginctl lock-session",
+		after_sleep_cmd = "hyprctl dispatch dpms on",
+		ignore_dbus_inhibit = false,
+	},
 })
 
 -- turn off screen faster if session is already locked
@@ -23,22 +22,22 @@ hl.config({
 
 -- Warn
 hl.listener({
-    timeout = 540,
-    on_timeout = "notify-send -i " .. iDIR .. " ' You are idle!'",
-    on_resume = "notify-send -i " .. iDIR .. " ' Oh! you're Back' ' Hello !!!'",
+	timeout = 540,
+	on_timeout = "notify-send -i " .. iDIR .. " ' You are idle!'",
+	on_resume = "notify-send -i " .. iDIR .. " ' Oh! you're Back' ' Hello !!!'",
 })
 
 -- Screenlock
 hl.listener({
-    timeout = 600,
-    on_timeout = "loginctl lock-session",
+	timeout = 600,
+	on_timeout = "loginctl lock-session",
 })
 
 -- Turn off screen
 hl.listener({
-    timeout = 720,
-    on_timeout = "hyprctl dispatch dpms off",
-    on_resume = "hyprctl dispatch dpms on",
+	timeout = 720,
+	on_timeout = "hyprctl dispatch dpms off",
+	on_resume = "hyprctl dispatch dpms on",
 })
 
 -- Suspend # disabled by default

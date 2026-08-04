@@ -55,6 +55,8 @@ local config_files = {
 	"animations.lua",
 	"decorations.lua",
 	"laptops.lua",
+	"monitors.lua",
+	"workspaces.lua",
 }
 
 for _, file in ipairs(config_files) do
