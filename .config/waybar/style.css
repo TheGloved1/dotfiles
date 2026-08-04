@@ -13,7 +13,7 @@
 }
 
 @import "../waybar/style/catppuccin-themes/mocha.css";
-@import "../../.config/waybar/wallust/colors-waybar.css";
+@import "../waybar/wallust/colors-waybar.css";
 
 window#waybar {
   background-color: @base;

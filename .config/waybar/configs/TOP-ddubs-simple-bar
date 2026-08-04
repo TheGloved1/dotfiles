@@ -10,7 +10,7 @@
   "$HOME/.config/waybar/UserModules",
   ],
 "layer": "top",
-//"mode": "dock",
+// "mode": "dock",
 "exclusive": true,
 "passthrough": false,
 "position": "top",
@@ -24,8 +24,7 @@
 "modules-left": [
 	"custom/separator#blank",
 	"custom/hypr_layout",
-	"custom/separator#blank",
-	"hyprland/window",
+	"hyprland/window"
 	],
 
 "modules-center": [
@@ -33,7 +32,7 @@
 	"custom/swaync",
 	"hyprland/workspaces#rw",
 	"clock",
-	"idle_inhibitor",
+	"idle_inhibitor"
 	],
 
 "modules-right": [
@@ -48,6 +47,6 @@
 	"temperature",
 	"battery",
 	"group/status",
-	"custom/separator#blank",
-	],
+	"custom/separator#blank"
+	]
 }
