@@ -107,7 +107,6 @@ bind("SUPER + SHIFT + period", layout("move +col"), { description = "move to rig
 bind("SUPER + SHIFT + comma", layout("move -col"), { description = "move to left column" })
 bind("SUPER + ALT + comma", layout("swapcol l"), { description = "swap columns left" })
 bind("SUPER + ALT + period", layout("swapcol r"), { description = "swap columns right" })
-bind("SUPER + ALT + H", exec("hyprctl keyword scrolling:direction right"), { description = "Horizonal scroll right" })
 bind("ALT + Tab", window.cycle_next(), { description = "cycle next window" })
 bind(
 	"XF86AudioRaiseVolume",
@@ -145,22 +144,22 @@ bind("SUPER + CTRL + SHIFT + Print", exec(script("ScreenShot.sh --in10")), { des
 bind("ALT + Print", exec(script("ScreenShot.sh --active")), { description = "screenshot active window" })
 bind("SUPER + SHIFT + S", exec(script("ScreenShot.sh --swappy")), { description = "screenshot (swappy)" })
 bind(
-	"SUPER + SHIFT + left",
+	"SUPER + ALT + H",
 	window.resize({ x = -50, y = 0, relative = true }),
 	{ description = "resize left (-50)", repeating = true }
 )
 bind(
-	"SUPER + SHIFT + right",
+	"SUPER + ALT + L",
 	window.resize({ x = 50, y = 0, relative = true }),
 	{ description = "resize right (+50)", repeating = true }
 )
 bind(
-	"SUPER + SHIFT + up",
+	"SUPER + ALT + K",
 	window.resize({ x = 0, y = -50, relative = true }),
 	{ description = "resize up (-50)", repeating = true }
 )
 bind(
-	"SUPER + SHIFT + down",
+	"SUPER + ALT + J",
 	window.resize({ x = 0, y = 50, relative = true }),
 	{ description = "resize down (+50)", repeating = true }
 )
