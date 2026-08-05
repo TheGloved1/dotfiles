@@ -58,7 +58,7 @@ hl.config({
 		kb_rules = "",
 		repeat_rate = 50,
 		repeat_delay = 300,
-		sensitivity = 0,
+		sensitivity = 0.35,
 		numlock_by_default = false,
 		left_handed = false,
 		follow_mouse = 1,
