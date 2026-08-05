@@ -1,6 +1,7 @@
 
 # Add ~/.local/bin to PATH (for oh-my-posh and other local binaries)
 export PATH="$HOME/.local/bin:$PATH"
+export PATH=$PATH:/usr/local/bin
 
 # oh-my-posh prompt
 eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/theme.omp.json)"
@@ -296,6 +297,132 @@ aur() {
   esac
 }
 
+# yadm wrapper — selective add, commit, optional push
+dot() {
+  local subcmd="${1:-}"
+  shift 2>/dev/null || true
+
+  case "$subcmd" in
+    s|status)
+      yadm status -s
+      ;;
+    d|diff)
+      yadm diff "$@"
+      ;;
+    ds|diff-staged)
+      yadm diff --staged "$@"
+      ;;
+    l|log)
+      yadm log --oneline --decorate -20 "$@"
+      ;;
+    c|commit)
+      local staged
+      staged=$(yadm diff --cached --name-only 2>/dev/null)
+
+      if [[ -z "$staged" ]]; then
+        echo "Nothing staged to commit"
+        return 1
+      fi
+
+      # Extract unique second-level dir basenames
+      local changed_dirs
+      changed_dirs=$(echo "$staged" | awk -F/ '{
+        if (NF >= 2) print $2
+        else print $1
+      }' | sort -u)
+
+      local dir_count
+      dir_count=$(echo "$changed_dirs" | grep -c .)
+
+      local msg
+      if [[ $dir_count -le 3 ]]; then
+        msg="update $(echo $changed_dirs | tr '\n' ' ' | sed 's/ $//')"
+      else
+        msg="update $dir_count dirs"
+      fi
+
+      yadm commit -m "$msg"
+      ;;
+    p|push)
+      echo "Push to remote? [Y/n]"
+      read -r "REPLY? > "
+      if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
+        yadm push "$@"
+      fi
+      ;;
+    pf|push-force)
+      echo "Force push to remote? [y/N]"
+      read -r "REPLY? > "
+      if [[ "$REPLY" =~ ^[yY]$ ]]; then
+        yadm push --force-with-lease "$@"
+      fi
+      ;;
+    co|checkout)
+      yadm checkout "$@"
+      ;;
+    b|branch)
+      yadm branch "$@"
+      ;;
+    r|reset)
+      if [[ $# -eq 0 ]]; then
+        yadm reset HEAD
+      else
+        yadm reset "$@"
+      fi
+      ;;
+    last)
+      yadm log -1 --stat
+      ;;
+    unstage)
+      yadm reset HEAD -- "$@"
+      ;;
+    discard)
+      yadm checkout -- "$@"
+      ;;
+    "")
+      yadm status -s
+      ;;
+    *)
+      # No recognized subcommand — treat args as paths to add, commit, maybe push
+      if [[ -e "$subcmd" ]] || [[ "$subcmd" == "." ]] || [[ "$subcmd" == -* ]]; then
+        yadm add "$subcmd" "$@"
+
+        local staged
+        staged=$(yadm diff --cached --name-only 2>/dev/null)
+
+        if [[ -z "$staged" ]]; then
+          echo "No staged changes"
+          return 0
+        fi
+
+        # Build commit message from passed paths — just the final folder/file name
+        local paths=("$subcmd" "$@")
+        local names=()
+        for p in "${paths[@]}"; do
+          names+=("${p:t}")  # zsh:t = tail (basename)
+        done
+
+        local msg
+        if [[ ${#names[@]} -le 3 ]]; then
+          msg="update ${names[*]}"
+        else
+          msg="update ${#names[@]} dirs"
+        fi
+
+        yadm commit -m "$msg"
+
+        echo "Push to remote? [Y/n]"
+        read -r "REPLY? > "
+        if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
+          yadm push
+        fi
+      else
+        yadm "$subcmd" "$@"
+      fi
+      ;;
+  esac
+}
+
 # Reload shell
 alias reload='clear && exec zsh'
 
@@ -332,89 +459,4 @@ tmux() {
       command tmux new -s TMUX
     fi
   fi
-}
-
-# Add a file/folder to dotfiles and stow it
-dota() {
-  if [[ "${1:-}" == "update" ]]; then
-    local dg="$HOME/dotfiles"
-    if ! git -C "$dg" diff --quiet || ! git -C "$dg" diff --cached --quiet; then
-      git -C "$dg" add -A
-      git -C "$dg" commit -m "chore: update dotfiles"
-      git -C "$dg" push
-      echo "Committed and pushed dotfiles updates"
-    else
-      echo "No changes in dotfiles"
-    fi
-    return
-  fi
-
-  local src="${1/#\~/$HOME}"
-  [[ "$src" != /* ]] && src="$HOME/$src"
-  src="$(realpath "$src")"
-
-  local rel="${src#$HOME/dotfiles/}"
-  local re_add=false
-  if [[ "$rel" != "$src" ]]; then
-    re_add=true
-  else
-    rel="${src#$HOME/}"
-    [[ "$rel" == "$src" ]] && { echo "Not in \$HOME"; return 1 }
-    [[ -e "$HOME/dotfiles/$rel" ]] && re_add=true
-  fi
-
-  if $re_add; then
-    local target="$HOME/$rel"
-    echo "$rel already in dotfiles; re-adding to sync..."
-
-    if [[ -L "$target" ]]; then
-      rm -f "$target"
-      mv "$HOME/dotfiles/$rel" "$target"
-    elif [[ -d "$target" ]]; then
-      while IFS= read -r -d '' link; do
-        if [[ "$(realpath -m "$(dirname "$link")/$(readlink "$link")" 2>/dev/null)" == "$HOME/dotfiles/$rel"* ]]; then
-          rm -f "$link"
-        fi
-      done < <(find "$target" -type l -print0 2>/dev/null)
-      find "$target" -depth -type d -empty -delete 2>/dev/null || true
-      cp -a "$HOME/dotfiles/$rel/." "$target/"
-      rm -rf "$HOME/dotfiles/$rel"
-    else
-      mv "$HOME/dotfiles/$rel" "$target"
-    fi
-
-    git -C "$HOME/dotfiles" rm -rf "$rel" 2>/dev/null || true
-
-    local d="$HOME/dotfiles/$(dirname "$rel")"
-    while [[ "$d" != "$HOME/dotfiles" ]]; do
-      rmdir "$d" 2>/dev/null || true
-      d="$(dirname "$d")"
-    done
-
-    echo "Restored; re-adding..."
-    src="$(realpath "$target")"
-    rel="${src#$HOME/}"
-  fi
-
-  local link target newtarget
-  while IFS= read -r link; do
-    target="$(readlink "$link")"
-    if [[ "$target" == /* ]]; then
-      newtarget="$(realpath -m --relative-to="$(dirname "$link")" "$target")"
-      ln -sfn "$newtarget" "$link"
-      echo "Rewrote $link -> $newtarget"
-    fi
-  done < <(find "$src" -type l)
-
-  mkdir -p "$HOME/dotfiles/$(dirname "$rel")"
-  mv "$src" "$HOME/dotfiles/$rel"
-  if ! (cd "$HOME/dotfiles" && stow --no-folding .); then
-    mv "$HOME/dotfiles/$rel" "$src"
-    echo "stow failed; moved $rel back" >&2
-    return 1
-  fi
-  git -C "$HOME/dotfiles" add "$rel"
-  git -C "$HOME/dotfiles" commit -m "feat: add $rel"
-  git -C "$HOME/dotfiles" push
-  echo "Stowed, committed, and pushed $rel"
 }
