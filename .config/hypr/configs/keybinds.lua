@@ -18,15 +18,14 @@ bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default bro
 bind("SUPER + A", exec(script("OverviewToggle.sh")), { description = "desktop overview" })
 bind("SUPER + Return", exec(script("LaunchTerminal.sh") .. " " .. term), { description = "Open terminal" })
 bind("SUPER + E", exec(script("LaunchFileManager.sh") .. " " .. files .. " " .. term), { description = "file manager" })
-bind("SUPER + C", exec(script("rofi-ssh-menu.sh")), { description = "SSH session manager" })
 bind("SUPER + T", exec(script("ThemeChanger.sh")), { description = "Global theme switcher using Wallust" })
 bind("SUPER + ALT + R", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
 bind("SUPER + ALT + E", exec(script("RofiEmoji.sh")), { description = "emoji menu" })
-bind("SUPER + S", exec(script("RofiSearch.sh")), { description = "web search" })
+-- bind("SUPER + S", exec(script("RofiSearch.sh")), { description = "web search" })
 bind("SUPER + CTRL + S", exec("rofi -show window"), { description = "window switcher" })
 bind("SUPER + ALT + O", exec(script("ChangeBlur.sh")), { description = "toggle blur" })
 bind("SUPER + SHIFT + G", exec(script("GameMode.sh")), { description = "toggle game mode" })
-bind("SUPER + ALT + L", exec(script("ChangeLayout.sh toggle")), { description = "toggle layouts" })
+-- bind("SUPER + ALT + L", exec(script("ChangeLayout.sh toggle")), { description = "toggle layouts" })
 bind("SUPER + ALT + V", exec(script("ClipManager.sh")), { description = "clipboard manager" })
 bind("SUPER + CTRL + R", exec(script("RofiThemeSelector.sh")), { description = "rofi theme selector" })
 bind(
@@ -34,7 +33,7 @@ bind(
 	exec("pkill rofi || true && " .. script("RofiThemeSelector-modified.sh")),
 	{ description = "rofi theme selector (modified)" }
 )
-bind("SUPER + CTRL + K", exec(script("Kitty_themes.sh")), { description = "Kitty theme selector" })
+bind("SUPER + CTRL + SHIFT + K", exec(script("Kitty_themes.sh")), { description = "Kitty theme selector" })
 bind(
 	"SUPER + SHIFT + B",
 	exec(script("RainbowBorders-low-cpu.sh  --run-once")),
@@ -87,26 +86,7 @@ bind(
 	{ description = "switch keyboard layout per-window", locked = true }
 )
 bind("SUPER + ALT + C", exec(script("RofiCalc.sh")), { description = "calculator" })
-bind(
-	"SUPER + CTRL + F9",
-	exec("hyprctl dispatch movecurrentworkspacetomonitor left"),
-	{ description = "move workspace to left monitor" }
-)
-bind(
-	"SUPER + CTRL + F10",
-	exec("hyprctl dispatch movecurrentworkspacetomonitor right"),
-	{ description = "move workspace to right monitor" }
-)
-bind(
-	"SUPER + CTRL + F11",
-	exec("hyprctl dispatch movecurrentworkspacetomonitor up"),
-	{ description = "move workspace to up monitor" }
-)
-bind(
-	"SUPER + CTRL + F12",
-	exec("hyprctl dispatch movecurrentworkspacetomonitor down"),
-	{ description = "move workspace to down monitor" }
-)
+
 bind("CTRL + ALT + Delete", exec(script("Logout.sh")), { description = "exit Hyprland" })
 bind("SUPER + Q", window.close(), { description = "close active window" })
 bind("SUPER + SHIFT + Q", exec(script("KillActiveProcess.sh")), { description = "Terminate active process" })
@@ -128,13 +108,6 @@ bind("SUPER + SHIFT + comma", layout("move -col"), { description = "move to left
 bind("SUPER + ALT + comma", layout("swapcol l"), { description = "swap columns left" })
 bind("SUPER + ALT + period", layout("swapcol r"), { description = "swap columns right" })
 bind("SUPER + ALT + H", exec("hyprctl keyword scrolling:direction right"), { description = "Horizonal scroll right" })
-bind(
-	"SUPER + ALT + S",
-	exec(
-		'bash -c \'[[ $(hyprctl getoption scrolling:direction -j | jq -r ".str") == "right" ]] && hyprctl keyword scrolling:direction down || hyprctl keyword scrolling:direction right\''
-	),
-	{ description = "toggle scrolling V/H" }
-)
 bind("ALT + Tab", window.cycle_next(), { description = "cycle next window" })
 bind(
 	"XF86AudioRaiseVolume",
@@ -191,17 +164,15 @@ bind(
 	window.resize({ x = 0, y = 50, relative = true }),
 	{ description = "resize down (+50)", repeating = true }
 )
-bind("SUPER + CTRL + left", window.move({ direction = "left" }), { description = "move window left" })
-bind("SUPER + CTRL + right", window.move({ direction = "right" }), { description = "move window right" })
-bind("SUPER + CTRL + up", window.move({ direction = "up" }), { description = "move window up" })
-bind("SUPER + CTRL + down", window.move({ direction = "down" }), { description = "move window down" })
+bind("SUPER + CTRL + H", window.move({ direction = "left" }), { description = "move window left" })
+bind("SUPER + CTRL + L", window.move({ direction = "right" }), { description = "move window right" })
+bind("SUPER + CTRL + K", window.move({ direction = "up" }), { description = "move window up" })
+bind("SUPER + CTRL + J", window.move({ direction = "down" }), { description = "move window down" })
 bind("SUPER + ALT + left", window.swap({ direction = "left" }), { description = "swap window left" })
 bind("SUPER + ALT + right", window.swap({ direction = "right" }), { description = "swap window right" })
 bind("SUPER + ALT + up", window.swap({ direction = "up" }), { description = "swap window up" })
 bind("SUPER + ALT + down", window.swap({ direction = "down" }), { description = "swap window down" })
 bind("SUPER + G", group.toggle(), { description = "toggle group" })
-bind("SUPER + CTRL + L", group.move_window({ direction = "right" }), { description = "Move Right into group" })
-bind("SUPER + CTRL + H", group.move_window({ direction = "out" }), { description = "Move active out of group" })
 bind("SUPER + up", exec(script("LayoutKeybindDispatch.sh focus-up")), { description = "focus up (layout-aware)" })
 bind("SUPER + down", exec(script("LayoutKeybindDispatch.sh focus-down")), { description = "focus down (layout-aware)" })
 bind("SUPER + tab", focus({ workspace = "m+1" }), { description = "next workspace" })
@@ -235,8 +206,8 @@ bind("SUPER + comma", focus({ workspace = "e-1" }), { description = "previous wo
 bind("SUPER + mouse:272", window.drag(), { description = "move window", mouse = true })
 bind("SUPER + mouse:273", window.resize(), { description = "resize window", mouse = true })
 bind("ALT + SPACE", exec("vicinae toggle"), { description = "Toggle vicinae" })
-bind("SUPER + SHIFT + H", exec(script("MoveWrap.sh l")), { description = "Move window left" })
-bind("SUPER + SHIFT + L", exec(script("MoveWrap.sh r")), { description = "Move window right" })
+bind("SUPER + SHIFT + H", window.swap({ direction = "left" }), { description = "Move window left" })
+bind("SUPER + SHIFT + L", window.swap({ direction = "right" }), { description = "Move window right" })
 bind("SUPER + SHIFT + K", exec(script("MoveWrap.sh u")), { description = "Move window up / prev workspace" })
 bind("SUPER + SHIFT + J", exec(script("MoveWrap.sh d")), { description = "Move window down / next workspace" })
 bind("SUPER + CTRL + A", exec(script("OverviewToggle.sh")), { description = "Desktop overview" })
