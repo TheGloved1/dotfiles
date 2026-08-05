@@ -1,6 +1,4 @@
-local scriptsDir = (os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")) .. "/hypr/scripts"
-
-local defaults = rawget(_G, "DEFAULTS") or {}
+local defaults = DEFAULTS
 local term = defaults.term
 local files = defaults.files
 
@@ -13,7 +11,7 @@ local workspace = hl.dsp.workspace
 local group = hl.dsp.group
 
 local script = function(name)
-	return scriptsDir .. "/" .. name
+	return SCRIPTS_DIR .. "/" .. name
 end
 
 bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default browser" })
@@ -51,20 +49,18 @@ bind("SUPER + SHIFT + F", window.fullscreen(), { description = "fullscreen" })
 bind("SUPER + F", window.fullscreen({ mode = "maximized" }), { description = "maximize window" })
 bind("SUPER + ALT + SPACE", exec(script("Float-all-Windows.sh")), { description = "Float all windows" })
 bind("SUPER + SHIFT + Return", exec(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
-bind(
-	"SUPER + ALT + mouse_down",
-	exec(
-		"hyprctl keyword cursor:zoom_factor \"$(hyprctl getoption cursor:zoom_factor | awk 'NR==1 {factor = $2; if (factor < 1) {factor = 1}; print factor * 2.0}')\""
-	),
-	{ description = "zoom in" }
-)
-bind(
-	"SUPER + ALT + mouse_up",
-	exec(
-		"hyprctl keyword cursor:zoom_factor \"$(hyprctl getoption cursor:zoom_factor | awk 'NR==1 {factor = $2; if (factor < 1) {factor = 1}; print factor / 2.0}')\""
-	),
-	{ description = "zoom out" }
-)
+
+bind("SUPER + ALT + mouse_up", function()
+	local current = hl.get_config("cursor.zoom_factor") or 1
+	current = math.max(1, current * 2)
+	hl.config({ cursor = { zoom_factor = current } })
+end, { description = "zoom in", mouse = true })
+bind("SUPER + ALT + mouse_down", function()
+	local current = hl.get_config("cursor.zoom_factor") or 1
+	current = math.max(1, current / 2)
+	hl.config({ cursor = { zoom_factor = current } })
+end, { description = "zoom out", mouse = true })
+
 bind("SUPER + CTRL + ALT + B", exec("pkill -SIGUSR1 waybar"), { description = "toggle waybar on/off" })
 bind("SUPER + CTRL + B", exec(script("WaybarStyles.sh")), { description = "waybar styles menu" })
 bind("SUPER + ALT + B", exec(script("WaybarLayout.sh")), { description = "waybar layout menu" })

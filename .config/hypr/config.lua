@@ -1,6 +1,8 @@
-local configHome = os.getenv("XDG_CONFIG_HOME") or ((os.getenv("HOME") or "") .. ".config")
-local hyprDir = configHome .. "/hypr"
-local configsDir = hyprDir .. "/configs"
+-- Shared path constants (HYPR_BASE_DIR is set by hyprland.lua).
+HYPR_DIR = HYPR_BASE_DIR
+CONFIGS_DIR = HYPR_DIR .. "/configs"
+SCRIPTS_DIR = HYPR_DIR .. "/scripts"
+WALLUST_FILE = HYPR_DIR .. "/wallust/wallust-hyprland.conf"
 
 local function has_kvantum_qml_module()
 	local cmd = "find /usr/lib /usr/lib64 /usr/share -type d -path '*/qml/*/kvantum' -print -quit 2>/dev/null"
@@ -66,8 +68,8 @@ local function scan_lua_files(dir)
 end
 
 -- Load lua config files
-for _, file in ipairs(scan_lua_files(configsDir)) do
-	load_optional(configsDir .. "/" .. file)
+for _, file in ipairs(scan_lua_files(CONFIGS_DIR)) do
+	load_optional(CONFIGS_DIR .. "/" .. file)
 end
 
 apply_qt_style_fallbacks()

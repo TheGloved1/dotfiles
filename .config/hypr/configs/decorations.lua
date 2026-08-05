@@ -4,9 +4,7 @@
 -- Try to load wallust colors for dynamic theming
 local wallust_colors = {}
 do
-	local configHome = os.getenv("XDG_CONFIG_HOME") or ((os.getenv("HOME") or "") .. "/.config")
-	local wallust_file = configHome .. "/hypr/wallust/wallust-hyprland.conf"
-	local f = io.open(wallust_file, "r")
+	local f = io.open(WALLUST_FILE, "r")
 	if f then
 		for line in f:lines() do
 			local var, val = line:match("^%s*source%?=(%$%w+)%s*=%s*(.+)%s*$")
@@ -38,9 +36,6 @@ hl.config({
 			inactive_border = get_color("$color10", "rgba(5f6578ff)"),
 		},
 	},
-})
-
-hl.config({
 	decoration = {
 		rounding = 4,
 		active_opacity = 1.0,
@@ -67,9 +62,6 @@ hl.config({
 			popups = true,
 		},
 	},
-})
-
-hl.config({
 	group = {
 		col = {
 			border_active = get_color("$color15", "rgba(ffffffff)"),

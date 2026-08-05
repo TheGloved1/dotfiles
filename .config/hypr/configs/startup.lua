@@ -52,7 +52,7 @@ exec_once("swaync")
 
 -- Portals and theme
 exec_once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
-exec_once("sh $HOME/.config/hypr/scripts/ApplyThemeMode.sh")
+exec_once("$HOME/.config/hypr/scripts/ApplyThemeMode.sh")
 
 -- Waybar
 exec_once("sh $HOME/.config/hypr/scripts/WaybarStartup.sh")
@@ -86,6 +86,3 @@ exec_once("$HOME/.config/hypr/scripts/KeybindsLayoutInit.sh")
 
 -- AGS
 exec_once("ags")
-
--- Dynamic cursors plugin
-exec_once("hyprpm enable dynamic-cursors")

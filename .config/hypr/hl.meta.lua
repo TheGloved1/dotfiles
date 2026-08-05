@@ -904,6 +904,7 @@ local __HL_NotificationNamespace = {}
 local __HL_PluginNamespace = {}
 
 ---@type HL.API
+---@diagnostic disable-next-line: missing-fields
 hl = {}
 
 ---@class HL.ConfigValueTypes
