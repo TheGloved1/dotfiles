@@ -45,7 +45,7 @@ hl.config({
 		zoom_factor = 1.0,
 		zoom_rigid = false,
 		zoom_detached_camera = true,
-		hide_on_key_press = true,
+		hide_on_key_press = false,
 		hide_on_touch = false,
 		hide_on_tablet = false,
 		use_cpu_buffer = false,

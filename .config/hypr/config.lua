@@ -51,6 +51,7 @@ end
 
 ---Scan for lua files
 ---@param dir string Dir to search in
+---@return table files
 local function scan_lua_files(dir)
 	local files = {}
 	local pipe = io.popen('ls -1 "' .. dir .. '" 2>/dev/null', "r")
@@ -67,8 +68,9 @@ local function scan_lua_files(dir)
 	return files
 end
 
--- Load lua config files
-for _, file in ipairs(scan_lua_files(CONFIGS_DIR)) do
+---Load lua config files
+---@param file string
+for i, file in ipairs(scan_lua_files(CONFIGS_DIR)) do
 	load_optional(CONFIGS_DIR .. "/" .. file)
 end
 

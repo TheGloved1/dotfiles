@@ -10,6 +10,8 @@ local window = hl.dsp.window
 local workspace = hl.dsp.workspace
 local group = hl.dsp.group
 
+---@param name string
+---@return string
 local script = function(name)
 	return SCRIPTS_DIR .. "/" .. name
 end
@@ -62,6 +64,8 @@ end, { description = "zoom out", mouse = true })
 
 bind("SUPER + CTRL + ALT + B", exec("pkill -SIGUSR1 waybar"), { description = "toggle waybar on/off" })
 bind("SUPER + CTRL + B", exec(script("WaybarStyles.sh")), { description = "waybar styles menu" })
+bind("SUPER + SHIFT + B", exec(script("WaybarReload.sh")), { description = "reload waybar" })
+bind("SUPER + CTRL + ALT + SHIFT + B", exec(script("WaybarStartup.sh")), { description = "waybar startup" })
 bind("SUPER + ALT + B", exec(script("WaybarLayout.sh")), { description = "waybar layout menu" })
 bind("SUPER + N", exec(script("Hyprsunset.sh toggle")), { description = "Toggle Hyprsunset - night light" })
 bind("SUPER + SHIFT + M", exec(script("RofiBeats.sh")), { description = "online music" })
