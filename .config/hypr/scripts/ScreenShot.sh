@@ -112,11 +112,14 @@ shotwin() {
 
 shotarea() {
 	tmpfile=$(mktemp)
-	hyprpicker -r -z &
+	wayfreeze --hide-cursor &
 	frozen=$!
 	trap 'kill "$frozen" 2>/dev/null' EXIT
 	sleep 0.2
-	grim -g "$(slurp)" - >"$tmpfile"
+	geometry="$(slurp)"
+	if [[ -n "$geometry" ]]; then
+		grim -g "$geometry" - >"$tmpfile"
+	fi
 	kill "$frozen" 2>/dev/null
 	wait "$frozen" 2>/dev/null
 	trap - EXIT
@@ -140,11 +143,14 @@ shotactive() {
 
 shotswappy() {
 	tmpfile=$(mktemp)
-	hyprpicker -r -z &
+	wayfreeze --hide-cursor &
 	frozen=$!
 	trap 'kill "$frozen" 2>/dev/null' EXIT
 	sleep 0.2
-	grim -g "$(slurp)" - >"$tmpfile"
+	geometry="$(slurp)"
+	if [[ -n "$geometry" ]]; then
+		grim -g "$geometry" - >"$tmpfile"
+	fi
 	kill "$frozen" 2>/dev/null
 	wait "$frozen" 2>/dev/null
 	trap - EXIT
