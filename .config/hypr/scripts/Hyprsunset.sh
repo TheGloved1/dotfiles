@@ -47,33 +47,52 @@ icon_on() {
   esac
 }
 
+# Stop every hyprsunset and wait until the CTM manager is actually released.
+# Hyprsunset holds Hyprland's single CTM manager exclusively; a killed
+# instance can take up to ~5s to disconnect, and any new instance started
+# before then is refused ("A CTM manager is already running") and exits.
+# Note: SIGTERM alone can deadlock hyprsunset's teardown (its poll thread
+# never re-checks the terminate flag while blocked), so escalate to SIGKILL.
+stop_all() {
+  pkill -x hyprsunset 2>/dev/null || true
+  for _ in $(seq 1 30); do
+    pgrep -x hyprsunset >/dev/null 2>&1 || return 0
+    sleep 0.1
+  done
+  pkill -9 -x hyprsunset 2>/dev/null || true
+  for _ in $(seq 1 30); do
+    pgrep -x hyprsunset >/dev/null 2>&1 || return 0
+    sleep 0.1
+  done
+  return 1
+}
+
 cmd_toggle() {
   ensure_state
   state="$(cat "$STATE_FILE" || echo off)"
 
-  # Always stop any running hyprsunset first to avoid CTM manager conflicts
-  if pgrep -x hyprsunset >/dev/null 2>&1; then
-    pkill -x hyprsunset || true
-    # give it a moment to release the CTM manager
-    sleep 0.2
-  fi
-
-if [[ "$state" == "on" ]]; then
-    # Turning OFF: set identity and exit
-    if command -v hyprsunset >/dev/null 2>&1; then
-      nohup hyprsunset -i >/dev/null 2>&1 &
-      # if hyprsunset persists, stop it shortly after applying identity
-      sleep 0.3 && pkill -x hyprsunset || true
-    fi
+  if [[ "$state" == "on" ]]; then
+    # Turning OFF: killing hyprsunset reverts the screen (Hyprland resets
+    # the CTM to identity when the manager disconnects).
+    stop_all || true
     echo off > "$STATE_FILE"
     notify-send -u low "Hyprsunset: Disabled" || true
   else
-    # Turning ON: start hyprsunset at target temp in background
-    if command -v hyprsunset >/dev/null 2>&1; then
-      nohup hyprsunset -t "$TARGET_TEMP" >/dev/null 2>&1 &
+    # Turning ON: make sure the old manager is fully gone, then start.
+    if stop_all; then
+      if command -v hyprsunset >/dev/null 2>&1; then
+        nohup hyprsunset -t "$TARGET_TEMP" >/dev/null 2>&1 &
+        sleep 0.5
+      fi
+      if pgrep -x hyprsunset >/dev/null 2>&1; then
+        echo on > "$STATE_FILE"
+        notify-send -u low "Hyprsunset: Enabled" "${TARGET_TEMP}K" || true
+      else
+        notify-send -u critical "Hyprsunset: Failed to enable" "No hyprsunset process is running" || true
+      fi
+    else
+      notify-send -u critical "Hyprsunset: Failed to enable" "A previous instance would not stop" || true
     fi
-    echo on > "$STATE_FILE"
-    notify-send -u low "Hyprsunset: Enabled" "${TARGET_TEMP}K" || true
   fi
 }
 
@@ -103,8 +122,10 @@ cmd_init() {
   state="$(cat "$STATE_FILE" || echo off)"
 
   if [[ "$state" == "on" ]]; then
+    stop_all || true
     if command -v hyprsunset >/dev/null 2>&1; then
       nohup hyprsunset -t "$TARGET_TEMP" >/dev/null 2>&1 &
+      sleep 0.5
     fi
   fi
 }
