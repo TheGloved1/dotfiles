@@ -5,79 +5,55 @@
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
-# Rofi menu for KooL Hyprland Quick Settings (SUPER SHIFT E)
-# Updated for UserConfigs/configs separation
+# Rofi menu for Hyprland Quick Settings (SUPER SHIFT E)
+# Adapted for the pure-Lua config system (configs/*.lua)
 
-# Detect active Hyprland config mode (Lua entrypoint vs legacy .conf includes)
+# Detect Hyprland config directory (pure-Lua config system: configs/*.lua)
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
 hypr_dir="$config_home/hypr"
-lua_entry="$hypr_dir/hyprland.lua"
-legacy_lua_entry="$config_home/hyprland.lua"
-if [[ -f "$lua_entry" || -f "$legacy_lua_entry" ]]; then
-    hypr_config_mode="lua"
-else
-    hypr_config_mode="conf"
-fi
 
 # Resolve defaults file used to get terminal/editor values
-config_file="$hypr_dir/UserConfigs/01-UserDefaults.conf"
-lua_defaults_file="$hypr_dir/UserConfigs/user_defaults.lua"
+defaults_file="$hypr_dir/configs/defaults.lua"
 term="${term:-${TERM:-kitty}}"
 edit="${edit:-${EDITOR:-nano}}"
 visual="${visual:-${VISUAL:-}}"
 
-if [[ "$hypr_config_mode" == "conf" && -f "$config_file" ]]; then
-    tmp_config_file=$(mktemp)
-    sed 's/^\$//g; s/ = /=/g' "$config_file" > "$tmp_config_file"
-    source "$tmp_config_file"
-elif [[ "$hypr_config_mode" == "lua" ]]; then
-    defaults_source=""
-    if [[ -f "$lua_defaults_file" ]]; then
-        defaults_source="$lua_defaults_file"
-    fi
-    if [[ -n "$defaults_source" ]]; then
-        lua_term=$(sed -n 's/^[[:space:]]*KOOLDOTS_DEFAULTS\.term[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_source" | tail -n1)
-        lua_edit=$(sed -n 's/^[[:space:]]*KOOLDOTS_DEFAULTS\.edit[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_source" | tail -n1)
-        lua_visual=$(sed -n 's/^[[:space:]]*KOOLDOTS_DEFAULTS\.visual[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_source" | tail -n1)
-        [[ -n "$lua_term" ]] && term="$lua_term"
-        [[ -n "$lua_edit" ]] && edit="$lua_edit"
-        [[ -n "$lua_visual" ]] && visual="$lua_visual"
-    fi
+if [[ -f "$defaults_file" ]]; then
+    lua_term=$(sed -n 's/^[[:space:]]*DEFAULTS\.term[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+    lua_edit=$(sed -n 's/^[[:space:]]*DEFAULTS\.edit[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+    lua_visual=$(sed -n 's/^[[:space:]]*DEFAULTS\.visual[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+    [[ -n "$lua_term" ]] && term="$lua_term"
+    [[ -n "$lua_edit" ]] && edit="$lua_edit"
+    [[ -n "$lua_visual" ]] && visual="$lua_visual"
 fi
 # ##################################### #
 
 # variables
 configs="$hypr_dir/configs"
-UserConfigs="$hypr_dir/UserConfigs"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-edit.rasi"
 msg=' ⁉️ Choose what to do ⁉️'
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
 scriptsDir="$hypr_dir/scripts"
-UserScripts="$hypr_dir/scripts"
-user_defaults_conf="$UserConfigs/01-UserDefaults.conf"
-user_defaults_lua="$UserConfigs/user_defaults.lua"
-user_env_conf="$UserConfigs/ENVariables.conf"
-user_env_lua="$UserConfigs/user_env.lua"
-user_keybinds_conf="$UserConfigs/UserKeybinds.conf"
-user_keybinds_lua="$UserConfigs/user_keybinds.lua"
-user_startup_conf="$UserConfigs/Startup_Apps.conf"
-user_startup_lua="$UserConfigs/user_startup.lua"
-user_window_rules_conf="$UserConfigs/WindowRules.conf"
-user_window_rules_lua="$UserConfigs/user_window_rules.lua"
-user_layer_rules_conf="$UserConfigs/LayerRules.conf"
-user_layer_rules_lua="$UserConfigs/user_layer_rules.lua"
-user_settings_conf="$UserConfigs/UserSettings.conf"
-user_settings_lua="$UserConfigs/user_settings.lua"
-user_decorations_conf="$UserConfigs/UserDecorations.conf"
-user_decorations_lua="$UserConfigs/user_decorations.lua"
-user_animations_conf="$UserConfigs/UserAnimations.conf"
-user_animations_lua="$UserConfigs/user_animations.lua"
-user_laptops_conf="$UserConfigs/Laptops.conf"
-user_laptops_lua="$UserConfigs/user_laptops.lua"
+
+# Config files (all live in configs/*.lua)
+config_defaults="$configs/defaults.lua"
+config_env="$configs/env.lua"
+config_keybinds="$configs/keybinds.lua"
+config_startup="$configs/startup.lua"
+config_window_rules="$configs/window_rules.lua"
+config_layer_rules="$configs/layer_rules.lua"
+config_settings="$configs/settings.lua"
+config_decorations="$configs/decorations.lua"
+config_animations="$configs/animations.lua"
+config_laptops="$configs/laptops.lua"
+config_monitors="$configs/monitors.lua"
+config_workspaces="$configs/workspaces.lua"
 
 # Function to show info notification
 show_info() {
-    if [[ -f "$iDIR/info.png" ]]; then
+    if [[ -f "$iDIR/note.png" ]]; then
+        notify-send -i "$iDIR/note.png" "Info" "$1"
+    elif [[ -f "$iDIR/info.png" ]]; then
         notify-send -i "$iDIR/info.png" "Info" "$1"
     else
         notify-send "Info" "$1"
@@ -128,203 +104,25 @@ is_tui_editor() {
     return 1
 }
 
-resolve_system_lua_file() {
-    local file_name="$1"
-    local preferred="$configs/$file_name"
-    local legacy="$UserConfigs/$file_name"
-    if [[ -f "$preferred" || ! -f "$legacy" ]]; then
-        printf '%s' "$preferred"
-    else
-        printf '%s' "$legacy"
-    fi
-}
-
-resolve_mode_file() {
-    local preferred="$1"
-    local fallback="$2"
-    if [[ -f "$preferred" || ! -f "$fallback" ]]; then
-        printf '%s' "$preferred"
-    else
-        printf '%s' "$fallback"
-    fi
-}
-
-resolve_user_overlay_file() {
-    local lua_file="$1"
-    local conf_file="$2"
-    if [[ "$hypr_config_mode" == "lua" ]]; then
-        resolve_mode_file "$lua_file" "$conf_file"
-    else
-        resolve_mode_file "$conf_file" "$lua_file"
-    fi
-}
-# Function to toggle Rainbow Borders script availability and refresh UI components
-toggle_rainbow_borders() {
-    local rainbow_script="$UserScripts/RainbowBorders.sh"
-    local disabled_sh_bak="${rainbow_script}.bak"           # RainbowBorders.sh.bak
-    local disabled_bak_sh="$UserScripts/RainbowBorders.bak.sh" # RainbowBorders.bak.sh (created by copy.sh when disabled)
-    local refresh_script="$scriptsDir/Refresh.sh"
-    local status=""
-
-    # If both disabled variants exist, keep the newer one to avoid ambiguity
-    if [[ -f "$disabled_sh_bak" && -f "$disabled_bak_sh" ]]; then
-        if [[ "$disabled_sh_bak" -nt "$disabled_bak_sh" ]]; then
-            rm -f "$disabled_bak_sh"
-        else
-            rm -f "$disabled_sh_bak"
-        fi
-    fi
-
-    if [[ -f "$rainbow_script" ]]; then
-        # Currently enabled -> disable to canonical .sh.bak
-        if mv "$rainbow_script" "$disabled_sh_bak"; then
-            status="disabled"
-            if command -v hyprctl &>/dev/null; then
-                hyprctl reload >/dev/null 2>&1 || true
-            fi
-        fi
-    elif [[ -f "$disabled_sh_bak" ]]; then
-        # Disabled (.sh.bak) -> enable
-        if mv "$disabled_sh_bak" "$rainbow_script"; then
-            status="enabled"
-        fi
-    elif [[ -f "$disabled_bak_sh" ]]; then
-        # Disabled (.bak.sh) -> enable (normalize to .sh)
-        if mv "$disabled_bak_sh" "$rainbow_script"; then
-            status="enabled"
-        fi
-    else
-        show_info "RainbowBorders script not found in $UserScripts (checked .sh, .sh.bak, .bak.sh)."
-        return
-    fi
-
-    # Run refresh if available, otherwise apply borders directly
-    if [[ -x "$refresh_script" ]]; then
-        "$refresh_script" >/dev/null 2>&1 &
-    elif [[ "$current" != "disabled" && -x "$rainbow_script" ]]; then
-        "$rainbow_script" >/dev/null 2>&1 &
-    fi
-
-    if [[ -n "$status" ]]; then
-        show_info "Rainbow Borders ${status}."
-    fi
-}
-
-# Submenu to choose Rainbow Borders mode (disable, wallust_random, rainbow, gradient_flow)
-rainbow_borders_menu() {
-    local rainbow_script="$UserScripts/RainbowBorders.sh"
-    local disabled_sh_bak="${rainbow_script}.bak"
-    local disabled_bak_sh="$UserScripts/RainbowBorders.bak.sh"
-    local refresh_script="$scriptsDir/Refresh.sh"
-
-    # Determine current mode/status (internal)
-    local current="disabled"
-    if [[ -f "$rainbow_script" ]]; then
-        current=$(grep -E '^EFFECT_TYPE=' "$rainbow_script" 2>/dev/null | sed -E 's/^EFFECT_TYPE="?([^"]*)"?/\1/')
-        [[ -z "$current" ]] && current="unknown"
-    fi
-
-    # Map internal mode to friendly display
-    local current_display="$current"
-    case "$current" in
-        wallust_random) current_display="Wallust Color" ;;
-        rainbow) current_display="Original Rainbow" ;;
-        gradient_flow) current_display="Gradient Flow" ;;
-        disabled) current_display="Disabled" ;;
-    esac
-
-
-    # Build options and prompt
-    local options="Disable Rainbow Borders\nWallust Color\nOriginal Rainbow\nGradient Flow"
-    local choice
-    choice=$(printf "%b" "$options" | rofi -i -dmenu -config "$rofi_theme" -mesg "Rainbow Borders: current = $current_display")
-
-    [[ -z "$choice" ]] && return
-
-    local previous="$current"
-
-    case "$choice" in
-        "Disable Rainbow Borders")
-            if [[ -f "$rainbow_script" ]]; then
-                mv "$rainbow_script" "$disabled_sh_bak"
-            fi
-            current="disabled"
-            if command -v hyprctl &>/dev/null; then
-                hyprctl reload >/dev/null 2>&1 || true
-            fi
-            ;;
-        "Wallust Color"|"Original Rainbow"|"Gradient Flow")
-            local mode=""
-            case "$choice" in
-                "Wallust Color") mode="wallust_random" ;;
-                "Original Rainbow") mode="rainbow" ;;
-                "Gradient Flow") mode="gradient_flow" ;;
-            esac
-            # Ensure script is enabled
-            if [[ ! -f "$rainbow_script" ]]; then
-                if   [[ -f "$disabled_sh_bak" ]]; then
-                    mv "$disabled_sh_bak" "$rainbow_script"
-                elif [[ -f "$disabled_bak_sh" ]]; then
-                    mv "$disabled_bak_sh" "$rainbow_script"
-                else
-                    show_info "RainbowBorders script not found in $UserScripts."
-                    return
-                fi
-            fi
-
-            # Update EFFECT_TYPE in place; insert if missing
-            if grep -q '^EFFECT_TYPE=' "$rainbow_script" 2>/dev/null; then
-                sed -i 's/^EFFECT_TYPE=.*/EFFECT_TYPE="'"$mode"'"/' "$rainbow_script"
-            else
-                if head -n1 "$rainbow_script" | grep -q '^#!'; then
-                    sed -i '1a EFFECT_TYPE="'"$mode"'"' "$rainbow_script"
-                else
-                    sed -i '1i EFFECT_TYPE="'"$mode"'"' "$rainbow_script"
-                fi
-            fi
-            # Set current to chosen mode
-            current="$mode"
-            ;;
-        *)
-            return ;;
-    esac
-
-    # Run refresh if available
-    if [[ -x "$refresh_script" ]]; then
-        "$refresh_script" >/dev/null 2>&1 &
-    fi
-
-    # Apply mode immediately (in case refresh doesn't trigger it)
-    if [[ "$current" != "disabled" && -x "$rainbow_script" ]]; then
-        "$rainbow_script" >/dev/null 2>&1 &
-    fi
-
-    # No notifications; mode is shown in the menu
-}
-
-# Function to display the menu options without numbers
+# Function to display the menu options
 menu() {
     cat <<EOF
---- USER CUSTOMIZATIONS ---
-Edit User Defaults
-Edit User Keybinds
-Edit User ENV variables
-Edit User Startup Apps (overlay)
-Edit User Window Rules (overlay)
-Edit User Layer Rules (overlay)
-Edit User Settings
-Edit User Decorations
-Edit User Animations
-Edit User Laptop Settings
---- SYSTEM DEFAULTS  ---
-Edit System Default Keybinds
-Edit System Default Startup Apps
-Edit System Default Window Rules
-Edit System Default Layer Rules
-Edit System Default Settings
-Change Starship Prompt
+--- CONFIG FILES ---
+Edit Defaults
+Edit ENV Variables
+Edit Keybinds
+Edit Startup Apps
+Edit Window Rules
+Edit Layer Rules
+Edit Settings
+Edit Decorations
+Edit Animations
+Edit Laptop Settings
+Edit Monitors
+Edit Workspaces
 --- UTILITIES ---
 Set SDDM Wallpaper
+Change Starship Prompt
 Choose Kitty Terminal Theme
 Choose Ghostty Terminal Theme
 Configure Monitors (nwg-displays)
@@ -341,7 +139,6 @@ Toggle Waybar Weather units (C/F)
 Toggle Waybar Clock (12H/24H)
 Toggle Game Mode
 Switch Dark-Light Theme
-Rainbow Borders Mode
 EOF
 }
 
@@ -353,37 +150,18 @@ main() {
     
     # Map choices to corresponding files
     case "$choice" in
-    	"Edit User Defaults")
-            file="$(resolve_user_overlay_file "$user_defaults_lua" "$user_defaults_conf")" ;;
-        "Edit User ENV variables")
-            file="$(resolve_user_overlay_file "$user_env_lua" "$user_env_conf")" ;;
-        "Edit User Keybinds")
-            file="$(resolve_user_overlay_file "$user_keybinds_lua" "$user_keybinds_conf")" ;;
-        "Edit User Startup Apps (overlay)")
-            file="$(resolve_user_overlay_file "$user_startup_lua" "$user_startup_conf")" ;;
-        "Edit User Window Rules (overlay)")
-            file="$(resolve_user_overlay_file "$user_window_rules_lua" "$user_window_rules_conf")" ;;
-        "Edit User Layer Rules (overlay)")
-            file="$(resolve_user_overlay_file "$user_layer_rules_lua" "$user_layer_rules_conf")" ;;
-        "Edit User Settings")
-            file="$(resolve_user_overlay_file "$user_settings_lua" "$user_settings_conf")" ;;
-        "Edit User Decorations")
-            file="$(resolve_user_overlay_file "$user_decorations_lua" "$user_decorations_conf")" ;;
-        "Edit User Animations")
-            file="$(resolve_user_overlay_file "$user_animations_lua" "$user_animations_conf")" ;;
-        "Edit User Laptop Settings")
-            file="$(resolve_user_overlay_file "$user_laptops_lua" "$user_laptops_conf")" ;;
-        "Edit System Default Keybinds")
-            if [[ "$hypr_config_mode" == "lua" ]]; then file="$(resolve_system_lua_file system_keybinds.lua)"; else file="$configs/Keybinds.conf"; fi ;;
-        "Edit System Default Startup Apps")
-            if [[ "$hypr_config_mode" == "lua" ]]; then file="$(resolve_system_lua_file system_startup.lua)"; else file="$configs/Startup_Apps.conf"; fi ;;
-        "Edit System Default Window Rules")
-            if [[ "$hypr_config_mode" == "lua" ]]; then file="$(resolve_system_lua_file system_window_rules.lua)"; else file="$configs/WindowRules.conf"; fi ;;
-        "Edit System Default Layer Rules")
-            if [[ "$hypr_config_mode" == "lua" ]]; then file="$(resolve_system_lua_file system_layer_rules.lua)"; else file="$configs/LayerRules.conf"; fi ;;
-        "Edit System Default Settings")
-            if [[ "$hypr_config_mode" == "lua" ]]; then file="$(resolve_system_lua_file system_settings.lua)"; else file="$configs/SystemSettings.conf"; fi ;;
-        "Change Starship Prompt") "$scriptsDir/ChangeStarshipPrompt.sh" ;;
+        "Edit Defaults") file="$config_defaults" ;;
+        "Edit ENV Variables") file="$config_env" ;;
+        "Edit Keybinds") file="$config_keybinds" ;;
+        "Edit Startup Apps") file="$config_startup" ;;
+        "Edit Window Rules") file="$config_window_rules" ;;
+        "Edit Layer Rules") file="$config_layer_rules" ;;
+        "Edit Settings") file="$config_settings" ;;
+        "Edit Decorations") file="$config_decorations" ;;
+        "Edit Animations") file="$config_animations" ;;
+        "Edit Laptop Settings") file="$config_laptops" ;;
+        "Edit Monitors") file="$config_monitors" ;;
+        "Edit Workspaces") file="$config_workspaces" ;;
         "Set SDDM Wallpaper")
             if [[ -n "$quick_settings_monitor" ]]; then
                 "$scriptsDir/sddm_wallpaper.sh" --normal "$quick_settings_monitor"
@@ -391,6 +169,7 @@ main() {
                 "$scriptsDir/sddm_wallpaper.sh" --normal
             fi
             ;;
+        "Change Starship Prompt") $scriptsDir/ChangeStarshipPrompt.sh ;;
         "Choose Kitty Terminal Theme") $scriptsDir/Kitty_themes.sh ;;
         "Choose Ghostty Terminal Theme") $scriptsDir/Ghostty_themes.sh ;;
         "Configure Monitors (nwg-displays)") 
@@ -438,7 +217,6 @@ main() {
         "Toggle Waybar Clock (12H/24H)") $scriptsDir/ToggleWaybarTime.sh ;;
         "Toggle Game Mode") $scriptsDir/GameMode.sh ;;
         "Switch Dark-Light Theme") $scriptsDir/DarkLight.sh ;;
-        "Rainbow Borders Mode") rainbow_borders_menu ;;
         *) return ;;  # Do nothing for invalid choices
     esac
 

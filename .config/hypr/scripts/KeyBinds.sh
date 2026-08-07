@@ -6,6 +6,7 @@
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
 # searchable enabled keybinds using rofi (supports bindd descriptions)
+# Adapted for the pure-Lua config system (configs/keybinds.lua)
 
 # kill yad to not interfere with this binds
 pkill yad || true
@@ -15,57 +16,56 @@ if pidof rofi > /dev/null; then
   pkill rofi
 fi
 
-# define the config files
 config_home="${XDG_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
 hypr_dir="$config_home/hypr"
-keybinds_conf="$hypr_dir/configs/Keybinds.conf"
-user_keybinds_conf="$hypr_dir/UserConfigs/UserKeybinds.conf"
-laptop_conf="$hypr_dir/UserConfigs/Laptops.conf"
-lua_keybinds_conf="$hypr_dir/lua/keybinds.lua"
-lua_user_keybinds="$hypr_dir/UserConfigs/user_keybinds.lua"
-lua_system_keybinds="$hypr_dir/configs/system_keybinds.lua"
-lua_legacy_system_keybinds="$hypr_dir/UserConfigs/system_keybinds.lua"
-lua_overrides="$hypr_dir/UserConfigs/user_overrides.lua"
+keybinds_lua="$hypr_dir/configs/keybinds.lua"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-keybinds.rasi"
 msg='☣️ NOTE ☣️: Clicking with Mouse or Pressing ENTER will have NO function'
 
-# detect active Hyprland config mode (Lua entrypoint vs legacy .conf includes)
-lua_entry="$hypr_dir/hyprland.lua"
-legacy_lua_entry="$config_home/hyprland.lua"
-if [[ -f "$lua_entry" || -f "$legacy_lua_entry" ]]; then
-  hypr_config_mode="lua"
-else
-  hypr_config_mode="conf"
+display_keybinds=""
+
+# Primary: read live binds from hyprctl (descriptions set via the Lua config)
+if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    display_keybinds=$(hyprctl binds -j 2>/dev/null | jq -r '
+      .[]
+      | select((.description // "") != "")
+      | select((.submap // "") == "")
+      | .key as $k
+      | .description as $d
+      | .modmask as $m
+      | def bit(n): ($m / n | floor) % 2 >= 1;
+        [ if bit(64) then "SUPER" else empty end,
+          if bit(1) then "SHIFT" else empty end,
+          if bit(4) then "CTRL" else empty end,
+          if bit(8) then "ALT" else empty end
+        ] | (if length == 0 then $k else (join(" + ") + " + " + $k) end) + "  ::  " + $d
+    ' | sort -f -k1)
 fi
 
-# collect raw bind lines from available files
-if [[ "$hypr_config_mode" == "lua" ]]; then
-  files=("$lua_keybinds_conf")
-  if [[ -f "$lua_system_keybinds" ]]; then
-    files+=("$lua_system_keybinds")
-  elif [[ -f "$lua_legacy_system_keybinds" ]]; then
-    files+=("$lua_legacy_system_keybinds")
-  fi
-  [[ -f "$lua_user_keybinds" ]] && files+=("$lua_user_keybinds")
-  [[ -f "$lua_overrides" ]] && files+=("$lua_overrides")
-else
-  files=("$keybinds_conf" "$user_keybinds_conf")
-  [[ -f "$laptop_conf" ]] && files+=("$laptop_conf")
-fi
-
-# Parse binds using the python script for speed
-# The last argument must be the user config for override logic to work correctly
-display_keybinds=$("${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/keybinds_parser.py" "${files[@]}")
-
-# Check for suggestions file created by python script
-if [[ -f "/tmp/hypr_keybind_suggestions_file" ]]; then
-  suggestions_file=$(cat "/tmp/hypr_keybind_suggestions_file")
-  rm "/tmp/hypr_keybind_suggestions_file"
-  if [[ -n "$suggestions_file" && -f "$suggestions_file" ]]; then
-     count=$(wc -l < "$suggestions_file")
-     msg="$msg | Overrides missing unbind: $count (suggestions: $suggestions_file)"
-  fi
+# Fallback: parse bind(...) entries directly from the Lua config
+if [[ -z "$display_keybinds" ]]; then
+  display_keybinds=$(awk '
+    /^[ \t]*--/ { next }
+    /[ \t]*bind\(/ { in_bind = 1; key = ""; pending = 1 }
+    in_bind && pending && match($0, /"[^"]+"/) {
+      key = substr($0, RSTART, RLENGTH)
+      gsub(/"/, "", key)
+      pending = 0
+    }
+    in_bind && match($0, /description[ \t]*=[ \t]*"[^"]*"/) {
+      d = substr($0, RSTART, RLENGTH)
+      sub(/^[^"]*"/, "", d)
+      sub(/"$/, "", d)
+      if (key != "" && d != "") print key "  ::  " d
+      key = ""
+      in_bind = 0
+    }
+  ' "$keybinds_lua" | sort -f -k1)
 fi
 
 # use rofi to display the keybinds
-printf '%s\n' "$display_keybinds" | rofi -dmenu -i -config "$rofi_theme" -mesg "$msg"
+if [[ -n "$display_keybinds" ]]; then
+  printf '%s\n' "$display_keybinds" | rofi -dmenu -i -config "$rofi_theme" -mesg "$msg"
+else
+  notify-send -u low -i "${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png" "KeyBinds" "No keybinds found"
+fi

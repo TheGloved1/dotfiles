@@ -68,6 +68,9 @@ exec_once("qs -c overview")
 -- Idle manager
 exec_once("hypridle")
 
+-- Vicinae
+exec_once("vicinae server")
+
 -- Hyprsunset
 exec_once("$HOME/.config/hypr/scripts/Hyprsunset.sh init")
 

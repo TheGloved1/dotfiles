@@ -112,7 +112,14 @@ shotwin() {
 
 shotarea() {
 	tmpfile=$(mktemp)
+	hyprpicker -r -z &
+	frozen=$!
+	trap 'kill "$frozen" 2>/dev/null' EXIT
+	sleep 0.2
 	grim -g "$(slurp)" - >"$tmpfile"
+	kill "$frozen" 2>/dev/null
+	wait "$frozen" 2>/dev/null
+	trap - EXIT
 
   # Copy with saving
 	if [[ -s "$tmpfile" ]]; then
@@ -133,7 +140,14 @@ shotactive() {
 
 shotswappy() {
 	tmpfile=$(mktemp)
-	grim -g "$(slurp)" - >"$tmpfile" 
+	hyprpicker -r -z &
+	frozen=$!
+	trap 'kill "$frozen" 2>/dev/null' EXIT
+	sleep 0.2
+	grim -g "$(slurp)" - >"$tmpfile"
+	kill "$frozen" 2>/dev/null
+	wait "$frozen" 2>/dev/null
+	trap - EXIT
 
   # Copy without saving
   if [[ -s "$tmpfile" ]]; then

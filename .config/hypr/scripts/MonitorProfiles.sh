@@ -12,46 +12,17 @@ if pidof rofi > /dev/null; then
   pkill rofi
 fi
 
-# Detect active Hyprland config mode (Lua entrypoint vs legacy .conf includes)
-config_home="${XDG_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
-hypr_dir="$config_home/hypr"
-lua_entry="$hypr_dir/hyprland.lua"
-legacy_lua_entry="$config_home/hyprland.lua"
-if [[ -n "$HYPR_CONFIG_MODE" ]]; then
-    case "${HYPR_CONFIG_MODE,,}" in
-        lua) hypr_config_mode="lua" ;;
-        conf|hyprlang) hypr_config_mode="conf" ;;
-        auto) hypr_config_mode="" ;;
-        *) hypr_config_mode="" ;;
-    esac
-fi
-
-if [[ -z "$hypr_config_mode" ]]; then
-    if [[ -f "$lua_entry" || -f "$legacy_lua_entry" ]]; then
-        hypr_config_mode="lua"
-    else
-        hypr_config_mode="conf"
-    fi
-fi
+# Pure-Lua config system: profiles are copied into configs/monitors.lua
 
 # Variables
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 monitor_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/Monitor_Profiles"
-target_conf="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/monitors.conf"
-target_lua_user="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/UserConfigs/monitors.lua"
-target_lua_legacy="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/lua/monitors.lua"
+target="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/monitors.lua"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-Monitors.rasi"
 
-if [[ "$hypr_config_mode" == "lua" ]]; then
-    profile_ext="lua"
-    target="$target_lua_user"
-    msg="❗NOTE:❗ This will overwrite ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/UserConfigs/monitors.lua"
-else
-    profile_ext="conf"
-    target="$target_conf"
-    msg="❗NOTE:❗ This will overwrite ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/monitors.conf"
-fi
+profile_ext="lua"
+msg="❗NOTE:❗ This will overwrite ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/monitors.lua"
 
 # Define the list of files to ignore
 ignore_files=(
@@ -77,9 +48,6 @@ if [[ -n "$chosen_file" ]]; then
     full_path="$monitor_dir/$chosen_file.$profile_ext"
     mkdir -p "$(dirname "$target")"
     cp "$full_path" "$target"
-    if [[ "$hypr_config_mode" == "lua" && -f "$target_lua_legacy" ]]; then
-        cp "$full_path" "$target_lua_legacy"
-    fi
     
     notify-send -u low -i "$iDIR/ja.png" "$chosen_file" "Monitor Profile Loaded"
 fi
