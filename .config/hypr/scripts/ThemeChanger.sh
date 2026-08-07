@@ -66,15 +66,15 @@ theme_cache="${cache_dir}/wallust_theme_list.txt"
 cache_max_age=86400 # seconds
 
 build_theme_list() {
-  wallust "${wallust_args[@]}" theme list \
-    | awk '/^- /{sub(/^- /,""); sub(/ \(.*/, ""); print}'
+  wallust "${wallust_args[@]}" theme list |
+    awk '/^- /{sub(/^- /,""); sub(/ \(.*/, ""); print}'
 }
 
 update_theme_cache() {
   mkdir -p "$cache_dir"
   local tmp
   tmp="$(mktemp "${cache_dir}/wallust-theme-list.XXXXXX")"
-  if build_theme_list > "$tmp"; then
+  if build_theme_list >"$tmp"; then
     if [ -s "$tmp" ]; then
       mv "$tmp" "$theme_cache"
       return 0
@@ -85,7 +85,7 @@ update_theme_cache() {
 }
 
 cache_mtime=$(stat -c %Y "$theme_cache" 2>/dev/null || echo 0)
-cache_age=$(( $(date +%s) - cache_mtime ))
+cache_age=$(($(date +%s) - cache_mtime))
 if [ ! -s "$theme_cache" ] || [ "$cache_age" -gt "$cache_max_age" ]; then
   update_theme_cache || true
 fi
@@ -151,7 +151,7 @@ apply_hypr_border_fallback() {
 # Prompt for theme; guard -e on cancel
 set +e
 if [ -s "$theme_cache" ]; then
-  choice="$(rofi -dmenu -i -p 'Select Global Theme' < "$theme_cache")"
+  choice="$(rofi -dmenu -i -p 'Select Global Theme' <"$theme_cache")"
 else
   choice="$(build_theme_list | rofi -dmenu -i -p 'Select Global Theme')"
 fi
@@ -159,7 +159,7 @@ prompt_status=$?
 set -e
 
 # Exit cleanly on cancel or empty selection
-if (( prompt_status != 0 )) || [[ -z "${choice}" ]]; then
+if ((prompt_status != 0)) || [[ -z "${choice}" ]]; then
   exit 0
 fi
 
@@ -195,12 +195,20 @@ if wallust "${wallust_args[@]}" theme -- "${choice}" >"$wallust_log" 2>&1; then
   fi
 
   # Phase 1: appearance + freshness
-  for _ in $(seq 1 100); do # up to ~10s
+  for _ in $( # up to ~10s
+    seq 1 100
+  ); do
     ok=1
     for f in "${targets[@]}"; do
-      [ -s "$f" ] || { ok=0; break; }
+      [ -s "$f" ] || {
+        ok=0
+        break
+      }
       mtime=$(stat -c %Y "$f" 2>/dev/null || echo 0)
-      [ "$mtime" -ge "$start_ts" ] || { ok=0; break; }
+      [ "$mtime" -ge "$start_ts" ] || {
+        ok=0
+        break
+      }
     done
     [ $ok -eq 1 ] && break
     sleep 0.1
@@ -209,13 +217,15 @@ if wallust "${wallust_args[@]}" theme -- "${choice}" >"$wallust_log" 2>&1; then
   # Phase 2: stability (avoid reading half-written files)
   if [ $ok -eq 1 ]; then
     for _ in 1 2 3; do
-      sizes_a=(); mtimes_a=()
+      sizes_a=()
+      mtimes_a=()
       for f in "${targets[@]}"; do
         sizes_a+=("$(stat -c %s "$f" 2>/dev/null || echo 0)")
         mtimes_a+=("$(stat -c %Y "$f" 2>/dev/null || echo 0)")
       done
       sleep 0.15
-      sizes_b=(); mtimes_b=()
+      sizes_b=()
+      mtimes_b=()
       for f in "${targets[@]}"; do
         sizes_b+=("$(stat -c %s "$f" 2>/dev/null || echo 0)")
         mtimes_b+=("$(stat -c %Y "$f" 2>/dev/null || echo 0)")

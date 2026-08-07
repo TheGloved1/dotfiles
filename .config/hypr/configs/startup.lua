@@ -59,7 +59,7 @@ exec_once("sh $HOME/.config/hypr/scripts/WaybarStartup.sh")
 
 -- Cursor refresh
 exec_once(
-	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-Catppuccin-Mocha-Lavender}" "${HYPRCURSOR_SIZE:-24}"\''
+	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-catppuccin-mocha-blue}" "${HYPRCURSOR_SIZE:-24}"\''
 )
 
 -- Quickshell overview
@@ -86,3 +86,6 @@ exec_once("$HOME/.config/hypr/scripts/KeybindsLayoutInit.sh")
 
 -- AGS
 exec_once("ags")
+
+-- pm2
+exec_once("pm2 resurrect")

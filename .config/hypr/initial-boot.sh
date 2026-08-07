@@ -13,9 +13,9 @@ wallpaper=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_cu
 waybar_style="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/style/[Extra] Neon Circuit.css"
 kvantum_theme="catppuccin-mocha-blue"
 color_scheme="prefer-dark"
-gtk_theme="Flat-Remix-GTK-Blue-Dark"
+gtk_theme="catppuccin-mocha-blue-standard+default"
 icon_theme="Flat-Remix-Blue-Dark"
-cursor_theme="catppuccin-mocha-lavender"
+cursor_theme="catppuccin-mocha-blue"
 wallust_args=()
 # shellcheck source=/dev/null
 if [ -f "$scriptsDir/WallustConfig.sh" ]; then

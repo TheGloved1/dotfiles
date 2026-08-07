@@ -20,9 +20,9 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
 -- Cursor theme
-hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-lavender")
+hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-blue")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "catppuccin-mocha-lavender")
+hl.env("XCURSOR_THEME", "catppuccin-mocha-blue")
 hl.env("XCURSOR_SIZE", "24")
 
 -- DEFAULTS is populated by lua/defaults.lua (loaded before this).
