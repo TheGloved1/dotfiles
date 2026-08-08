@@ -6,11 +6,13 @@
 
 /*****-- Fonts Size and Font Size -----*****/
 configuration {
-font: "JetBrainsMono Nerd Font SemiBold 13";
+ font: "FiraCode Nerd Font Mono 13";
+// font: "Monocraft 13";
 }
 
 
 /*****-- Elements Font Size -----*****/
 element-text {
-font: "JetBrainsMono Nerd Font SemiBold 11";
+ font: "FiraCode Nerd Font Mono 11";
+// font: "Monocraft 13";
 }

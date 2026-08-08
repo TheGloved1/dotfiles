@@ -1,5 +1,5 @@
 /* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */
-/* KooL Hyprland Rofi Style 5 */
+/* KooL Hyprland Rofi Style 5 — Modern */
 
 /* ---- Configuration ---- */
 configuration {
@@ -37,20 +37,18 @@ configuration {
 /* ---- Window ---- */
 window {
     width:						800px;
-	/*height:						450px;*/
     x-offset:                   0px;
     y-offset:                   0px;
     spacing:                    0px;
     padding:                    1px;
-    margin:                     1px; 
-    border:                     2px;
-    border-color:               @active-background;
+    margin:                     1px;
+    border:                     0px;
     cursor:                     "default";
     location:                   center;
     anchor:                     center;
     fullscreen:                 false;
     enabled:                    true;
-    border-radius:              18px;
+    border-radius:              6px;
  	background-color:           @background-color;
 }
 
@@ -61,15 +59,7 @@ mainbox {
 	padding:					8px;
     background-image:           url("~/.config/rofi/.current_wallpaper_focused", width);
     children:                   [ "inputbar", "listbox" ];
-    border-radius:              18px;
-}
-
-/* ---- Imagebox ---- */
-imagebox {
-    background-color:           @background;
-    opacity: 0.5;
-    orientation:                vertical;
-    /*children:                   [ "inputbar"];*/
+    border-radius:              6px;
 }
 
 /* ---- Listbox ---- */
@@ -78,15 +68,9 @@ listbox {
     orientation:                vertical;
     children:                   [ "message", "listview" ];
 	padding:					10px;
-    border-radius:              12px;
-    border:                     1px;
-    border-color:               @active-background;
+    border-radius:              6px;
+    border:                     0px;
 	background-color:		    transparent;
-}
-
-/* ---- Dummy ---- */
-dummy {
-    background-color:           transparent;
 }
 
 /* ---- Inputbar ---- */
@@ -94,13 +78,11 @@ inputbar {
     enabled:                    true;
     text-color:                 @foreground;
     spacing:                    10px;
-    padding: 4px;
-    border-radius:              12px;
-    border-color:               @foreground;
+    padding:                    4px;
+    border-radius:              6px;
 	background-color:		    @background;
     children:                   [ "mode-switcher", "textbox-prompt-colon", "entry" ];
-    border:                     1px;
-    border-color:               @active-background;
+    border:                     0px;
 }
 
 textbox-prompt-colon {
@@ -120,7 +102,7 @@ entry {
     placeholder:                "  Search";
     placeholder-color:          inherit;
 	background-color:			@background;
-  border-radius: 12px;
+    border-radius:              6px;
 }
 
 /* ---- Mode Switcher ---- */
@@ -133,19 +115,17 @@ mode-switcher{
 
 button {
     padding:                   2px 24px 2px 24px;
-    border-radius:             12px;
+    border-radius:             6px;
     background-color:          @background-color;
     text-color:                inherit;
     cursor:                    pointer;
-    border:                    1px;
-    border-color:              @active-background;
+    border:                    0px;
 }
 
 button selected {
     background-color:          @selected;
     text-color:                @background;
-    border:                    1px;
-    border-color:              transparent;
+    border:                    0px;
 }
 
 /* ---- Listview ---- */
@@ -163,18 +143,8 @@ listview {
 	fixed-height:               true;
 	fixed-columns:              false;
 	background-color:           @background-color;
-	border-radius:   	        12px;
+	border-radius:   	        6px;
 	border:						0px;
-}
-
-/* ---- Scrollbar ---- */
-scrollbar {
-  border:						0px;
-  border-radius:				10px;
-  background-color:				transparent;
-  handle-color: 				@active;
-  handle-width: 				2px ;
-  padding:      				0;
 }
 
 /* ---- Element ---- */
@@ -184,62 +154,9 @@ element {
     margin:                     2px;
     cursor:                     pointer;
     background-color:           transparent;
-    opacity: 0.5;
-    border-radius:              12px;
+    opacity:                    0.5;
+    border-radius:              6px;
     border:                     0px;
-}
-
-element normal.normal {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element normal.urgent {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element normal.active {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element-text selected,
-element selected.normal {
-    background-color:           @selected;
-    text-color:                 @background;
-}
-
-element selected.urgent {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element selected.active {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element alternate.normal {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element alternate.urgent {
-    background-color:           inherit;
-    text-color:                 @foreground;
-}
-
-element alternate.active {
-    background-color:           inherit;
-    text-color:                 inherit;
-}
-
-element-icon {
-    background-color:           transparent;
-    text-color:                 inherit;
-    size:                       32px;
-    cursor:                     inherit;
 }
 
 element-text {
@@ -250,6 +167,18 @@ element-text {
     horizontal-align:           0;
 }
 
+element-icon {
+    background-color:           transparent;
+    text-color:                 inherit;
+    size:                       32px;
+    cursor:                     inherit;
+}
+
+element selected.normal {
+    background-color:           @selected;
+    text-color:                 @background;
+}
+
 /* ---- Message ---- */
 message {
     background-color:            transparent;
@@ -257,7 +186,7 @@ message {
 }
 textbox {
     padding:                     12px;
-    border-radius:               10px;
+    border-radius:               6px;
     background-color:            @background;
     text-color:                  @foreground;
     vertical-align:              0.5;
@@ -265,7 +194,7 @@ textbox {
 }
 error-message {
     padding:                     12px;
-    border-radius:               12px;
+    border-radius:               6px;
     background-color:            @background-alt;
     text-color:                  @background;
 }

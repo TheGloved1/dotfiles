@@ -29,7 +29,7 @@ window {
 listview {
   fixed-columns: false;
   scrollbar: false;
-  colums: 1;
+  columns: 1;
   lines: 4;
   spacing: 6px;
   cycle: true;

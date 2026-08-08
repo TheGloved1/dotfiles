@@ -32,8 +32,6 @@ listview {
   lines: 2;
   spacing: 20px;
   padding: 10px;
-  columns: 6;
-  lines: 2;
   flow: horizontal;
   fixed-width: true;
   fixed-height: true;

@@ -12,7 +12,7 @@ entry {
 }
 
 listview {
-  columns: 2;
+  columns: 1;
   lines: 10;
   fixed-height: false;
   scrollbar: true;
