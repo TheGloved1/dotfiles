@@ -13,7 +13,6 @@ eval "$(zoxide init zsh)"
 source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-
 # Custom Aliases
 alias wbreload="$HOME/.config/hypr/scripts/WaybarReload.sh"
 alias hyprconf="nvim $HOME/.config/hypr"
@@ -99,46 +98,42 @@ pac() {
       ;;
     search|s)
       [[ $# -lt 2 ]] && echo "Usage: pac search <query>" && return 1
-      pacman -Ss "$2"
+      shift
+      pacman -Ss "$@"
       ;;
     info)
       [[ $# -lt 2 ]] && echo "Usage: pac info <package>" && return 1
-      pacman -Si "$2"
+      shift
+      pacman -Si "$@"
       ;;
     list|ls)
       if [[ $# -ge 2 ]]; then
-        pacman -Qs "$2"
+        shift
+        pacman -Qs "$@"
       else
         pacman -Q
       fi
       ;;
     show)
       [[ $# -lt 2 ]] && echo "Usage: pac show <package>" && return 1
-      pacman -Qi "$2"
+      shift
+      pacman -Qi "$@"
       ;;
     files)
       [[ $# -lt 2 ]] && echo "Usage: pac files <package>" && return 1
-      pacman -Ql "$2"
+      shift
+      pacman -Ql "$@"
       ;;
     owns|own)
       [[ $# -lt 2 ]] && echo "Usage: pac owns <file>" && return 1
-      pacman -Qo "$2"
+      shift
+      pacman -Qo "$@"
       ;;
     orphans)
       pacman -Qdt
       ;;
     autoremove)
-      local orphans=(${(f)"$(pacman -Qdtq)"})
-      if [[ $#orphans -eq 0 ]]; then
-        echo "No orphaned packages to remove"
-        return
-      fi
-      local selected=(${(f)"$(printf '%s\n' $orphans | fzf --multi --prompt="Select packages to remove > " --header="Orphaned packages (Ctrl-A to select all)")"})
-      if [[ $#selected -gt 0 ]]; then
-        sudo pacman -Rns $selected
-      else
-        echo "Nothing selected"
-      fi
+      sudo pacman -Rns $(pacman -Qtdq)
       ;;
     clean)
       sudo pacman -Sc
@@ -147,7 +142,7 @@ pac() {
       sudo pacman -Syy
       ;;
     help|h|-h|--help|"")
-      echo "pac — pacman wrapper with apt-like syntax"
+      echo "pac — pacman wrapper"
       echo ""
       echo "Usage: pac <command> [arguments]"
       echo ""
@@ -297,6 +292,58 @@ aur() {
   esac
 }
 
+# yadm commit helpers — conventional commit type detection
+_dot_is_comment() {
+  [[ "$1" =~ '^[[:space:]]*(#|;|//|/\*|\*|"|--)' ]]
+}
+
+_dot_detect_type() {
+  local f st
+  for f in "$@"; do
+    st=$(yadm status --porcelain -- "$f" 2>/dev/null)
+    if [[ "$st" == A* ]]; then
+      print -r -- feat
+      return
+    fi
+    if [[ "$st" == R* ]]; then
+      print -r -- refactor
+      return
+    fi
+  done
+
+  local diff_text
+  diff_text=$(yadm diff --cached --unified=0 -- "$@" 2>/dev/null)
+
+  local added=0 removed=0 meaningful=0 line content
+  while IFS= read -r line; do
+    case "$line" in
+      "diff --"*|"index "*|"--- "*|"+++ "*|"@@"*|"new file mode"*|"deleted file mode"*|"old mode"*|"new mode"*|"similarity index"*|"rename "*)
+        continue ;;
+    esac
+    if [[ "$line" == "+"* ]]; then
+      content=${line#+}
+      if [[ -n "$content" ]] && ! _dot_is_comment "$content"; then
+        added=1
+        meaningful=1
+      fi
+    elif [[ "$line" == "-"* ]]; then
+      content=${line#-}
+      if [[ -n "$content" ]] && ! _dot_is_comment "$content"; then
+        removed=1
+        meaningful=1
+      fi
+    fi
+  done <<< "$diff_text"
+
+  if [[ $meaningful -eq 0 ]]; then
+    print -r -- style
+  elif [[ $removed -eq 1 ]]; then
+    print -r -- fix
+  else
+    print -r -- feat
+  fi
+}
+
 # yadm wrapper — selective add, commit, optional push
 dot() {
   local subcmd="${1:-}"
@@ -316,32 +363,30 @@ dot() {
       yadm log --oneline --decorate -20 "$@"
       ;;
     c|commit)
-      local staged
-      staged=$(yadm diff --cached --name-only 2>/dev/null)
+      local staged_files=(${(f)"$(yadm diff --cached --name-only 2>/dev/null)"})
 
-      if [[ -z "$staged" ]]; then
+      if [[ ${#staged_files} -eq 0 ]]; then
         echo "Nothing staged to commit"
         return 1
       fi
 
-      # Extract unique second-level dir basenames
-      local changed_dirs
-      changed_dirs=$(echo "$staged" | awk -F/ '{
-        if (NF >= 2) print $2
-        else print $1
-      }' | sort -u)
+      local -A groups
+      local f key
+      for f in "${staged_files[@]}"; do
+        key=$(print -r -- "$f" | awk -F/ '{ if (NF >= 2) print $2; else print $1 }')
+        groups[$key]="${groups[$key]:-}$f"$'\n'
+      done
 
-      local dir_count
-      dir_count=$(echo "$changed_dirs" | grep -c .)
+      yadm reset -q
 
-      local msg
-      if [[ $dir_count -le 3 ]]; then
-        msg="update $(echo $changed_dirs | tr '\n' ' ' | sed 's/ $//')"
-      else
-        msg="update $dir_count dirs"
-      fi
-
-      yadm commit -m "$msg"
+      local sorted_keys=(${(ok)groups})
+      local k files ctype
+      for k in "${sorted_keys[@]}"; do
+        files=(${(f)groups[$k]})
+        yadm add -- "${files[@]}"
+        ctype=$(_dot_detect_type "${files[@]}")
+        yadm commit -m "$ctype($k): update $k"
+      done
       ;;
     p|push)
       echo "Push to remote? [Y/n]"
@@ -387,29 +432,30 @@ dot() {
       if [[ -e "$subcmd" ]] || [[ "$subcmd" == "." ]] || [[ "$subcmd" == -* ]]; then
         yadm add "$subcmd" "$@"
 
-        local staged
-        staged=$(yadm diff --cached --name-only 2>/dev/null)
+        local staged_files=(${(f)"$(yadm diff --cached --name-only 2>/dev/null)"})
 
-        if [[ -z "$staged" ]]; then
+        if [[ ${#staged_files} -eq 0 ]]; then
           echo "No staged changes"
           return 0
         fi
 
-        # Build commit message from passed paths — just the final folder/file name
-        local paths=("$subcmd" "$@")
-        local names=()
-        for p in "${paths[@]}"; do
-          names+=("${p:t}")  # zsh:t = tail (basename)
+        local -A groups
+        local f key
+        for f in "${staged_files[@]}"; do
+          key=$(print -r -- "$f" | awk -F/ '{ if (NF >= 2) print $2; else print $1 }')
+          groups[$key]="${groups[$key]:-}$f"$'\n'
         done
 
-        local msg
-        if [[ ${#names[@]} -le 3 ]]; then
-          msg="update ${names[*]}"
-        else
-          msg="update ${#names[@]} dirs"
-        fi
+        yadm reset -q
 
-        yadm commit -m "$msg"
+        local sorted_keys=(${(ok)groups})
+        local k files ctype
+        for k in "${sorted_keys[@]}"; do
+          files=(${(f)groups[$k]})
+          yadm add -- "${files[@]}"
+          ctype=$(_dot_detect_type "${files[@]}")
+          yadm commit -m "$ctype($k): update $k"
+        done
 
         echo "Push to remote? [Y/n]"
         read -r "REPLY? > "
@@ -435,7 +481,8 @@ pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/con
 #fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
 
 # Set-up icons for files/directories in terminal using lsd
-alias ls='lsd'
+# alias ls='lsd'
+alias ls='eza --icons -a --group-directories-first'
 alias l='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
