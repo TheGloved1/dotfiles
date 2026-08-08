@@ -14,33 +14,38 @@
 "exclusive": true,
 "passthrough": false,
 "position": "top",
-"spacing": 0,
+"spacing": 4,
 "fixed-center": true,
 "ipc": true,
-"margin-top": 0,
-"margin-left": 0,
-"margin-right": 0,
+"margin-top": 6,
+"margin-left": 6,
+"margin-right": 6,
+
 "modules-left": [
-	"custom/settings",
-	"hyprland/workspaces#numbers",
-  "hyprland/workspaces#taskbar-current",
-  "custom/separator#dot-line",
+	"custom/separator#blank",
+	"custom/hypr_layout",
+	"hyprland/window"
+	],
+
+"modules-center": [
+	"custom/separator#blank",
+	"custom/swaync",
+	"hyprland/workspaces#rw",
+	"clock",
+	"idle_inhibitor"
+	],
+
+"modules-right": [
+	"pulseaudio",
+	"pulseaudio#microphone",
+	"custom/separator#blank",
 	"tray",
-  "custom/separator#dot-line",
+	"custom/separator#blank",
+	"custom/weather2",
 	"cpu",
 	"memory",
-],
-"modules-center": [
-	"hyprland/window",
-],
-"modules-right": [
-	"custom/weather2",
-	"clock",
-  "custom/separator#dot-line",
-	"pulseaudio",
-  "custom/separator#dot-line",
-	"custom/swaync",
-  "custom/separator#dot-line",
+	"temperature",
+	"battery",
 	"group/status",
 	"custom/separator#blank"
 	]

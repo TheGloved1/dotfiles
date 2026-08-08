@@ -56,10 +56,10 @@
 },
 
 "custom/settings": {
-	"format": " ",
-	"on-click": "$HOME/.config/hypr/scripts/Kool_Quick_Settings.sh",
+	"format": " ",
+	"on-click": "$HOME/.config/hypr/scripts/QuickSettings.sh",
 	"tooltip": true,
-	"tooltip-format": "Launch KooL Hyprland Settings Menu",
+	"tooltip-format": "Quick Settings",
 },
 
 "custom/cycle_wall": {
@@ -257,7 +257,7 @@
 	"tooltip": false
 },
 "custom/separator#blank": {
-	"format": "",
+	"format": " ",
 	"interval": "once",
 	"tooltip": false
 },
