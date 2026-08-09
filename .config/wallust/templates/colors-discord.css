@@ -1,0 +1,81 @@
+/**
+ * @name Wallust Colors
+ * @description Auto-generated colors from your wallpaper (wallust). Do not edit.
+ * @author wallust
+ * @version 1.0.0
+ */
+
+:root {
+    /* ── Surfaces ── */
+    --bg-base: {{background}};
+    --bg-alt: {{background | lighten(0.1)}};
+    --bg-surface: {{background | lighten(0.15)}};
+    --bg-hover: {{background | lighten(0.22)}};
+    --bg-active: {{background | lighten(0.32)}};
+    --border-subtle: {{background | lighten(0.22)}};
+
+    /* ── Text ── */
+    --text-primary: {{foreground}};
+    --text-secondary: {{foreground | darken(0.15)}};
+    --text-muted-custom: {{foreground | darken(0.35)}};
+
+    /* ── Accent ── */
+    --teal: {{color6}};
+    --blue: {{color4}};
+    --rose: {{color1}};
+
+    /* ── Brand (blue) ramp ── */
+    --brand-experiment: {{color4 | rgb}};
+    --brand-experiment-500: var(--blue);
+    --brand-experiment-400: {{color4 | lighten(0.25)}};
+    --brand-experiment-300: {{color4 | lighten(0.4)}};
+    --brand-experiment-200: {{color4 | lighten(0.55)}};
+    --brand-experiment-100: {{color4 | lighten(0.7)}};
+    --brand-experiment-560: {{color4 | darken(0.15)}};
+    --brand-experiment-600: {{color4 | darken(0.3)}};
+    --brand-500: var(--blue);
+    --brand-400: var(--brand-experiment-400);
+    --brand-300: var(--brand-experiment-300);
+    --brand-200: var(--brand-experiment-200);
+    --brand-100: var(--brand-experiment-100);
+    --brand-560: var(--brand-experiment-560);
+    --brand-600: var(--brand-experiment-600);
+
+    /* ── Semantics ── */
+    --control-brand-foreground: var(--blue);
+    --info-warning-foreground: var(--teal);
+    --text-link: var(--blue);
+    --mention-foreground: var(--rose);
+    --mention-background: color-mix(in srgb, var(--rose) 15%, transparent);
+    --channel-icon: var(--text-muted-custom);
+    --interactive-hover: var(--text-primary);
+    --interactive-active: var(--text-primary);
+
+    /* ── Status ── */
+    --online: var(--teal);
+    --dnd: {{color1}};
+    --idle: {{color3}};
+    --streaming: {{color5}};
+    --offline: var(--text-muted-custom);
+
+    /* ── Raw wallust palette ── */
+    --wallust-bg: {{background}};
+    --wallust-fg: {{foreground}};
+    --wallust-cursor: {{cursor}};
+    --wallust-color0: {{color0}};
+    --wallust-color1: {{color1}};
+    --wallust-color2: {{color2}};
+    --wallust-color3: {{color3}};
+    --wallust-color4: {{color4}};
+    --wallust-color5: {{color5}};
+    --wallust-color6: {{color6}};
+    --wallust-color7: {{color7}};
+    --wallust-color8: {{color8}};
+    --wallust-color9: {{color9}};
+    --wallust-color10: {{color10}};
+    --wallust-color11: {{color11}};
+    --wallust-color12: {{color12}};
+    --wallust-color13: {{color13}};
+    --wallust-color14: {{color14}};
+    --wallust-color15: {{color15}};
+}

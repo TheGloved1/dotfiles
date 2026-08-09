@@ -57,6 +57,9 @@ ghostty.target = '~/.config/ghostty/wallust.conf'
 quickshell.template = 'qml_color.json'
 quickshell.target = '~/.config/quickshell/qml_color.json'
 
+discord.template = 'colors-discord.css'
+discord.target = '~/.config/Equicord/themes/colors-wallust.css'
+
 #gtk3.template = "colors-gtk.css"
 #gtk3.target = '~/.config/gtk-3.0/gtk.css'
 
@@ -74,3 +77,7 @@ quickshell.target = '~/.config/quickshell/qml_color.json'
 
 #zathura.template = 'colors-zathura'
 #zathura.target = '~/.config/zathura/zathurarc'
+
+[hooks]
+# Touch QuickCSS so Equicord re-imports the generated colors live.
+discord_reload = "touch ~/.config/Equicord/settings/quickCss.css"

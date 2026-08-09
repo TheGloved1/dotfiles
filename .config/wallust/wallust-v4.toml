@@ -56,3 +56,10 @@ ghostty.target = '~/.config/ghostty/wallust.conf'
 
 quickshell.template = 'qml_color.json'
 quickshell.target = '~/.config/quickshell/qml_color.json'
+
+discord.template = 'colors-discord.css'
+discord.target = '~/.config/Equicord/themes/colors-wallust.css'
+
+[hooks]
+# Touch QuickCSS so Equicord re-imports the generated colors live.
+discord_reload = "touch ~/.config/Equicord/settings/quickCss.css"
