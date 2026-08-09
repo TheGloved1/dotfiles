@@ -1,39 +1,14 @@
 -- Converted from config/hypr/UserConfigs/UserDecorations.conf.
 -- Wallust colors loaded dynamically at startup via user_decorations_helper.lua.
 
--- Try to load wallust colors for dynamic theming
-local wallust_colors = {}
-do
-	local f = io.open(WALLUST_FILE, "r")
-	if f then
-		for line in f:lines() do
-			local var, val = line:match("^%s*source%?=(%$%w+)%s*=%s*(.+)%s*$")
-			if var and val then
-				wallust_colors[var] = val
-			end
-			-- Also match: $color0 = #hex
-			local name, hex = line:match("^%s*(%$color%d+)%s*=%s*(%S+)")
-			if name and hex then
-				wallust_colors[name] = hex
-			end
-		end
-		f:close()
-	end
-end
-
--- Fallback colors if wallust not loaded
-local function get_color(var, fallback)
-	return wallust_colors[var] or fallback
-end
-
 hl.config({
 	general = {
 		border_size = 1,
 		gaps_in = 6,
 		gaps_out = 6,
 		col = {
-			active_border = get_color("$color12", "rgba(8db4ffff)"),
-			inactive_border = get_color("$color10", "rgba(5f6578ff)"),
+			active_border = WALLUST.color12,
+			inactive_border = WALLUST.color10,
 		},
 	},
 	decoration = {
@@ -48,8 +23,8 @@ hl.config({
 			enabled = true,
 			range = 1,
 			render_power = 1,
-			color = get_color("$color12", "rgba(8db4ffff)"),
-			color_inactive = get_color("$color10", "rgba(5f6578ff)"),
+			color = WALLUST.color12,
+			color_inactive = WALLUST.color10,
 		},
 		blur = {
 			enabled = true,
@@ -68,11 +43,11 @@ hl.config({
 	},
 	group = {
 		col = {
-			border_active = get_color("$color15", "rgba(ffffffff)"),
+			border_active = WALLUST.color15,
 		},
 		groupbar = {
 			col = {
-				active = get_color("$color0", "rgba(0f111aff)"),
+				active = WALLUST.color0,
 			},
 		},
 	},

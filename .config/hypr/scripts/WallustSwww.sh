@@ -177,7 +177,7 @@ wait_for_templates() {
       fi
       local mtime
       mtime=$(stat -c %Y "$file" 2>/dev/null || echo 0)
-      if (( mtime < start_ts )); then
+      if ((mtime < start_ts)); then
         ready=false
         break
       fi
@@ -199,7 +199,7 @@ fi
 wallust_targets=(
   "${XDG_CONFIG_HOME:-$HOME/.config}/waybar/wallust/colors-waybar.css"
   "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallust/colors-rofi.rasi"
-  "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallust/wallust-hyprland.conf"
+  "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallust/wallust-hyprland.lua"
 )
 if ! wait_for_templates "$start_ts" "${wallust_targets[@]}"; then
   have_notify && notify-send -u critical -a WallustSwww \

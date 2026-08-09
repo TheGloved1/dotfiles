@@ -2,7 +2,8 @@
 HYPR_DIR = HYPR_BASE_DIR
 CONFIGS_DIR = HYPR_DIR .. "/configs"
 SCRIPTS_DIR = HYPR_DIR .. "/scripts"
-WALLUST_FILE = HYPR_DIR .. "/wallust/wallust-hyprland.conf"
+WALLUST_FILE = HYPR_DIR .. "/wallust/wallust-hyprland.lua"
+WALLUST = require("wallust.wallust-hyprland")
 
 local function has_kvantum_qml_module()
 	local cmd = "find /usr/lib /usr/lib64 /usr/share -type d -path '*/qml/*/kvantum' -print -quit 2>/dev/null"
