@@ -46,10 +46,6 @@ element {
   margin: 0px;
 }
 
-element selected.normal {
-  background-color: transparent;
-}
-
 element-icon {
     text-color:                  inherit;
     size:                        20%;
