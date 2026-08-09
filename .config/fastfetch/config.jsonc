@@ -117,12 +117,6 @@
       "keyColor": "magenta",
     },
     {
-      "type": "command",
-      "key": "             KoolDots Ver ",
-      "text": "echo v${DOTS_VERSION}",
-      "keyColor": "magenta",
-    },
-    {
       "type": "custom",
       "format": "\u001b[90m└────────────────────────────────────────────────────┘",
     },
