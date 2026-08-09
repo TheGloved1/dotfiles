@@ -36,7 +36,7 @@ bind("SUPER + slash", exec(script("KeyHints.sh")), { description = "Help / cheat
 bind("SUPER + ALT + C", exec(script("RofiCalc.sh")), { description = "calculator" })
 bind("SUPER + P", exec("hyprpicker -a -f hex --lowercase-hex"), { description = "Color picker" })
 bind("ALT + SPACE", exec("vicinae toggle"), { description = "Toggle vicinae" })
--- bind("SUPER + S", exec(script("RofiSearch.sh")), { description = "web search" })
+
 
 -- ============================================
 --  DESKTOP / OVERVIEW
@@ -179,6 +179,7 @@ bind("SUPER + CTRL + Print", exec(script("ScreenShot.sh --in5")), { description 
 bind("SUPER + CTRL + SHIFT + Print", exec(script("ScreenShot.sh --in10")), { description = "screenshot in 10s" })
 bind("ALT + Print", exec(script("ScreenShot.sh --active")), { description = "screenshot active window" })
 bind("SUPER + SHIFT + S", exec(script("ScreenShot.sh --swappy")), { description = "screenshot (swappy)" })
+bind("SUPER + S", exec(script("ScreenShotHistory.sh")), { description = "screenshot history" })
 bind(
 	"ALT + SHIFT + S",
 	exec(script("hyprshot.sh -m region -o $HOME/Pictures/Screenshots")),

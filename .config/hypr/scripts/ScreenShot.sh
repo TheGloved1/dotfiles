@@ -21,9 +21,15 @@ active_window_class=$(hyprctl -j activewindow | jq -r '(.class)')
 active_window_file="Screenshot_${time}_${active_window_class}.png"
 active_window_path="${dir}/${active_window_file}"
 
-notify_cmd_base="notify-send -t 10000 -A action1=Open -A action2=Delete -A action3=OCR -h string:x-canonical-private-synchronous:shot-notify"
-notify_cmd_shot="${notify_cmd_base} -i ${iDIR}/picture.png "
-notify_cmd_shot_win="${notify_cmd_base} -i ${iDIR}/picture.png "
+notify_cmd_base=(
+	notify-send -t 10000
+	-A action1=Open
+	-A action2=Delete
+	-A "action3=Get Text"
+	-h string:x-canonical-private-synchronous:shot-notify
+)
+notify_cmd_shot=( "${notify_cmd_base[@]}" -i "${iDIR}/picture.png" )
+notify_cmd_shot_win=( "${notify_cmd_base[@]}" -i "${iDIR}/picture.png" )
 notify_cmd_NOT="notify-send -u low -i ${iDoR}/note.png "
 
 # notify and view screenshot
@@ -31,7 +37,7 @@ notify_view() {
     if [[ "$1" == "active" ]]; then
         if [[ -e "${active_window_path}" ]]; then
 			"${sDIR}/Sounds.sh" --screenshot >/dev/null 2>&1 &       
-            resp=$(timeout 5 ${notify_cmd_shot_win} " Screenshot of:" " ${active_window_class} Saved.")
+            resp=$(timeout 5 "${notify_cmd_shot_win[@]}" " Screenshot of:" " ${active_window_class} Saved.")
 			case "$resp" in
 				action1)
 					xdg-open "${active_window_path}" &
@@ -49,17 +55,18 @@ notify_view() {
         fi
 
     elif [[ "$1" == "swappy" ]]; then
+		local check_file="${dir}/${file}"
 		"${sDIR}/Sounds.sh" --screenshot >/dev/null 2>&1 &
-		resp=$(${notify_cmd_shot} " Screenshot:" " Captured by Swappy")
+		resp=$("${notify_cmd_shot[@]}" " Screenshot:" " Captured by Swappy")
 		case "$resp" in
 			action1)
-				swappy -f - <"$tmpfile"
+				swappy -f - <"$check_file"
 				;;
 			action2)
-				rm "$tmpfile"
+				rm "$check_file"
 				;;
 			action3)
-				"${sDIR}/ScreenShotOcr.sh" "$tmpfile" &
+				"${sDIR}/ScreenShotOcr.sh" "$check_file" &
 				;;
 		esac
 
@@ -67,7 +74,7 @@ notify_view() {
         local check_file="${dir}/${file}"
         if [[ -e "$check_file" ]]; then
             "${sDIR}/Sounds.sh" --screenshot >/dev/null 2>&1 &
-            resp=$(timeout 5 ${notify_cmd_shot} " Screenshot" " Saved")
+            resp=$(timeout 5 "${notify_cmd_shot[@]}" " Screenshot" " Saved")
 			case "$resp" in
 				action1)
 					xdg-open "${check_file}" &
@@ -164,9 +171,10 @@ shotswappy() {
 	wait "$frozen" 2>/dev/null
 	trap - EXIT
 
-  # Copy without saving
+  # Copy with saving
   if [[ -s "$tmpfile" ]]; then
 		wl-copy <"$tmpfile"
+    mv "$tmpfile" "$dir/$file"
     notify_view "swappy"
   fi
 }
