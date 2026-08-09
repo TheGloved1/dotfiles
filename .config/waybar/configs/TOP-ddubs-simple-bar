@@ -24,6 +24,7 @@
 	"custom/settings",
 	"hyprland/workspaces#numbers",
   "hyprland/workspaces#taskbar-current",
+  "custom/separator#blank",
   "custom/separator#dot-line",
 	"tray",
   "custom/separator#dot-line",
@@ -42,6 +43,5 @@
 	"custom/swaync",
   "custom/separator#dot-line",
 	"group/status",
-	"custom/separator#blank"
 	]
 }

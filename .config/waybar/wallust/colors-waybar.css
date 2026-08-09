@@ -1,24 +1,62 @@
 /* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */  
  /* wallust template - colors-waybar */
 
- @define-color foreground #8AADF4;
- @define-color background #24273A;
- @define-color background-alt rgba(36,39,58,0.25);
- @define-color cursor #CAD3F5;
+ @define-color foreground #E799AC;
+ @define-color background #333543;
+ @define-color background-alt rgba(51,53,67,0.25);
+ @define-color cursor #E6DAD0;
  
- @define-color color0 #494D64;
- @define-color color1 #ED8796;
- @define-color color2 #A6DA95;
- @define-color color3 #EED49F;
- @define-color color4 #8AADF4;
- @define-color color5 #F5BDE6;
- @define-color color6 #8BD5CA;
- @define-color color7 #B8C0E0;
- @define-color color8 #5B6078;
- @define-color color9 #ED8796;
- @define-color color10 #A6DA95;
- @define-color color11 #EED49F;
- @define-color color12 #8AADF4;
- @define-color color13 #F5BDE6;
- @define-color color14 #8BD5CA;
- @define-color color15 #A5ADCB; 
+ @define-color color0 #3C3E4F;
+ @define-color color1 #60626A;
+ @define-color color2 #6D6F79;
+ @define-color color3 #8B7F89;
+ @define-color color4 #9E7C85;
+ @define-color color5 #9A838A;
+ @define-color color6 #8E8993;
+ @define-color color7 #E6DAD0;
+ @define-color color8 #535567;
+ @define-color color9 #7D8190;
+ @define-color color10 #9699AA;
+ @define-color color11 #BAA0B7;
+ @define-color color12 #E799AC;
+ @define-color color13 #DEA9B9;
+ @define-color color14 #C1B6CD;
+ @define-color color15 #E6DAD0;
+
+ /* --- Catppuccin-compatible aliases so waybar follows the wallpaper --- */
+ @define-color base     #333543;
+ @define-color mantle   #535567;
+ @define-color crust    #3C3E4F;
+
+ @define-color text     #E6DAD0;
+ @define-color subtext0 #9699AA;
+ @define-color subtext1 #BAA0B7;
+
+ @define-color surface0 #60626A;
+ @define-color surface1 #6D6F79;
+ @define-color surface2 #8B7F89;
+
+ @define-color overlay0 #9E7C85;
+ @define-color overlay1 #9A838A;
+ @define-color overlay2 #8E8993;
+
+ @define-color blue      #E799AC;
+ @define-color lavender  #E799AC;
+ @define-color sapphire  #DEA9B9;
+ @define-color sky       #DEA9B9;
+ @define-color teal      #C1B6CD;
+ @define-color green     #C1B6CD;
+ @define-color yellow    #BAA0B7;
+ @define-color peach     #BAA0B7;
+ @define-color maroon    #9699AA;
+ @define-color red       #9699AA;
+ @define-color mauve     #DEA9B9;
+ @define-color pink      #DEA9B9;
+ @define-color flamingo  #9699AA;
+ @define-color rosewater #E6DAD0;
+
+ /* alpha variants for semi-transparent overlays */
+ @define-color maroon-alpha rgba(150,153,170, 0.25);
+ @define-color blue-alpha   rgba(231,153,172, 0.25);
+ @define-color base-alpha   rgba(51,53,67, 0.35);
+ @define-color base-solid   rgba(51,53,67, 0.98);
