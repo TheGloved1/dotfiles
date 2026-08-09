@@ -21,4 +21,42 @@
  @define-color color12 {{color12}};
  @define-color color13 {{color13}};
  @define-color color14 {{color14}};
- @define-color color15 {{color15}}; 
+ @define-color color15 {{color15}};
+
+ /* --- Catppuccin-compatible aliases so waybar follows the wallpaper --- */
+ @define-color base     {{background}};
+ @define-color mantle   {{color8}};
+ @define-color crust    {{color0}};
+
+ @define-color text     {{color7}};
+ @define-color subtext0 {{color10}};
+ @define-color subtext1 {{color11}};
+
+ @define-color surface0 {{color1}};
+ @define-color surface1 {{color2}};
+ @define-color surface2 {{color3}};
+
+ @define-color overlay0 {{color4}};
+ @define-color overlay1 {{color5}};
+ @define-color overlay2 {{color6}};
+
+ @define-color blue      {{color12}};
+ @define-color lavender  {{color12}};
+ @define-color sapphire  {{color13}};
+ @define-color sky       {{color13}};
+ @define-color teal      {{color14}};
+ @define-color green     {{color14}};
+ @define-color yellow    {{color11}};
+ @define-color peach     {{color11}};
+ @define-color maroon    {{color10}};
+ @define-color red       {{color10}};
+ @define-color mauve     {{color13}};
+ @define-color pink      {{color13}};
+ @define-color flamingo  {{color10}};
+ @define-color rosewater {{color7}};
+
+ /* alpha variants for semi-transparent overlays */
+ @define-color maroon-alpha rgba({{color10 | rgb}}, 0.25);
+ @define-color blue-alpha   rgba({{color12 | rgb}}, 0.25);
+ @define-color base-alpha   rgba({{background | rgb}}, 0.35);
+ @define-color base-solid   rgba({{background | rgb}}, 0.98);

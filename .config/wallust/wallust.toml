@@ -1,13 +1,12 @@
-# /* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */  #
 # wallust configuration - for wallust version 3.0
 
-# How the image is parse, in order to get the colors:
+# How the image is parsed, in order to get the colors:
 # full - resized - wal - thumb -  fastresize - kmeans
-backend = "fastresize"
+backend = "wal"
 
 # What color space to use to produce and select the most prominent colors:
 # lab - labmixed - lch - lchmixed
-color_space = "labmixed"
+color_space = "lch"
 
 # NOTE: All filters will fill 16 colors (from color0 to color15), 16 color
 #       variations are the 'ilusion' of more colors by opaquing color1 to color5.
@@ -23,7 +22,7 @@ color_space = "labmixed"
 #  * softdark16  - softdark with 16 color variation
 #  * softlight   - Light with soft pastel colors, counterpart of `harddark`
 #  * softlight16 - softlight with 16 color variation
-palette = "dark16"
+palette = "harddarkcomp16"
 
 # Difference between similar colors, used by the colorspace:
 #  1          Not perceptible by human eyes.
@@ -33,12 +32,17 @@ palette = "dark16"
 #  100        Colors are exact opposite
 threshold = 11
 
+# Ensures a "readable contrast" (OPTIONAL, disabled by default)
+# Should only be enabled when you notice an unreadable contrast frequently happening
+# with your images. The reference color for the contrast is the background color.
+check_contrast = true
+
 [templates]
 cava.template = 'colors-cava'
 cava.target = '~/.config/cava/config'
 
-hypr.template = 'colors-hyprland.conf'
-hypr.target = '~/.config/hypr/wallust/wallust-hyprland.conf'
+hypr.template = 'colors-hyprland.lua'
+hypr.target = '~/.config/hypr/wallust/wallust-hyprland.lua'
 
 rofi.template = 'colors-rofi.rasi'
 rofi.target = '~/.config/rofi/wallust/colors-rofi.rasi'
@@ -52,6 +56,12 @@ ghostty.target = '~/.config/ghostty/wallust.conf'
 
 quickshell.template = 'qml_color.json'
 quickshell.target = '~/.config/quickshell/qml_color.json'
+
+#gtk3.template = "colors-gtk.css"
+#gtk3.target = '~/.config/gtk-3.0/gtk.css'
+
+#gtk4.template = 'colors-gtk.css'
+#gtk4.target = '~/.config/gtk-4.0/gtk.css'
 
 #swaync.template = 'colors-swaync.css'
 #swaync.target = '~/.config/swaync/wallust/colors-wallust.css'

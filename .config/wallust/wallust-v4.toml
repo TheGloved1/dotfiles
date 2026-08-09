@@ -33,12 +33,17 @@ kmeans = { k = 16, min_dist = 10.0 }
 #  100        Colors are exact opposite
 threshold = 11
 
+# Ensures a "readable contrast" (OPTIONAL, disabled by default)
+# Should only be enabled when you notice an unreadable contrast frequently happening
+# with your images. The reference color for the contrast is the background color.
+check_contrast = true
+
 [templates]
 cava.template = 'colors-cava'
 cava.target = '~/.config/cava/config'
 
-hypr.template = 'colors-hyprland.conf'
-hypr.target = '~/.config/hypr/wallust/wallust-hyprland.conf'
+hypr.template = 'colors-hyprland.lua'
+hypr.target = '~/.config/hypr/wallust/wallust-hyprland.lua'
 
 rofi.template = 'colors-rofi.rasi'
 rofi.target = '~/.config/rofi/wallust/colors-rofi.rasi'
