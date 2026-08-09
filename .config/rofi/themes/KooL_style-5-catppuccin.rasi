@@ -1,5 +1,5 @@
 /* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */
-/* KooL Rofi — Catppuccin Mocha (waybar match) */
+/* KooL Rofi — Style 5 (wallust colors) */
 
 configuration {
     modi:                       "drun,run,filebrowser";
@@ -17,36 +17,13 @@ configuration {
     scroll-method:              1;
 }
 
+/* ---- Load wallust colors ---- */
+@theme "~/.config/rofi/wallust/colors-rofi.rasi"
+
 * {
-    /* Catppuccin Mocha */
-    background:                  #1e1e2e;   /* base */
-    background-color:            #1e1e2e;   /* base */
-    foreground:                  #cdd6f4;   /* text */
-    border-color:                #89b4fa;   /* blue */
-    separatorcolor:              #313244;   /* surface0 */
-    scrollbar-handle:            #89b4fa;   /* blue */
-
-    normal-background:           #1e1e2e;   /* base */
-    normal-foreground:           #cdd6f4;   /* text */
-    alternate-normal-background: #181825;   /* mantle */
-    alternate-normal-foreground: #bac2de;   /* subtext1 */
-
-    selected-normal-background:  #89b4fa;   /* blue */
-    selected-normal-foreground:  #1e1e2e;   /* base */
-
-    active-background:           #89b4fa;   /* blue */
-    active-foreground:           #1e1e2e;   /* base */
-    alternate-active-background: #313244;   /* surface0 */
-    alternate-active-foreground: #cdd6f4;   /* text */
-    selected-active-background:  #89b4fa;   /* blue */
-    selected-active-foreground:  #1e1e2e;   /* base */
-
-    urgent-background:           #f38ba8;   /* red */
-    urgent-foreground:           #1e1e2e;   /* base */
-    alternate-urgent-background: #313244;   /* surface0 */
-    alternate-urgent-foreground: #cdd6f4;   /* text */
-    selected-urgent-background:  #f38ba8;   /* red */
-    selected-urgent-foreground:  #1e1e2e;   /* base */
+    background:        @background-color;
+    separatorcolor:    @color1;
+    scrollbar-handle:  @color12;
 }
 
 window {
@@ -91,7 +68,7 @@ entry {
     text-color:          @foreground;
     cursor:              text;
     placeholder:         "Search";
-    placeholder-color:   #6c7086;   /* overlay0 */
+    placeholder-color:   @color8;
     background-color:    transparent;
 }
 
@@ -105,12 +82,12 @@ button {
     spacing:             0;
     padding:             8px 12px;
     border-radius:       0px;
-    text-color:          #a6adc8;   /* subtext0 */
+    text-color:          @color6;
     background-color:    transparent;
 }
 
 button.selected {
-    background-color:    #313244;   /* surface0 */
+    background-color:    @color1;
     text-color:          @foreground;
 }
 
@@ -167,24 +144,24 @@ element.selected.active {
     text-color:       @selected-active-foreground;
 }
 
-element.alternate.normal {
-    background-color: @alternate-normal-background;
-    text-color:       @alternate-normal-foreground;
-}
-
-element.alternate.urgent {
-    background-color: @alternate-urgent-background;
-    text-color:       @alternate-urgent-foreground;
-}
-
-element.alternate.active {
-    background-color: @alternate-active-background;
-    text-color:       @alternate-active-foreground;
-}
+// element.alternate.normal {
+//     background-color: @alternate-normal-background;
+//     text-color:       @alternate-normal-foreground;
+// }
+//
+// element.alternate.urgent {
+//     background-color: @alternate-urgent-background;
+//     text-color:       @alternate-urgent-foreground;
+// }
+//
+// element.alternate.active {
+//     background-color: @alternate-active-background;
+//     text-color:       @alternate-active-foreground;
+// }
 
 element-text, element-icon {
     background-color: inherit;
-    text-color:       inherit;
+    text-color:       @foreground;
 }
 
 element-icon {
@@ -214,6 +191,6 @@ textbox {
 error-message {
     padding:           0px;
     border-radius:     0px;
-    background-color:  #313244;   /* surface0 */
+    background-color:  @color1;
     text-color:        @foreground;
 }
