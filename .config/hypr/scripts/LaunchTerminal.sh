@@ -104,7 +104,7 @@ build_terminal_command() {
     esac
     ;;
   *)
-    printf '%s -e %s' "$term_cmd" "$q_payload"
+    printf '%s -e sh -c %s' "$term_cmd" "$q_payload"
     ;;
   esac
 }
