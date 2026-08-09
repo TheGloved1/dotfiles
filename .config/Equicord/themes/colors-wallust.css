@@ -1,0 +1,81 @@
+/**
+ * @name Wallust Colors
+ * @description Auto-generated colors from your wallpaper (wallust). Do not edit.
+ * @author wallust
+ * @version 1.0.0
+ */
+
+:root {
+    /* ── Surfaces ── */
+    --bg-base: #333543;
+    --bg-alt: #474956;
+    --bg-surface: #52535F;
+    --bg-hover: #60616C;
+    --bg-active: #74767F;
+    --border-subtle: #60616C;
+
+    /* ── Text ── */
+    --text-primary: #E6DAD0;
+    --text-secondary: #C4B9B1;
+    --text-muted-custom: #968E87;
+
+    /* ── Accent ── */
+    --teal: #8E8993;
+    --blue: #9E7C85;
+    --rose: #60626A;
+
+    /* ── Brand (blue) ramp ── */
+    --brand-experiment: 158,124,133;
+    --brand-experiment-500: var(--blue);
+    --brand-experiment-400: #B69DA4;
+    --brand-experiment-300: #C5B0B6;
+    --brand-experiment-200: #D3C4C8;
+    --brand-experiment-100: #E2D8DA;
+    --brand-experiment-560: #866971;
+    --brand-experiment-600: #6F575D;
+    --brand-500: var(--blue);
+    --brand-400: var(--brand-experiment-400);
+    --brand-300: var(--brand-experiment-300);
+    --brand-200: var(--brand-experiment-200);
+    --brand-100: var(--brand-experiment-100);
+    --brand-560: var(--brand-experiment-560);
+    --brand-600: var(--brand-experiment-600);
+
+    /* ── Semantics ── */
+    --control-brand-foreground: var(--blue);
+    --info-warning-foreground: var(--teal);
+    --text-link: var(--blue);
+    --mention-foreground: var(--rose);
+    --mention-background: color-mix(in srgb, var(--rose) 15%, transparent);
+    --channel-icon: var(--text-muted-custom);
+    --interactive-hover: var(--text-primary);
+    --interactive-active: var(--text-primary);
+
+    /* ── Status ── */
+    --online: var(--teal);
+    --dnd: #60626A;
+    --idle: #8B7F89;
+    --streaming: #9A838A;
+    --offline: var(--text-muted-custom);
+
+    /* ── Raw wallust palette ── */
+    --wallust-bg: #333543;
+    --wallust-fg: #E6DAD0;
+    --wallust-cursor: #E6DAD0;
+    --wallust-color0: #3C3E4F;
+    --wallust-color1: #60626A;
+    --wallust-color2: #6D6F79;
+    --wallust-color3: #8B7F89;
+    --wallust-color4: #9E7C85;
+    --wallust-color5: #9A838A;
+    --wallust-color6: #8E8993;
+    --wallust-color7: #E6DAD0;
+    --wallust-color8: #535567;
+    --wallust-color9: #7D8190;
+    --wallust-color10: #9699AA;
+    --wallust-color11: #BAA0B7;
+    --wallust-color12: #E799AC;
+    --wallust-color13: #DEA9B9;
+    --wallust-color14: #C1B6CD;
+    --wallust-color15: #E6DAD0;
+}
