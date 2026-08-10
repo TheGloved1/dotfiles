@@ -20,7 +20,7 @@ palette = "kmeans"
 style = "dark"
 
 # Dim the upper half of the palette (color8-color15) for 16-color variation
-use16cols = false
+use16cols = true
 
 # Kmeans tuning (v4 default values shown here explicitly)
 kmeans = { k = 16, min_dist = 10.0 }

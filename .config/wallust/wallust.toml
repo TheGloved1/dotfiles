@@ -30,12 +30,12 @@ palette = "harddarkcomp16"
 #  2 - 10     Perceptible at a glance.
 #  11 - 49    Colors are more similar than opposite
 #  100        Colors are exact opposite
-threshold = 11
+threshold = 35
 
 # Ensures a "readable contrast" (OPTIONAL, disabled by default)
 # Should only be enabled when you notice an unreadable contrast frequently happening
 # with your images. The reference color for the contrast is the background color.
-check_contrast = true
+check_contrast = false
 
 [templates]
 cava.template = 'colors-cava'
@@ -60,11 +60,14 @@ quickshell.target = '~/.config/quickshell/qml_color.json'
 discord.template = 'colors-discord.css'
 discord.target = '~/.config/Equicord/themes/colors-wallust.css'
 
-#gtk3.template = "colors-gtk.css"
-#gtk3.target = '~/.config/gtk-3.0/gtk.css'
+fastfetch.template = 'colors-fastfetch.conf'
+fastfetch.target = '~/.cache/wallust/fastfetch.conf'
 
-#gtk4.template = 'colors-gtk.css'
-#gtk4.target = '~/.config/gtk-4.0/gtk.css'
+gtk3.template = "colors-gtk.css"
+gtk3.target = '~/.config/gtk-3.0/gtk.css'
+
+gtk4.template = 'colors-gtk.css'
+gtk4.target = '~/.config/gtk-4.0/gtk.css'
 
 #swaync.template = 'colors-swaync.css'
 #swaync.target = '~/.config/swaync/wallust/colors-wallust.css'
