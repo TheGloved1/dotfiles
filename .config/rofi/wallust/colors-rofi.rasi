@@ -29,12 +29,12 @@ foreground: #E6DAD0;
 border-color: #E799AC;
 
 color0: #3C3E4F;
-color1: #60626A;
-color2: #6D6F79;
-color3: #8B7F89;
-color4: #9E7C85;
-color5: #9A838A;
-color6: #8E8993;
+color1: #6D6F7A;
+color2: #7F818E;
+color3: #A697A4;
+color4: #C0939E;
+color5: #B797A0;
+color6: #A59EAD;
 color7: #E6DAD0;
 color8: #535567;
 color9: #7D8190;
