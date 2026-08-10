@@ -33,6 +33,7 @@
   "mini.pairs": { "branch": "main", "commit": "b1c5a726921b7a8c9321e9a7a208aa0571de5810" },
   "neo-tree.nvim": { "branch": "main", "commit": "a4deaea4811b677067f515fb535b47ed3002c849" },
   "neoconf.nvim": { "branch": "main", "commit": "635d61b45917ffc78d23543afa9593e49c4523c3" },
+  "neopywal": { "branch": "master", "commit": "95425eea6411eebc17c2fcdc46d1c45e57d99205" },
   "noice.nvim": { "branch": "main", "commit": "7bfd942445fb63089b59f97ca487d605e715f155" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-lint": { "branch": "master", "commit": "a219b2c9e5b4765e5c845aba119dad55806fcaf1" },
