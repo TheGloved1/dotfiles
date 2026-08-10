@@ -72,6 +72,9 @@ gtk3.target = '~/.config/gtk-3.0/gtk.css'
 gtk4.template = 'colors-gtk.css'
 gtk4.target = '~/.config/gtk-4.0/gtk.css'
 
+neopywal.template = 'colors-neopywal.vim'
+neopywal.target = '~/.cache/wallust/colors_neopywal.vim'
+
 #swaync.template = 'colors-swaync.css'
 #swaync.target = '~/.config/swaync/wallust/colors-wallust.css'
 
