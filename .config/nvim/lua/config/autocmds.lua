@@ -18,8 +18,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end
     local save_cindent = vim.bo.cindent
     vim.bo.cindent = true
-    pcall(vim.cmd, "silent! retab")
-    pcall(vim.cmd, "silent! normal! mzgg=G`z")
+    vim.cmd("silent! retab")
+    vim.cmd("silent! normal! mzgg=G`z")
     vim.bo.cindent = save_cindent
   end,
 })
