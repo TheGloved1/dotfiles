@@ -4,15 +4,15 @@
 hl.config({
 	general = {
 		border_size = 1,
-		gaps_in = 6,
-		gaps_out = 6,
+		gaps_in = 4,
+		gaps_out = 5,
 		col = {
-			active_border = WALLUST.color12,
-			inactive_border = WALLUST.color10,
+			active_border = COLORS.color12,
+			inactive_border = COLORS.color10,
 		},
 	},
 	decoration = {
-		rounding = 0,
+		rounding = 4,
 		active_opacity = 1.0,
 		inactive_opacity = 0.85,
 		fullscreen_opacity = 1.0,
@@ -23,8 +23,8 @@ hl.config({
 			enabled = true,
 			range = 1,
 			render_power = 1,
-			color = WALLUST.color12,
-			color_inactive = WALLUST.color10,
+			color = COLORS.color12,
+			color_inactive = COLORS.color10,
 		},
 		blur = {
 			enabled = true,
@@ -43,11 +43,11 @@ hl.config({
 	},
 	group = {
 		col = {
-			border_active = WALLUST.color15,
+			border_active = COLORS.color15,
 		},
 		groupbar = {
 			col = {
-				active = WALLUST.color0,
+				active = COLORS.color0,
 			},
 		},
 	},

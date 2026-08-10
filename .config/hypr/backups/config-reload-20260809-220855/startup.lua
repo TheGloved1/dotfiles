@@ -41,9 +41,6 @@ exec_once("sh -c 'sleep 2; $HOME/.config/hypr/scripts/WallpaperDaemon.sh'")
 -- Initial boot
 exec_once("$HOME/.config/hypr/initial-boot.sh")
 
--- Auto-reload Hyprland when configs/*.lua change
-exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
-
 -- DBus / systemd environment
 exec_once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")

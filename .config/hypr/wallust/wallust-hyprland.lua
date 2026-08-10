@@ -19,7 +19,7 @@ local colors = {
 	color14 = "rgb(C1B6CD)",
 	color15 = "rgb(E6DAD0)",
 
-	wallpaper = "/home/gloves/Pictures/wallpapers/Catppuccin/dragon.jpg",
+	wallpaper = "/home/gloves/.config/hypr/wallpaper_effects/.wallpaper_current",
 }
 
 return colors
