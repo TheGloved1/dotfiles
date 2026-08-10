@@ -1,0 +1,33 @@
+# wallust template - colors-vicinae
+# Generates a vicinae theme that follows the current wallpaper.
+
+[meta]
+version = 1
+name = "Wallust"
+description = "Auto-generated from the current wallpaper."
+variant = "dark"
+inherits = "vicinae-dark"
+
+[colors.core]
+background = "{{background}}"
+foreground = "{{color7}}"
+secondary_background = "{{color8}}"
+border = "{{color1}}"
+accent = "{{color12}}"
+
+[colors.accents]
+blue = "{{color12}}"
+green = "{{color14}}"
+magenta = "{{color13}}"
+orange = "{{color11}}"
+purple = "{{color13}}"
+red = "{{color10}}"
+yellow = "{{color11}}"
+cyan = "{{color14}}"
+
+[colors.list.item.selection]
+background = "{{color1}}"
+secondary_background = "{{color2}}"
+
+[colors.grid.item]
+background = "{{color1}}"

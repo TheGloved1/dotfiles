@@ -63,9 +63,6 @@ discord.target = '~/.config/Equicord/themes/colors-wallust.css'
 fastfetch.template = 'colors-fastfetch.conf'
 fastfetch.target = '~/.cache/wallust/fastfetch.conf'
 
-vicinae.template = 'colors-vicinae.toml'
-vicinae.target = '~/.local/share/vicinae/themes/wallust.toml'
-
 gtk3.template = "colors-gtk.css"
 gtk3.target = '~/.config/gtk-3.0/gtk.css'
 

@@ -63,12 +63,6 @@ discord.target = '~/.config/Equicord/themes/colors-wallust.css'
 fastfetch.template = 'colors-fastfetch.conf'
 fastfetch.target = '~/.cache/wallust/fastfetch.conf'
 
-vicinae.template = 'colors-vicinae.toml'
-vicinae.target = '~/.local/share/vicinae/themes/wallust.toml'
-
 [hooks]
-# Apply the freshly generated theme in vicinae.
-vicinae = "vicinae theme set wallust"
-
 # Touch QuickCSS so Equicord re-imports the generated colors live.
 discord_reload = "touch ~/.config/Equicord/settings/quickCss.css"
