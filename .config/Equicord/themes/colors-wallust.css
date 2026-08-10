@@ -20,19 +20,19 @@
     --text-muted-custom: #968E87;
 
     /* ── Accent ── */
-    --teal: #8E8993;
-    --blue: #9E7C85;
-    --rose: #60626A;
+    --teal: #A59EAD;
+    --blue: #C0939E;
+    --rose: #6D6F7A;
 
     /* ── Brand (blue) ramp ── */
-    --brand-experiment: 158,124,133;
+    --brand-experiment: 192,147,158;
     --brand-experiment-500: var(--blue);
-    --brand-experiment-400: #B69DA4;
-    --brand-experiment-300: #C5B0B6;
-    --brand-experiment-200: #D3C4C8;
-    --brand-experiment-100: #E2D8DA;
-    --brand-experiment-560: #866971;
-    --brand-experiment-600: #6F575D;
+    --brand-experiment-400: #D0AEB6;
+    --brand-experiment-300: #D9BEC5;
+    --brand-experiment-200: #E3CED3;
+    --brand-experiment-100: #ECDFE2;
+    --brand-experiment-560: #A37D86;
+    --brand-experiment-600: #86676F;
     --brand-500: var(--blue);
     --brand-400: var(--brand-experiment-400);
     --brand-300: var(--brand-experiment-300);
@@ -53,9 +53,9 @@
 
     /* ── Status ── */
     --online: var(--teal);
-    --dnd: #60626A;
-    --idle: #8B7F89;
-    --streaming: #9A838A;
+    --dnd: #6D6F7A;
+    --idle: #A697A4;
+    --streaming: #B797A0;
     --offline: var(--text-muted-custom);
 
     /* ── Raw wallust palette ── */
@@ -63,12 +63,12 @@
     --wallust-fg: #E6DAD0;
     --wallust-cursor: #E6DAD0;
     --wallust-color0: #3C3E4F;
-    --wallust-color1: #60626A;
-    --wallust-color2: #6D6F79;
-    --wallust-color3: #8B7F89;
-    --wallust-color4: #9E7C85;
-    --wallust-color5: #9A838A;
-    --wallust-color6: #8E8993;
+    --wallust-color1: #6D6F7A;
+    --wallust-color2: #7F818E;
+    --wallust-color3: #A697A4;
+    --wallust-color4: #C0939E;
+    --wallust-color5: #B797A0;
+    --wallust-color6: #A59EAD;
     --wallust-color7: #E6DAD0;
     --wallust-color8: #535567;
     --wallust-color9: #7D8190;

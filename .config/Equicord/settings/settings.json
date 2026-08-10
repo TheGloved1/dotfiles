@@ -16,12 +16,15 @@
         "https://themes.equicord.org/api/35"
     ],
     "eagerPatches": false,
-    "enabledThemes": [],
+    "enabledThemes": [
+        "colors-wallust.css"
+    ],
     "enabledThemeLinks": [],
     "enableOnlineThemes": false,
     "pinnedThemes": [
         "Chillax.css",
-        "https://themes.equicord.org/api/35"
+        "https://themes.equicord.org/api/35",
+        "colors-wallust.css"
     ],
     "themeNames": {},
     "themeActivationModes": {},
@@ -1267,7 +1270,7 @@
             "notifyOnNewExcludedQuests": false,
             "notifyOnNewQuests": true,
             "questButtonIndicator": "both",
-            "questButtonBadgeCount": 23,
+            "questButtonBadgeCount": 21,
             "questButtonBadgeColor": 2842239,
             "questButtonLeftClickAction": "open-quests",
             "questButtonMiddleClickAction": "plugin-settings",
@@ -1327,7 +1330,12 @@
                 "color": 2368553
             },
             "questTileGradient": "intense",
-            "questTilePreload": true
+            "questTilePreload": true,
+            "preventVideoQuestsPausing": false,
+            "acknowledgedNotices": {
+                "quest-ban-warning-2026-08-07": true
+            },
+            "allowChangingDangerousSettings": false
         },
         "QuickThemeSwitcher": {
             "enabled": false
@@ -1938,6 +1946,9 @@
         },
         "MusicRichPresence": {
             "enabled": false
+        },
+        "AutoJumpToMessage": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -1955,7 +1966,7 @@
         "authenticated": true,
         "url": "https://cloud.equicord.org/",
         "settingsSync": true,
-        "settingsSyncVersion": 1786307320274
+        "settingsSyncVersion": 1786328736098
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
