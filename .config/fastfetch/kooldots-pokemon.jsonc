@@ -31,8 +31,9 @@
     "break",
     // ── System ─────────────────────────────────────────────────────
     {
-      "type": "custom",
-      "format": "\u001b[38;2;138;173;244m── \u001b[1m\u001b[38;2;166;218;149mSYSTEM\u001b[0m \u001b[38;2;138;173;244m──────────────────────────\u001b[0m",
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smSYSTEM\\033[0m \\033[38;2;%sm──────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
     },
     {
       "type": "os",
@@ -65,8 +66,9 @@
 
     // ── Hardware ───────────────────────────────────────────────────
     {
-      "type": "custom",
-      "format": "\u001b[38;2;138;173;244m── \u001b[1m\u001b[38;2;166;218;149mHARDWARE\u001b[0m \u001b[38;2;138;173;244m────────────────────────\u001b[0m",
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smHARDWARE\\033[0m \\033[38;2;%sm────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
     },
     {
       "type": "host",
@@ -100,8 +102,9 @@
 
     // ── Desktop ────────────────────────────────────────────────────
     {
-      "type": "custom",
-      "format": "\u001b[38;2;138;173;244m── \u001b[1m\u001b[38;2;166;218;149mDESKTOP\u001b[0m \u001b[38;2;138;173;244m─────────────────────────\u001b[0m",
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smDESKTOP\\033[0m \\033[38;2;%sm─────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
     },
     {
       "type": "wm",
