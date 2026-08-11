@@ -5,15 +5,29 @@ SCRIPTS_DIR = HYPR_DIR .. "/scripts"
 WALLUST_FILE = HYPR_DIR .. "/wallust/wallust-hyprland.lua"
 COLORS = require("wallust.wallust-hyprland")
 
+local kvantum_checked = false
+local kvantum_found = false
+
 local function has_kvantum_qml_module()
-	local cmd = "find /usr/lib /usr/lib64 /usr/share -type d -path '*/qml/*/kvantum' -print -quit 2>/dev/null"
+	if kvantum_checked then
+		return kvantum_found
+	end
+	kvantum_checked = true
+
+	-- Only scan real Qt QML roots instead of the whole /usr tree.
+	local cmd = "for d in /usr/lib/qt6/qml /usr/lib/qt5/qml /usr/lib/qt/qml "
+		.. "/usr/lib64/qt6/qml /usr/lib64/qt5/qml /usr/lib64/qt/qml "
+		.. "/usr/share/qt6/qml /usr/share/qt5/qml "
+		.. "/usr/local/lib/qt6/qml /usr/local/lib/qt5/qml; do "
+		.. "[ -d \"$d\" ] || continue; find \"$d\" -type d -path '*/kvantum' -print -quit 2>/dev/null && break; done"
 	local pipe = io.popen(cmd, "r")
 	if not pipe then
 		return false
 	end
 	local output = pipe:read("*a") or ""
 	pipe:close()
-	return output:match("%S") ~= nil
+	kvantum_found = output:match("%S") ~= nil
+	return kvantum_found
 end
 
 local function apply_qt_style_fallbacks()

@@ -32,7 +32,7 @@ local function exec_once(cmd, opts)
 		.. " >>"
 		.. shell_quote(log)
 		.. " 2>&1 & }"
-	os.execute("sh -lc " .. shell_quote(script))
+	os.execute("sh -c " .. shell_quote(script))
 end
 
 -- Wallpaper (with sleep for startup)
