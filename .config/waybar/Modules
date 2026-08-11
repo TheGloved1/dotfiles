@@ -194,7 +194,9 @@
 	"offscreen-css": true,
 	"offscreen-css-text": "(inactive)",
 	"rewrite": {
-		"(.*) — Zen Browser": " $1",
+		"(.*) — Zen Browser": "󰰷 $1",
+		"(.*) - Discord": "  $1",
+		"(.*) - YouTube": " $1",
 		"(.*(?:amazon).*)": " $1",
 		"(.*(?:reddit).*)": " $1",
 		"(.*(?:firefox|librewolf|floorp|mercury-browser|cachy-browser).*)": " $1",
@@ -210,7 +212,6 @@
 		"(.*(?:warp).*)": "󰰭 $1",
 		"(.*(?:thunderbird|betterbird|gmail).*)": "󰊫 $1",
 		"(.*(?:telegram|tdesktop).*)": " $1",
-		"(.*(?:discord|webcord|vesktop).*)": " $1",
 		"(.*(?:fluxer).*)": "󰭹 $1",
 		"(.*(?:signal).*)": "󰍩 $1",
 		"(.*(?:whatsapp|zapzap).*)": " $1",
@@ -223,7 +224,6 @@
 		"(.*(?:celluloid|zoom).*)": " $1",
 		"(.*(?:cider).*)": "󰎆 $1",
 		"(.*(?:picture-in-picture).*)": " $1",
-		"(.*(?:youtube).*)": " $1",
 		"(.*(?:vlc).*)": "󰕼 $1",
 		"(.*(?:kdenlive).*)": "🎬 $1",
 		"(.*(?:easyeffects).*)": " $1",
@@ -304,11 +304,11 @@
 
 "memory": {
 	"interval": 10,
-	"format": "{used:0.1f}G 󰾆",
-	"format-alt": "{percentage}% 󰾆",
+	"format": "{percentage}% 󰾆",
+	"format-alt": "{used:0.1f}G 󰾆",
 	"format-alt-click": "click",
 	"tooltip": true,
-	"tooltip-format": "{used:0.1f}GB/{total:0.1f}G",
+	"tooltip-format": "{used:0.1f}GB/{total:0.1f}G ({percentage}%)",
 	"on-click-right": "$HOME/.config/hypr/scripts/WaybarScripts.sh --btop"
 },
 

@@ -9,16 +9,12 @@
 	"orientation": "inherit",
 	"drawer": {
 		"transition-duration": 500,
-		"children-class": "custom/menu",
+		"children-class": "custom/settings",
 		"transition-left-to-right": true
         },
 	"modules": [
-		"custom/menu",
-		"custom/light_dark",
-		"custom/file_manager",
-		"custom/tty",
-		"custom/browser",
 		"custom/settings",
+		"custom/menu",
 	]
 },
 "group/motherboard": {
@@ -36,15 +32,15 @@
 	"orientation": "inherit",
 	"drawer": {
 		"transition-duration": 500,
-		"children-class": "cpu",
+		"children-class": "memory",
 		"transition-left-to-right": true
-        },
+  },
 	"modules": [
-		"temperature",		
-		"cpu",
-		"power-profiles-daemon",	
 		"memory",
+		"cpu",
 		"disk",
+		"temperature",		
+		"power-profiles-daemon",	
 	]
 },
 "group/laptop": {

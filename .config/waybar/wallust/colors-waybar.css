@@ -7,12 +7,12 @@
  @define-color cursor #E6DAD0;
  
  @define-color color0 #3C3E4F;
- @define-color color1 #60626A;
- @define-color color2 #6D6F79;
- @define-color color3 #8B7F89;
- @define-color color4 #9E7C85;
- @define-color color5 #9A838A;
- @define-color color6 #8E8993;
+ @define-color color1 #7D8190;
+ @define-color color2 #9699AA;
+ @define-color color3 #BAA0B7;
+ @define-color color4 #E799AC;
+ @define-color color5 #DEA9B9;
+ @define-color color6 #C1B6CD;
  @define-color color7 #E6DAD0;
  @define-color color8 #535567;
  @define-color color9 #7D8190;
@@ -32,13 +32,13 @@
  @define-color subtext0 #9699AA;
  @define-color subtext1 #BAA0B7;
 
- @define-color surface0 #60626A;
- @define-color surface1 #6D6F79;
- @define-color surface2 #8B7F89;
+ @define-color surface0 #7D8190;
+ @define-color surface1 #9699AA;
+ @define-color surface2 #BAA0B7;
 
- @define-color overlay0 #9E7C85;
- @define-color overlay1 #9A838A;
- @define-color overlay2 #8E8993;
+ @define-color overlay0 #E799AC;
+ @define-color overlay1 #DEA9B9;
+ @define-color overlay2 #C1B6CD;
 
  @define-color blue      #E799AC;
  @define-color lavender  #E799AC;

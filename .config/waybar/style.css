@@ -17,7 +17,7 @@
 
 window#waybar {
   background-color: @base;
-  border-radius: 0px;
+  border-radius: 4px;
   /* Waybar scaling: adjust font-size to scale the bar */
   font-size: 14px;
 }

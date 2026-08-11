@@ -19,15 +19,14 @@
 "margin-right": 6,
 "margin-bottom": 0,
 "modules-left": [
-	"custom/settings",
+	"group/app_drawer",
 	"hyprland/workspaces#numbers",
   "hyprland/workspaces#taskbar-current",
   "custom/separator#blank",
   "custom/separator#dot-line",
 	"tray",
   "custom/separator#dot-line",
-	"cpu",
-	"memory",
+  "group/mobo_drawer",
 ],
 "modules-center": [
 	"hyprland/window",
@@ -36,10 +35,10 @@
 	"custom/weather2",
 	"clock",
   "custom/separator#dot-line",
-	"pulseaudio",
+	"group/audio",
   "custom/separator#dot-line",
 	"custom/swaync",
   "custom/separator#dot-line",
-	"group/status",
+	"group/power",
 	]
 }
