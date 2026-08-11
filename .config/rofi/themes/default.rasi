@@ -1,0 +1,196 @@
+/* ---- 💫 https://github.com/LinuxBeginnings 💫 ---- */
+/* KooL Rofi — Style 5 (wallust colors) */
+
+configuration {
+    modi:                       "drun,run,filebrowser";
+    show-icons:                 true;
+    display-drun:               "    ";
+    display-run:                "    ";
+    display-filebrowser:        "    ";
+    display-window:             "    ";
+    drun-display-format:        "{name}";
+    hover-select:               true;
+    me-select-entry:            "MouseSecondary";
+    me-accept-entry:            "MousePrimary";
+    window-format:              "{w} · {c} · {t}";
+    font:                       "JetBrainsMono Nerd Font 14";
+    scroll-method:              1;
+}
+
+/* ---- Load wallust colors ---- */
+@theme "~/.config/rofi/wallust/colors-rofi.rasi"
+
+* {
+    background:        @background-color;
+    separatorcolor:    @color1;
+    scrollbar-handle:  @color12;
+}
+
+window {
+    background-color: @background;
+    border:           0;
+    padding:          0;
+    border-radius:    0px;
+    width:            800px;
+    location:         center;
+    anchor:           center;
+    cursor:           "default";
+}
+
+mainbox {
+    border:  0;
+    padding: 0;
+}
+
+/* ---- Inputbar ---- */
+inputbar {
+    spacing:             10px;
+    padding:             0px;
+    text-color:          @foreground;
+    background-color:    @background;
+    border-radius:       0px;
+    children:            [ mode-switcher, textbox-prompt-colon, entry ];
+}
+
+textbox-prompt-colon {
+    expand:      false;
+    str:         " ";
+    margin:      0 0 0 0.3em;
+    vertical-align: 0.5;
+    text-color:  @foreground;
+    background-color: transparent;
+}
+
+entry {
+    spacing:             0;
+    vertical-align:      0.5;
+    padding:             8px 0px;
+    text-color:          @foreground;
+    cursor:              text;
+    placeholder:         "Search";
+    placeholder-color:   @color8;
+    background-color:    transparent;
+}
+
+/* ---- Mode Switcher ---- */
+mode-switcher {
+    spacing:             8px;
+    text-color:          @foreground;
+}
+
+button {
+    spacing:             0;
+    padding:             8px 12px;
+    border-radius:       0px;
+    text-color:          @color6;
+    background-color:    transparent;
+}
+
+button.selected {
+    background-color:    @color1;
+    text-color:          @foreground;
+}
+
+/* ---- Listview ---- */
+listview {
+    border:            0;
+    padding:           0px;
+    spacing:           4px;
+    fixed-height:      true;
+    fixed-columns:     false;
+    columns:           1;
+    lines:             8;
+    scrollbar:         false;
+    layout:            vertical;
+    background-color:  @background;
+}
+
+/* ---- Elements ---- */
+element {
+    border:          0;
+    padding:         6px 8px;
+    margin:          0;
+    border-radius:   0px;
+    background-color: transparent;
+}
+
+element.normal.normal {
+    background-color: @normal-background;
+    text-color:       @normal-foreground;
+}
+
+element.normal.urgent {
+    background-color: @urgent-background;
+    text-color:       @urgent-foreground;
+}
+
+element.normal.active {
+    background-color: @active-background;
+    text-color:       @active-foreground;
+}
+
+element.selected.normal {
+    background-color: @selected-normal-background;
+    text-color:       @selected-normal-foreground;
+}
+
+element.selected.urgent {
+    background-color: @selected-urgent-background;
+    text-color:       @selected-urgent-foreground;
+}
+
+element.selected.active {
+    background-color: @selected-active-background;
+    text-color:       @selected-active-foreground;
+}
+
+// element.alternate.normal {
+//     background-color: @alternate-normal-background;
+//     text-color:       @alternate-normal-foreground;
+// }
+//
+// element.alternate.urgent {
+//     background-color: @alternate-urgent-background;
+//     text-color:       @alternate-urgent-foreground;
+// }
+//
+// element.alternate.active {
+//     background-color: @alternate-active-background;
+//     text-color:       @alternate-active-foreground;
+// }
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color:       @foreground;
+}
+
+element-icon {
+    size: 24px;
+}
+
+/* ---- Scrollbar ---- */
+scrollbar {
+    width:        4px;
+    border:       0;
+    handle-color: @scrollbar-handle;
+    handle-width: 8px;
+    padding:      0;
+}
+
+/* ---- Message ---- */
+message {
+    border:       0;
+    padding:      0px;
+}
+
+textbox {
+    highlight:  bold italic;
+    text-color: @foreground;
+}
+
+error-message {
+    padding:           0px;
+    border-radius:     0px;
+    background-color:  @color1;
+    text-color:        @foreground;
+}
