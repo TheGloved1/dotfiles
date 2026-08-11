@@ -71,6 +71,9 @@ exec_once("qs -c overview")
 -- Idle manager
 exec_once("hypridle")
 
+-- Hypr plugins
+exec_once("hyprpm reload")
+
 -- Vicinae
 exec_once("vicinae server")
 
