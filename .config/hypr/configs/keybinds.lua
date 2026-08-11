@@ -58,7 +58,35 @@ bind(
 	window.set_prop({ prop = "opaque", value = "toggle" }),
 	{ description = "toggle active window opacity" }
 )
-bind("SUPER + ALT + O", exec(script("ChangeBlur.sh")), { description = "toggle blur" })
+local blur_opaque_rule = hl.window_rule({
+	name = "blur-toggle-opaque",
+	match = { class = ".*" },
+	opaque = true,
+})
+blur_opaque_rule:set_enabled(false)
+
+bind("SUPER + ALT + O", function()
+	local enabled = hl.get_config("decoration.blur.enabled")
+	if enabled then
+		hl.config({
+			decoration = {
+				blur = { enabled = false },
+				active_opacity = 1,
+				inactive_opacity = 1,
+			},
+		})
+		blur_opaque_rule:set_enabled(true)
+	else
+		hl.config({
+			decoration = {
+				blur = { enabled = true },
+				active_opacity = 0.95,
+				inactive_opacity = 0.85,
+			},
+		})
+		blur_opaque_rule:set_enabled(false)
+	end
+end, { description = "toggle blur & opacity" })
 
 -- ============================================
 --  FOCUS / NAVIGATION
