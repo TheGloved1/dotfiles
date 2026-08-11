@@ -8,6 +8,9 @@ hl.config({
 		fullscreen_on_one_column = true,
 		direction = "right",
 		follow_focus = true,
+		focus_fit_method = 1,
+		wrap_focus = true,
+		wrap_swapcol = true,
 	},
 	dwindle = {
 		preserve_split = true,
