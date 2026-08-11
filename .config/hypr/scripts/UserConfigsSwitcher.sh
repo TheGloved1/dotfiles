@@ -8,8 +8,8 @@
 # Script to manage UserConfigs and UserConfigsBak
 
 HYPR_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
-USER_CONFIGS="$HYPR_CONFIG_DIR/UserConfigs"
-USER_CONFIGS_BAK="$HYPR_CONFIG_DIR/UserConfigsBak"
+USER_CONFIGS="$HYPR_CONFIG_DIR/configs"
+USER_CONFIGS_BAK="$HYPR_CONFIG_DIR/configsBak"
 
 if [ -d "$USER_CONFIGS" ] && [ ! -d "$USER_CONFIGS_BAK" ]; then
   echo "Moving UserConfigs to UserConfigsBak..."
