@@ -1,0 +1,221 @@
+[bar.default]
+background_opacity = 0.96
+border = "surface_variant"
+capsule = true
+capsule_thickness = 0.71999998763203621
+center = [ "active_window" ]
+end = [
+    "notifications",
+    "network",
+    "bluetooth",
+    "volume",
+    "brightness",
+    "battery",
+    "weather",
+    "clock",
+    "control-center",
+    "session"
+]
+font_family = "JetBrainsMono Nerd Font"
+font_weight = 400
+margin_ends = 0
+panel_overlap = 0
+start = [ "launcher", "workspaces", "tray" ]
+
+[brightness]
+enable_ddcutil = true
+minimum_brightness = 0.39999999105930328
+
+[desktop_widgets]
+enabled = false
+schema_version = 2
+widget_order = []
+
+    [desktop_widgets.grid]
+    cell_size = 8
+    major_interval = 4
+    visible = true
+
+[dock]
+enabled = true
+reserve_space = false
+show_dots = true
+smart_auto_hide = true
+
+[idle]
+behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = false
+    timeout = 600.0
+
+    [idle.behavior.lock-and-suspend]
+    action = "lock_and_suspend"
+    enabled = false
+    timeout = 900.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 660.0
+
+[keybinds]
+down = [ "Down", "Ctrl+j" ]
+left = [ "Left", "Ctrl+h" ]
+right = [ "Right", "Ctrl+l" ]
+up = [ "Up", "Ctrl+k" ]
+
+[location]
+auto_locate = true
+
+[lockscreen]
+blurred_desktop = true
+
+[lockscreen_widgets]
+schema_version = 2
+widget_order = [ "lockscreen-login-box@HDMI-A-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 898.0
+    output = "HDMI-A-1"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[nightlight]
+enabled = true
+force = true
+temperature_day = 5100
+temperature_night = 4600
+
+[plugins]
+enabled = [ "tadomika_ari/config-swap" ]
+
+[shell]
+app_icon_color = "primary"
+font_family = "JetBrainsMono Nerd Font"
+niri_overview_type_to_launch_enabled = true
+panel_anchor_bar = "default"
+polkit_agent = true
+
+    [shell.launcher]
+    categories = false
+
+        [shell.launcher.providers.emoji]
+        global = false
+
+    [shell.panel]
+    clipboard_placement = "attached"
+    floating_layer = "top"
+    launcher_placement = "attached"
+    launcher_position = "auto"
+    polkit_placement = "attached"
+    transparency_mode = "soft"
+
+    [shell.screen_corners]
+    enabled = true
+    size = 24
+
+    [shell.screenshot]
+    confirm_region = true
+    directory = "~/Pictures/Screenshots"
+    pipe_command = "swappy -f -"
+
+    [shell.session]
+    grid = true
+
+    [shell.shadow]
+    direction = "down_right"
+
+[theme]
+builtin = "Rosé Pine"
+community_palette = "Catppuccin Mocha Blue"
+custom_palette = "dragon-mc"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-content"
+
+    [theme.templates]
+    builtin_ids = [ "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt" ]
+    community_ids = [
+        "opencode",
+        "zen-browser",
+        "discord",
+        "neovim",
+        "prismlauncher",
+        "steam",
+        "rofi",
+        "vicinae",
+        "fastfetch",
+        "hyprtoolkit"
+    ]
+
+[wallpaper]
+transition_on_startup = true
+
+    [wallpaper.default]
+    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+
+    [wallpaper.last]
+    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+
+    [wallpaper.monitors.HDMI-A-1]
+    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+    theme_mode = "dark"
+    wallpaper_scheme = "m3-content"
+
+[weather]
+unit = "imperial"
+
+[widget.active_window]
+title_scroll = "on_hover"
+
+[widget.clock]
+format = "%I:%M:%S %p  %A, %B %d"
+
+[widget.launcher]
+capsule_radius = "auto"
+custom_image = "/home/gloves/Pictures/Assets/arch-linux.svg"
+font_family = "JetBrainsMono NF"
+font_weight = 800
+scale = 1.5
+
+[widget.network]
+show_label = false
+
+[widget.tray]
+hidden = [ "Network", "Blueman" ]
+
+[widget.weather]
+show_condition = false
+
+[widget.workspaces]
+hide_when_empty = true
