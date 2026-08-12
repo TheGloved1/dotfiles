@@ -2,7 +2,7 @@
 /* KooL Rofi — Style 5 (wallust colors) */
 
 configuration {
-    modi:                       "drun,run,filebrowser";
+    modi:                       "drun,run,filebrowser,window";
     show-icons:                 true;
     display-drun:               "    ";
     display-run:                "    ";
@@ -13,7 +13,7 @@ configuration {
     me-select-entry:            "MouseSecondary";
     me-accept-entry:            "MousePrimary";
     window-format:              "{w} · {c} · {t}";
-    font:                       "JetBrainsMono Nerd Font 14";
+    font:                       "JetBrainsMono Nerd Font 12";
     scroll-method:              1;
 }
 
@@ -55,7 +55,7 @@ inputbar {
 textbox-prompt-colon {
     expand:      false;
     str:         " ";
-    margin:      0 0 0 0.3em;
+    margin:      0 0 0 0em;
     vertical-align: 0.5;
     text-color:  @foreground;
     background-color: transparent;
@@ -63,7 +63,7 @@ textbox-prompt-colon {
 
 entry {
     spacing:             0;
-    vertical-align:      0.5;
+    vertical-align:      0;
     padding:             8px 0px;
     text-color:          @foreground;
     cursor:              text;
@@ -74,13 +74,13 @@ entry {
 
 /* ---- Mode Switcher ---- */
 mode-switcher {
-    spacing:             8px;
+    spacing:             0px;
     text-color:          @foreground;
 }
 
 button {
     spacing:             0;
-    padding:             8px 12px;
+    padding:             8px 8px;
     border-radius:       0px;
     text-color:          @color6;
     background-color:    transparent;
@@ -95,11 +95,11 @@ button.selected {
 listview {
     border:            0;
     padding:           0px;
-    spacing:           4px;
+    spacing:           0px;
     fixed-height:      true;
     fixed-columns:     false;
     columns:           1;
-    lines:             8;
+    lines:             9;
     scrollbar:         false;
     layout:            vertical;
     background-color:  @background;
@@ -108,7 +108,7 @@ listview {
 /* ---- Elements ---- */
 element {
     border:          0;
-    padding:         6px 8px;
+    padding:         4px 4px;
     margin:          0;
     border-radius:   0px;
     background-color: transparent;
@@ -170,10 +170,10 @@ element-icon {
 
 /* ---- Scrollbar ---- */
 scrollbar {
-    width:        4px;
+    width:        2px;
     border:       0;
     handle-color: @scrollbar-handle;
-    handle-width: 8px;
+    handle-width: 4px;
     padding:      0;
 }
 

@@ -29,9 +29,9 @@ entry {
 /* ---- Listview ---- */
 listview {
   columns: 6;
-  lines: 2;
-  spacing: 20px;
-  padding: 10px;
+  lines: 3;
+  spacing: 0px;
+  padding: 0px;
   flow: horizontal;
   fixed-width: true;
   fixed-height: true;
@@ -43,7 +43,7 @@ element {
   orientation: vertical;
   padding: 0px;
   spacing: 0px;
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 0px;
   margin: 0px;
 }
@@ -58,6 +58,6 @@ element-icon {
 element-text {
   vertical-align: 0.5;
   horizontal-align: 0.5;
-  padding: 6px;
-  margin: 6px;
+  padding: 4px;
+  margin: 4px;
 }
