@@ -18,9 +18,9 @@ wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wal
 wallpaper_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper"
 wallpaper_base="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_base"
 
-# Directory for swaync
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
-iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+# Directory for notification icons
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
+iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 
 # swww/awww transition config
 FPS=60

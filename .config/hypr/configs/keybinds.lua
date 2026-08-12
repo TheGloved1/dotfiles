@@ -22,27 +22,22 @@ end
 bind("SUPER + Return", exec(script("LaunchTerminal.sh") .. " " .. term), { description = "Open terminal" })
 bind("SUPER + E", exec(script("LaunchFileManager.sh") .. " " .. files .. " " .. term), { description = "file manager" })
 bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default browser" })
-bind(
-	"SUPER + SPACE",
-	exec(
-		"pkill rofi || true; "
-			.. script("RofiFocusedWallpaperLink.sh")
-			.. " >/dev/null 2>&1 || true; rofi -show drun -modi drun,filebrowser,run,window"
-	),
-	{ description = "App launcher" }
-)
+bind("SUPER + SPACE", exec("noctalia msg panel-toggle launcher"), { description = "App launcher" })
 bind("SUPER + SHIFT + Return", exec(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
 bind("SUPER + slash", exec(script("KeyHints.sh")), { description = "Help / cheat sheet" })
-bind("SUPER + ALT + C", exec(script("RofiCalc.sh")), { description = "calculator" })
+bind(
+	"SUPER + ALT + C",
+	exec('noctalia msg panel-toggle launcher ":calc"'),
+	{ description = "calculator (launcher :calc)" }
+)
 bind("SUPER + P", exec("hyprpicker -a -f hex --lowercase-hex"), { description = "Color picker" })
 bind("ALT + SPACE", exec("vicinae toggle"), { description = "Toggle vicinae" })
-
 
 -- ============================================
 --  DESKTOP / OVERVIEW
 -- ============================================
-bind("SUPER + A", exec(script("OverviewToggle.sh")), { description = "desktop overview" })
-bind("SUPER + CTRL + S", exec("rofi -show window"), { description = "window switcher" })
+bind("SUPER + A", exec("noctalia msg window-switcher"), { description = "desktop overview" })
+-- bind("SUPER + CTRL + S", exec("rofi -show window"), { description = "window switcher" })
 
 -- ============================================
 --  WINDOW MANAGEMENT
@@ -199,59 +194,78 @@ bind("SUPER + SHIFT + 0", window.move({ workspace = 10 }), { description = "move
 bind("SUPER + G", group.toggle(), { description = "toggle group" })
 
 -- ============================================
---  SCREENSHOTS
+--  SCREENSHOTS / RECORD (Caelestia)
 -- ============================================
-bind("SUPER + Print", exec(script("ScreenShot.sh --now")), { description = "screenshot now" })
-bind("SUPER + SHIFT + Print", exec(script("ScreenShot.sh --area")), { description = "screenshot (area)" })
+bind("SUPER + Print", exec("noctalia msg screenshot-fullscreen"), { description = "screenshot now" })
+bind("SUPER + SHIFT + Print", exec("noctalia msg screenshot-region"), { description = "screenshot (area)" })
+-- Caelestia has no delay/active-window/history equivalents; kept on custom script.
 bind("SUPER + CTRL + Print", exec(script("ScreenShot.sh --in5")), { description = "screenshot in 5s" })
 bind("SUPER + CTRL + SHIFT + Print", exec(script("ScreenShot.sh --in10")), { description = "screenshot in 10s" })
 bind("ALT + Print", exec(script("ScreenShot.sh --active")), { description = "screenshot active window" })
-bind("SUPER + SHIFT + S", exec(script("ScreenShot.sh --swappy")), { description = "screenshot (swappy)" })
+bind("SUPER + SHIFT + S", exec(script("ScreenShot.sh --swappy")), { description = "screenshot (region)" })
 bind("SUPER + S", exec(script("ScreenShotHistory.sh")), { description = "screenshot history" })
 bind(
 	"ALT + SHIFT + S",
-	exec(script("hyprshot.sh -m region -o $HOME/Pictures/Screenshots")),
-	{ description = "Hyprshot Screen Capture" }
+	exec("noctalia msg screenshot-region"),
+	{ description = "screenshot (freeze) [fallback to region]" }
 )
 
 -- ============================================
---  MEDIA / VOLUME
+--  MEDIA / VOLUME (Caelestia OSD)
 -- ============================================
 bind(
 	"XF86AudioRaiseVolume",
-	exec(script("Volume.sh --inc")),
+	exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"),
 	{ description = "volume up", locked = true, repeating = true }
 )
 bind(
 	"XF86AudioLowerVolume",
-	exec(script("Volume.sh --dec")),
+	exec("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
 	{ description = "volume down", locked = true, repeating = true }
 )
 bind(
 	"ALT + XF86AudioRaiseVolume",
-	exec(script("Volume.sh --inc-precise")),
+	exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 1%+"),
 	{ description = "volume up precise", locked = true, repeating = true }
 )
 bind(
 	"ALT + XF86AudioLowerVolume",
-	exec(script("Volume.sh --dec-precise")),
+	exec("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"),
 	{ description = "volume down precise", locked = true, repeating = true }
 )
-bind("XF86AudioMicMute", exec(script("Volume.sh --toggle-mic")), { description = "toggle mic mute", locked = true })
-bind("XF86AudioMute", exec(script("Volume.sh --toggle")), { description = "toggle mute", locked = true })
-bind("XF86AudioPlay", exec(script("MediaCtrl.sh --pause")), { description = "play/pause", locked = true })
-bind("XF86AudioPause", exec(script("MediaCtrl.sh --pause")), { description = "pause", locked = true })
-bind("XF86AudioNext", exec(script("MediaCtrl.sh --nxt")), { description = "next track", locked = true })
-bind("XF86AudioPrev", exec(script("MediaCtrl.sh --prv")), { description = "previous track", locked = true })
-bind("XF86AudioStop", exec(script("MediaCtrl.sh --stop")), { description = "stop", locked = true })
+bind(
+	"XF86AudioMicMute",
+	exec("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
+	{ description = "toggle mic mute", locked = true }
+)
+bind(
+	"XF86AudioMute",
+	exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
+	{ description = "toggle mute", locked = true }
+)
+bind("XF86AudioPlay", exec("noctalia msg media toggle"), { description = "play/pause", locked = true })
+bind("XF86AudioPause", exec("noctalia msg media toggle"), { description = "pause", locked = true })
+bind("XF86AudioNext", exec("noctalia msg media next"), { description = "next track", locked = true })
+bind("XF86AudioPrev", exec("noctalia msg media previous"), { description = "previous track", locked = true })
+bind("XF86AudioStop", exec("noctalia msg media stop"), { description = "stop", locked = true })
+
+-- ============================================
+--  BRIGHTNESS (Caelestia OSD)
+-- ============================================
+bind("XF86MonBrightnessUp", exec("noctalia msg brightness-up"), { description = "brightness up", locked = true })
+bind("XF86MonBrightnessDown", exec("noctalia msg brightness-down"), { description = "brightness down", locked = true })
 
 -- ============================================
 --  SYSTEM / POWER / SESSION
 -- ============================================
-bind("CTRL + ALT + Delete", exec(script("Logout.sh")), { description = "exit Hyprland" })
+bind("CTRL + ALT + Delete", exec("noctalia msg panel-toggle session"), { description = "session menu" })
 bind("CTRL + ALT + L", exec(script("LockScreen.sh")), { description = "lock screen" })
 bind("CTRL + ALT + P", exec(script("Wlogout.sh")), { description = "powermenu" })
-bind("SUPER + SHIFT + N", exec("swaync-client -t -sw"), { description = "notification panel" })
+bind(
+	"SUPER + SHIFT + N",
+	exec("noctalia msg panel-toggle control-center notification"),
+	{ description = "notification sidebar" }
+)
 bind("XF86Sleep", exec("systemctl suspend"), { description = "sleep", locked = true })
 bind("XF86Rfkill", exec(script("AirplaneMode.sh")), { description = "airplane mode", locked = true })
 
@@ -289,12 +303,31 @@ bind("SUPER + CTRL + ALT + SHIFT + B", exec(script("WaybarStartup.sh")), { descr
 -- ============================================
 --  UTILITIES
 -- ============================================
-bind("SUPER + ALT + R", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
-bind("SUPER + ALT + E", exec(script("RofiEmoji.sh")), { description = "emoji menu" })
-bind("SUPER + ALT + V", exec(script("ClipManager.sh")), { description = "clipboard manager" })
+bind("SUPER + F5", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
+bind("SUPER + ALT + E", exec("pkill fuzzel || fuzzel --emoji"), { description = "emoji menu" })
+bind("SUPER + ALT + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
 bind("SUPER + SHIFT + E", exec(script("QuickSettings.sh")), { description = "Quick settings menu" })
 bind("SUPER + SHIFT + G", exec(script("GameMode.sh")), { description = "toggle game mode" })
 bind("SUPER + SHIFT + M", exec(script("RofiBeats.sh")), { description = "online music" })
+
+-- ============================================
+--  SCREEN RECORD (Caelestia)
+-- ============================================
+bind(
+	"CTRL + ALT + R",
+	exec("noctalia msg plugin noctalia/screen_recorder:service all start"),
+	{ description = "record screen" }
+)
+bind(
+	"SUPER + ALT + R",
+	exec("noctalia msg plugin noctalia/screen_recorder:service all start"),
+	{ description = "record screen with sound" }
+)
+bind(
+	"SUPER + SHIFT + ALT + R",
+	exec("noctalia msg plugin noctalia/screen_recorder:service all start region"),
+	{ description = "record region" }
+)
 
 -- ============================================
 --  KEYBOARD LAYOUT

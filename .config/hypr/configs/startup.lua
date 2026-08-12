@@ -51,25 +51,28 @@ exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKT
 -- Core services
 exec_once("$HOME/.config/hypr/scripts/Polkit.sh")
 exec_once("nm-applet")
-exec_once("swaync")
 
 -- Portals and theme
 exec_once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
 exec_once("$HOME/.config/hypr/scripts/ApplyThemeMode.sh")
 
--- Waybar
-exec_once("sh $HOME/.config/hypr/scripts/WaybarStartup.sh")
+-- Caelestia shell (bar, launcher, notifications, session, OSD)
+-- Waybar kept on disk as fallback but no longer autostarted.
+-- exec_once("sh $HOME/.config/hypr/scripts/WaybarStartup.sh")
 
 -- Cursor refresh
 exec_once(
 	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-catppuccin-mocha-blue}" "${HYPRCURSOR_SIZE:-24}"\''
 )
 
--- Quickshell overview
-exec_once("qs -c overview")
+-- Coctalia shell
+exec_once("noctalia --daemon")
+-- Caelestia shell (replaces the old quickshell overview)
+-- exec_once("caelestia shell -d")
+-- exec_once("qs -c overview")
 
 -- Idle manager
-exec_once("hypridle")
+-- exec_once("hypridle")
 
 -- Hypr plugins
 exec_once("hyprpm reload")
@@ -92,9 +95,6 @@ exec_once("blueman-applet")
 
 -- Keybinds layout init
 exec_once("$HOME/.config/hypr/scripts/KeybindsLayoutInit.sh")
-
--- AGS
-exec_once("ags")
 
 -- pm2
 exec_once("pm2 resurrect")

@@ -8,10 +8,10 @@
 # Toggle Waybar clock format between 12H and 24H
 
 MODULES_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/Modules"
-notify_swaync() {
+notify() {
   command -v notify-send >/dev/null 2>&1 || return 0
   export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-  local icon="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/note.png"
+  local icon="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/note.png"
   if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
     local bus_path="${XDG_RUNTIME_DIR}/bus"
     if [ -S "$bus_path" ]; then
@@ -23,7 +23,7 @@ notify_swaync() {
 }
 
 if [ ! -f "$MODULES_FILE" ]; then
-  notify_swaync "Modules file not found: $MODULES_FILE"
+  notify "Modules file not found: $MODULES_FILE"
   exit 1
 fi
 
@@ -97,5 +97,5 @@ fi
 restart_waybar
 sleep 0.3
 
-notify_swaync "Switched to ${mode} format"
+notify "Switched to ${mode} format"
 printf 'Waybar Time: switched to %s format\n' "$mode"

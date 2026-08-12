@@ -7,7 +7,7 @@
 # ==================================================
 # Script for Monitor backlights (if supported) using brightnessctl
 
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 notification_timeout=1000
 step=10  # INCREASE/DECREASE BY THIS VALUE
 

@@ -8,7 +8,7 @@
 # Ghostty theme selector
 
 config_file="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 rofi_theme_primary="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-ghostty-theme.rasi"
 rofi_theme_fallback="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-edit.rasi"
 wallust_include_path="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/wallust.conf"

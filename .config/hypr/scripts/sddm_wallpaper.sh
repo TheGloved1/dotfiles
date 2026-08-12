@@ -16,9 +16,9 @@ wallpaper_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper"
 wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_current"
 wallpaper_modified="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_modified"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper.rasi"
-# Directory for swaync
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
-iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+# Directory for notification icons
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
+iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 video_preview_cache="$HOME/.cache/video_preview"
 sddm_video_cache="$HOME/.cache/sddm_preview"
 # shellcheck source=/dev/null

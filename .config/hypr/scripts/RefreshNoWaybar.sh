@@ -8,7 +8,7 @@
 
 # Modified version of Refresh.sh but waybar wont refresh
 # Used by automatic wallpaper change
-# Modified inorder to refresh rofi background, Wallust, SwayNC only
+# Modified inorder to refresh rofi background, Wallust and notifications
 
 SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
 SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
@@ -37,8 +37,8 @@ ags -q && ags &
 pkill qs && qs &
 
 
-# reload swaync
-swaync-client --reload-config
+# reload noctalia (runs as a daemon; no relaunch needed)
+noctalia msg config-reload
 
 # Relaunching rainbow borders if the script exists
 sleep 1

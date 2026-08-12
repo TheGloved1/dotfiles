@@ -13,7 +13,7 @@ if pidof rofi > /dev/null; then
 fi
 
 # Variables
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 animations_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/animations"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-Animations.rasi"

@@ -8,7 +8,7 @@
 # Switch Hyprland layouts per active monitor/workspace.
 # This avoids global layout mutations and keeps workspace-specific rules intact.
 
-notif="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png"
+notif="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png"
 persist_layout_script="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/PersistWorkspaceLayout.sh"
 layouts=(master dwindle scrolling monocle)
 quiet_mode=0

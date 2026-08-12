@@ -2,7 +2,6 @@
 HYPR_DIR = HYPR_BASE_DIR
 CONFIGS_DIR = HYPR_DIR .. "/configs"
 SCRIPTS_DIR = HYPR_DIR .. "/scripts"
-WALLUST_FILE = HYPR_DIR .. "/wallust/wallust-hyprland.lua"
 COLORS = require("wallust.wallust-hyprland")
 
 local kvantum_checked = false
@@ -19,7 +18,7 @@ local function has_kvantum_qml_module()
 		.. "/usr/lib64/qt6/qml /usr/lib64/qt5/qml /usr/lib64/qt/qml "
 		.. "/usr/share/qt6/qml /usr/share/qt5/qml "
 		.. "/usr/local/lib/qt6/qml /usr/local/lib/qt5/qml; do "
-		.. "[ -d \"$d\" ] || continue; find \"$d\" -type d -path '*/kvantum' -print -quit 2>/dev/null && break; done"
+		.. '[ -d "$d" ] || continue; find "$d" -type d -path \'*/kvantum\' -print -quit 2>/dev/null && break; done'
 	local pipe = io.popen(cmd, "r")
 	if not pipe then
 		return false

@@ -15,7 +15,7 @@ fi
 # Pure-Lua config system: profiles are copied into configs/monitors.lua
 
 # Variables
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 monitor_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/Monitor_Profiles"
 target="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/monitors.lua"

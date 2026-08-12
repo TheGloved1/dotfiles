@@ -9,3 +9,7 @@ local function load_module(name)
 end
 
 load_module("config")
+
+-- For Noctalia Color templates
+local noctalia = require("noctalia")
+noctalia.apply_theme()

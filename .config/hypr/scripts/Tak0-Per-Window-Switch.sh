@@ -19,7 +19,7 @@
 ##################################################################
 
 MAP_FILE="$HOME/.cache/kb_layout_per_window"
-ICON="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png"
+ICON="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png"
 SCRIPT_NAME="$(basename "$0")"
 SCRIPT_PATH="$(readlink -f "$0")"
 

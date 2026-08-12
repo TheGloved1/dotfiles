@@ -8,7 +8,7 @@
 set -euo pipefail
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
-swayIconDir="${XDG_CONFIG_HOME}/swaync/icons"
+notifIconDir="${XDG_CONFIG_HOME}/noctalia/icons"
 
 #// Credits to sl1ng for the orginal script. Rewritten by Vyle.
 ctlcheck=("pactl" "jq" "notify-send" "awk" "pgrep" "hyprctl" "iconv")
@@ -20,7 +20,7 @@ done
 
 if (( ${#missing[@]} )) 2>/dev/null; then
   if printf '%s\n' "${missing[@]}" | grep -qx "pactl"; then
-    notify-send -a "t1" -r 91190 -t 2000 -i "${swayIconDir}/volume-low.png" "ERROR: pactl not installed" "Install 'pactl' (pulseaudio-utils or pipewire-pulse)."
+    notify-send -a "t1" -r 91190 -t 2000 -i "${notifIconDir}/volume-low.png" "ERROR: pactl not installed" "Install 'pactl' (pulseaudio-utils or pipewire-pulse)."
   fi
   echo "Missing required dependencies: \"${missing[*]}\""
   exit 1
@@ -97,7 +97,7 @@ fi
 if [[ ${#sink_ids[@]} -eq 0 ]]; then
   if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE}" ]]; then
     # Even if the fallback_pid remains empty, we will dispatch exit code based on $HYPRLAND_INSTANCE_SIGNATURE.
-    notify-send -a "t1" -r 91190 -t 1200 -i "${swayIconDir}/volume-low.png" "No sink input for the active_window: ${__class}"
+    notify-send -a "t1" -r 91190 -t 1200 -i "${notifIconDir}/volume-low.png" "No sink input for the active_window: ${__class}"
     echo "No sink input for focused window: ${__class}"
     exit 1
   else
@@ -118,13 +118,13 @@ want_mute=$(jq -r --argjson ids "$idsJson" '
 
 if [[ "${want_mute}" == "no" ]]; then
   state_msg="Unmuted"
-  swayIcon="${swayIconDir}/volume-high.png"
+  notifIcon="${notifIconDir}/volume-high.png"
 else
   state_msg="Muted"
-  swayIcon="${swayIconDir}/volume-mute.png"
+  notifIcon="${notifIconDir}/volume-mute.png"
 fi
 
-[[ -f "${swayIcon}" ]] || echo -e "Missing swaync icons."
+[[ -f "${notifIcon}" ]] || echo -e "Missing notification icons."
 
 changed=0
 failed_ids=()
@@ -137,7 +137,7 @@ for id in "${sink_ids[@]}"; do
 done
 
 if [[ "$changed" -eq 0 ]]; then
-  notify-send -a "t2" -r 91190 -t 1200 -i "${swayIconDir}/volume-low.png" "Failed to change sink input(s)" "${failed_ids[*]:-unknown}"
+  notify-send -a "t2" -r 91190 -t 1200 -i "${notifIconDir}/volume-low.png" "Failed to change sink input(s)" "${failed_ids[*]:-unknown}"
   exit 1
 fi
 
@@ -145,10 +145,10 @@ fi
 if command -v pamixer >/dev/null; then
   sink_name="$(pamixer --get-default-sink 2>/dev/null | awk -F '"' 'END{print $(NF - 1)}' 2>/dev/null || true)"
   if [[ -n "${sink_name}" ]]; then
-    notify-send -a "t2" -r 91190 -t 800 -i "${swayIcon}" "${state_msg} ${__class}" "${sink_name}"
+    notify-send -a "t2" -r 91190 -t 800 -i "${notifIcon}" "${state_msg} ${__class}" "${sink_name}"
   else
-    notify-send -a "t2" -r 91190 -t 800 -i "${swayIcon}" "${state_msg} ${__class}"
+    notify-send -a "t2" -r 91190 -t 800 -i "${notifIcon}" "${state_msg} ${__class}"
   fi
 else
-  notify-send -a "t2" -r 91190 -t 800 -i "${swayIcon}" "${state_msg} ${__class}"
+  notify-send -a "t2" -r 91190 -t 800 -i "${notifIcon}" "${state_msg} ${__class}"
 fi

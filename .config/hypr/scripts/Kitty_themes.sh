@@ -10,7 +10,7 @@
 # Define directories and variables
 kitty_themes_DiR="${XDG_CONFIG_HOME:-$HOME/.config}/kitty/kitty-themes" # Kitty Themes Directory
 kitty_config="${XDG_CONFIG_HOME:-$HOME/.config}/kitty/kitty.conf"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images" # For notifications
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images" # For notifications
 rofi_theme_for_this_script="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-kitty-theme.rasi"
 wallust_refresh_script="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/WallustSwww.sh"
 debug_log="${XDG_CACHE_HOME:-$HOME/.cache}/kooldots-kitty-themes.log"

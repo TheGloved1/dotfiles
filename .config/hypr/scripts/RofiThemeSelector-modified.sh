@@ -10,7 +10,7 @@
 
 # This code is released in public domain by Dave Davenport <qball@gmpclient.org>
 
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 
 
 OS="linux"

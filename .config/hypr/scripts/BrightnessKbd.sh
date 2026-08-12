@@ -7,7 +7,7 @@
 # ==================================================
 # Script for keyboard backlights (if supported) using brightnessctl
 
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 
 # Get keyboard brightness
 get_kbd_backlight() {
@@ -31,7 +31,7 @@ get_icon() {
 }
 # Notify
 notify_user() {
-	notify-send -e -h string:x-canonical-private-synchronous:brightness_notif -h int:value:$current -h boolean:SWAYNC_BYPASS_DND:true -u low -i "$icon" "Keyboard" "Brightness:$current%"
+	notify-send -e -h string:x-canonical-private-synchronous:brightness_notif -h int:value:$current -u low -i "$icon" "Keyboard" "Brightness:$current%"
 }
 
 # Change brightness

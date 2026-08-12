@@ -13,8 +13,8 @@ PICTURES_DIR="$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")"
 dir="$PICTURES_DIR/Screenshots"
 file="Screenshot_${time}_${RANDOM}.png"
 
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
-iDoR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
+iDoR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 sDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 
 active_window_class=$(hyprctl -j activewindow | jq -r '(.class)')

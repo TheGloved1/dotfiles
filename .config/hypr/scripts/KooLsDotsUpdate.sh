@@ -9,7 +9,7 @@
 
 # Local Paths
 local_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/"
 local_version=$(find "$local_dir" -maxdepth 1 -name 'v*' -printf '%f\n' 2>/dev/null | sort -V | tail -n 1 | sed 's/^v//')
 KooL_Dots_DIR="$HOME/Hyprland-Dots"
 

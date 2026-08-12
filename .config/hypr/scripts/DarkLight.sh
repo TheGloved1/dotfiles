@@ -14,12 +14,11 @@ wallpaper_base_path="$PICTURES_DIR/wallpapers/Dynamic-Wallpapers"
 dark_wallpapers="$wallpaper_base_path/Dark"
 light_wallpapers="$wallpaper_base_path/Light"
 hypr_config_path="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
-swaync_style="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/style.css"
 ags_style="${XDG_CONFIG_HOME:-$HOME/.config}/ags/user/style.css"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 # shellcheck source=/dev/null
 . "$SCRIPTSDIR/WallpaperCmd.sh"
-notif="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/bell.png"
+notif="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/bell.png"
 wallust_rofi="${XDG_CONFIG_HOME:-$HOME/.config}/wallust/templates/colors-rofi.rasi"
 theme_state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/hypr"
 theme_state_file="$theme_state_dir/theme_mode"
@@ -88,7 +87,7 @@ EOF
 done
 
 # intial kill process
-for pid in waybar rofi swaync ags swaybg; do
+for pid in waybar rofi ags swaybg; do
     killall -SIGUSR1 "$pid"
 done
 
@@ -161,15 +160,6 @@ set_waybar_style() {
 set_waybar_style "$next_mode"
 [ "$notify_enabled" -eq 1 ] && notify_user "$next_mode"
 
-
-# swaync color change
-if [ "$next_mode" = "Dark" ]; then
-    sed -i '/@define-color noti-bg/s/rgba([0-9]*,\s*[0-9]*,\s*[0-9]*,\s*[0-9.]*);/rgba(0, 0, 0, 0.8);/' "${swaync_style}"
-	#sed -i '/@define-color noti-bg-alt/s/#.*;/#111111;/' "${swaync_style}"
-else
-    sed -i '/@define-color noti-bg/s/rgba([0-9]*,\s*[0-9]*,\s*[0-9]*,\s*[0-9.]*);/rgba(255, 255, 255, 0.9);/' "${swaync_style}"
-	#sed -i '/@define-color noti-bg-alt/s/#.*;/#F0F0F0;/' "${swaync_style}"
-fi
 
 # ags color change
 if command -v ags >/dev/null 2>&1; then    
@@ -321,7 +311,7 @@ ${SCRIPTSDIR}/WallustSwww.sh &&
 
 sleep 2
 # kill process
-for pid1 in waybar rofi swaync ags swaybg; do
+for pid1 in waybar rofi ags swaybg; do
     killall "$pid1"
 done
 

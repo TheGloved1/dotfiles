@@ -72,14 +72,6 @@ apply_window_rule({
 })
 
 apply_window_rule({
-	name = "tag-notifications-swaync",
-	match = {
-		class = "^(swaync-control-center|swaync-notification-window|swaync-client|class)$",
-	},
-	tag = "+notif",
-})
-
-apply_window_rule({
 	name = "tag-kool-cheat-sheet",
 	match = {
 		title = "^(KooL Quick Cheat Sheet)$",

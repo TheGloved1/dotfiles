@@ -12,7 +12,7 @@ set -euo pipefail
 PICTURES_DIR="$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")"
 dir="$PICTURES_DIR/Screenshots"
 sDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 ROFI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config.rasi"
 ROFI_THEME="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-screenshot-history.rasi"
 

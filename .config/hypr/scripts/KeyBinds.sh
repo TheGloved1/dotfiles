@@ -67,5 +67,5 @@ fi
 if [[ -n "$display_keybinds" ]]; then
   printf '%s\n' "$display_keybinds" | rofi -dmenu -i -config "$rofi_theme" -mesg "$msg"
 else
-  notify-send -u low -i "${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png" "KeyBinds" "No keybinds found"
+  notify-send -u low -i "${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png" "KeyBinds" "No keybinds found"
 fi

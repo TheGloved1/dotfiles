@@ -10,7 +10,7 @@
 PICTURES_DIR="$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")"
 wallDIR="$PICTURES_DIR/wallpapers"
 scriptsDir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 # shellcheck source=/dev/null
 . "$scriptsDir/WallpaperCmd.sh" 2>/dev/null || true
 

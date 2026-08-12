@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-notif="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png"
+notif="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png"
 laptops_conf="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/UserConfigs/Laptops.conf"
 
 touchpad_device="${TOUCHPAD_DEVICE:-}"

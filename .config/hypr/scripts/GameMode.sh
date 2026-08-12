@@ -7,7 +7,7 @@
 # ==================================================
 # Game Mode. Turning off all animations
 
-notif="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images/ja.png"
+notif="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 # shellcheck source=/dev/null
 . "$SCRIPTSDIR/WallpaperCmd.sh"

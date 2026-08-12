@@ -1,6 +1,5 @@
 -- Workspace rules: assign specific layouts to workspaces.
 -- Default layout is "scrolling" (set in settings.lua).
--- These rules ensure workspaces 4-6 explicitly use scrolling.
 
 hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", layout = "scrolling" })
 hl.workspace_rule({ workspace = "2", monitor = "HDMI-A-1", layout = "scrolling" })

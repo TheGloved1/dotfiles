@@ -11,7 +11,7 @@
 # after choosing theme, TTY need to be closed and re-open
 
 # Variables
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-zsh-theme.rasi"
 
 if [ -n "$(grep -i nixos < /etc/os-release)" ]; then

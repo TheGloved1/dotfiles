@@ -32,7 +32,7 @@ fi
 configs="$hypr_dir/configs"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-edit.rasi"
 msg=' ⁉️ Choose what to do ⁉️'
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 scriptsDir="$hypr_dir/scripts"
 
 # Config files (all live in configs/*.lua)

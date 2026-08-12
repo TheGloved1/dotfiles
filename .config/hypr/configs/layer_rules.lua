@@ -44,27 +44,8 @@ apply_layer_rule({
 	ignore_alpha = 0,
 })
 
--- swaync-control-center: intentionally disabled (causes huge blue on notifications)
--- apply_layer_rule({
---   name = "layerrule-005",
---   match = {
---     namespace = "swaync-control-center",
---   },
---   blur = true,
---   ignore_alpha = 0,
--- })
-
 apply_layer_rule({
-	name = "layerrule-006",
-	match = {
-		namespace = "swaync-notification-window",
-	},
-	blur = true,
-	ignore_alpha = 0,
-})
-
-apply_layer_rule({
-	name = "layerrule-007",
+	name = "layerrule-005",
 	match = {
 		namespace = "com.aurora.keybinds_help",
 	},
@@ -73,10 +54,21 @@ apply_layer_rule({
 })
 
 apply_layer_rule({
-	name = "layerrule-008",
+	name = "layerrule-006",
 	match = {
 		namespace = "logout_dialog",
 	},
 	blur = true,
 	ignore_alpha = 0,
+})
+
+apply_layer_rule({
+	name = "noctalia",
+	match = {
+		namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
+	},
+	no_anim = true,
+	ignore_alpha = 1.0,
+	blur = true,
+	blur_popups = true,
 })

@@ -22,9 +22,9 @@ per_monitor_wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_
 per_monitor_wallpaper_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper_${focused_monitor}"
 rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper-effect.rasi"
 
-# Directory for swaync
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
-iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+# Directory for notification icons
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
+iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 
 # swww/awww transition config
 FPS=60

@@ -5,7 +5,7 @@
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
-# Scripts for refreshing ags, waybar, rofi, swaync, wallust
+# Scripts for refreshing ags, waybar, rofi, noctalia, wallust
 
 SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
 SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
@@ -20,7 +20,7 @@ file_exists() {
 }
 
 # Kill already running processes (exclude waybar to avoid double reloads)
-_ps=(rofi swaync ags)
+_ps=(rofi ags)
 for _prs in "${_ps[@]}"; do
   if pidof "${_prs}" >/dev/null; then
     pkill "${_prs}"
@@ -38,7 +38,7 @@ ags -q && ags &
 pkill qs && qs &
 
 # some process to kill (exclude waybar to avoid restart loops)
-for pid in $(pidof rofi swaync ags swaybg); do
+for pid in $(pidof rofi ags swaybg); do
   kill -SIGUSR1 "$pid"
   sleep 0.1
 done
@@ -77,11 +77,8 @@ restart_waybar() {
 
 restart_waybar
 
-# relaunch swaync
-sleep 0.3
-swaync >/dev/null 2>&1 &
-# reload swaync
-swaync-client --reload-config
+# reload noctalia (runs as a daemon; no relaunch needed)
+noctalia msg config-reload
 
 # Relaunching rainbow borders if the script exists
 sleep 1

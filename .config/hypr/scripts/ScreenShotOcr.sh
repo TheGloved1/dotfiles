@@ -10,7 +10,7 @@
 set -euo pipefail
 
 sDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/icons"
+iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
 ROFI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config.rasi"
 
 IMAGE="${1:-}"
