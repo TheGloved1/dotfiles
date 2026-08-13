@@ -26,11 +26,6 @@ bind("SUPER + SUPER_L", exec("noctalia msg panel-toggle launcher"), { descriptio
 bind("SUPER + SPACE", exec("noctalia msg panel-toggle control-center home"), { description = "App launcher" })
 bind("SUPER + SHIFT + Return", exec(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
 bind("SUPER + slash", exec(script("KeyHints.sh")), { description = "Help / cheat sheet" })
-bind(
-	"SUPER + ALT + C",
-	exec('noctalia msg panel-toggle launcher ":calc"'),
-	{ description = "calculator (launcher :calc)" }
-)
 bind("SUPER + P", exec("hyprpicker -a -f hex --lowercase-hex"), { description = "Color picker" })
 bind("ALT + SPACE", exec("vicinae toggle"), { description = "Toggle vicinae" })
 
@@ -258,7 +253,7 @@ bind("XF86MonBrightnessDown", exec("noctalia msg brightness-down"), { descriptio
 --  SYSTEM / POWER / SESSION
 -- ============================================
 bind("CTRL + ALT + Delete", exec("noctalia msg panel-toggle session"), { description = "session menu" })
-bind("CTRL + ALT + L", exec(script("LockScreen.sh")), { description = "lock screen" })
+bind("CTRL + ALT + L", exec("noctalia msg session lock"), { description = "lock screen" })
 bind("CTRL + ALT + P", exec(script("Wlogout.sh")), { description = "powermenu" })
 bind(
 	"SUPER + SHIFT + N",
@@ -271,8 +266,7 @@ bind("XF86Rfkill", exec(script("AirplaneMode.sh")), { description = "airplane mo
 -- ============================================
 --  APPEARANCE / THEMES
 -- ============================================
-bind("SUPER + T", exec(script("ThemeChanger.sh")), { description = "Global theme switcher using Wallust" })
-bind("SUPER + CTRL + R", exec("noctalia msg settings-open theme"), { description = "Noctalia theme settings" })
+bind("SUPER + T", exec("noctalia msg settings-open theme"), { description = "Noctalia theme settings" })
 bind("SUPER + SHIFT + R", exec(script("ZshChangeTheme.sh")), { description = "change oh-my-zsh theme" })
 bind("SUPER + SHIFT + A", exec(script("Animations.sh")), { description = "animations menu" })
 bind("SUPER + N", exec(script("Hyprsunset.sh toggle")), { description = "Toggle Hyprsunset - night light" })
@@ -286,7 +280,7 @@ bind("SUPER + W", exec("noctalia msg panel-toggle wallpaper"), { description = "
 --  UTILITIES
 -- ============================================
 bind("SUPER + F5", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
-bind("SUPER + ALT + E", exec("pkill fuzzel || fuzzel --emoji"), { description = "emoji menu" })
+bind("SUPER + ALT + E", exec('noctalia msg panel-toggle launcher "/emo"'), { description = "emoji menu" })
 bind("SUPER + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
 bind("SUPER + SHIFT + E", exec(script("QuickSettings.sh")), { description = "Quick settings menu" })
 bind("SUPER + SHIFT + G", exec(script("GameMode.sh")), { description = "toggle game mode" })

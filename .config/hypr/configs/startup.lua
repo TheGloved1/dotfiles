@@ -94,8 +94,5 @@ exec_once("wl-paste --type image --watch cliphist store")
 -- Bluetooth
 exec_once("blueman-applet")
 
--- Keybinds layout init
-exec_once("$HOME/.config/hypr/scripts/KeybindsLayoutInit.sh")
-
 -- pm2
 exec_once("pm2 resurrect")

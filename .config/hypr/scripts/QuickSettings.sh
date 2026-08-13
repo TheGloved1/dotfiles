@@ -201,11 +201,7 @@ main() {
             fi
             qt5ct ;;
         "Set Hyprlock Wallpaper")
-            if [[ -n "$quick_settings_monitor" ]]; then
-                "$scriptsDir/HyprlockWallpaperSelect.sh" "$quick_settings_monitor"
-            else
-                "$scriptsDir/HyprlockWallpaperSelect.sh"
-            fi
+            notify-send -i "$iDIR/error.png" "Noctalia Lockscreen" "Set the wallpaper via Noctalia Settings → Security → Lock Screen"
             ;;
         "Choose Hyprland Animations") $scriptsDir/Animations.sh ;;
         "Choose Monitor Profiles") $scriptsDir/MonitorProfiles.sh ;;
