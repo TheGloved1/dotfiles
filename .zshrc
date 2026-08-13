@@ -62,7 +62,7 @@ alias grhh='git reset HEAD --hard'
 alias pacupg='sudo pacman -Syu'
 alias pacin='sudo pacman -S'
 alias pacins='sudo pacman -U'
-alias pacrem='sudo pacman -Rns'
+alias pacrem='sudo pacman -R'
 alias paclean='sudo pacman -Sc'
 alias pacrep='pacman -Si'
 alias pacreps='pacman -Ss'
@@ -76,7 +76,7 @@ alias pacown='pacman -Qo'
 alias pacfiles='pacman -F'
 alias yaupg='yay -Syu'
 alias yain='yay -S'
-alias yarem='yay -Rns'
+alias yarem='yay -R'
 alias yareps='yay -Ss'
 alias yaloc='yay -Qi'
 alias yalocs='yay -Qs'
@@ -93,7 +93,7 @@ pac() {
     remove|rm)
       [[ $# -lt 2 ]] && echo "Usage: pac remove <package(s)>" && return 1
       shift
-      sudo pacman -Rns "$@"
+      sudo pacman -R "$@"
       ;;
     update)
       sudo pacman -Sy
@@ -197,7 +197,7 @@ aur() {
       for pkg in "$@"; do
         _aur_is_aur "$pkg" || { echo "$pkg is not an AUR package"; return 1 }
       done
-      yay -Rns "$@"
+      yay -R "$@"
       ;;
     update)
       yay -Sy
