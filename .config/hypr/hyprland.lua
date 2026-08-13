@@ -3,13 +3,14 @@ local hyprDir = configHome .. "/hypr"
 
 HYPR_BASE_DIR = hyprDir
 
+---Load a module
 ---@param name string
-local function load_module(name)
+---@return nil
+function load_module(name)
 	dofile(hyprDir .. "/" .. name .. ".lua")
 end
 
-load_module("config")
+load_module("setup")
 
 -- For Noctalia Color templates
-local noctalia = require("noctalia")
-noctalia.apply_theme()
+require("noctalia").apply_theme()
