@@ -116,11 +116,11 @@
 
 "custom/light_dark": {
 	"format": "󰔎 ",
-	"on-click": "$HOME/.config/hypr/scripts/DarkLight.sh",
+	"on-click": "noctalia msg theme-mode-toggle && noctalia msg templates-apply",
 	"on-click-right": "$HOME/.config/hypr/scripts/WaybarStyles.sh",
 	"on-click-middle": "$HOME/.config/hypr/scripts/WallpaperSelect.sh",
 	"tooltip": true,
-	"tooltip-format": "Left Click: Switch Dark-Light Themes\nMiddle Click: Wallpaper Menu\nRight Click: Waybar Styles Menu",
+	"tooltip-format": "Left Click: Toggle Dark-Light Theme (Noctalia)\nMiddle Click: Wallpaper Menu\nRight Click: Waybar Styles Menu",
 },
 
 // Night light (Hyprsunset)
