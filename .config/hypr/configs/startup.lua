@@ -35,9 +35,6 @@ local function exec_once(cmd, opts)
 	os.execute("sh -c " .. shell_quote(script))
 end
 
--- Wallpaper (with sleep for startup)
-exec_once("sh -c 'sleep 2; $HOME/.config/hypr/scripts/WallpaperDaemon.sh'")
-
 -- Auto-reload Hyprland when configs/*.lua change
 exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
 
@@ -64,11 +61,8 @@ exec_once(
 	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-catppuccin-mocha-blue}" "${HYPRCURSOR_SIZE:-24}"\''
 )
 
--- Coctalia shell
+-- Noctalia shell
 exec_once("noctalia --daemon")
--- Caelestia shell (replaces the old quickshell overview)
--- exec_once("caelestia shell -d")
--- exec_once("qs -c overview")
 
 -- Idle manager
 -- exec_once("hypridle")

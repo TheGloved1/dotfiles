@@ -19,12 +19,12 @@ edit="${edit:-${EDITOR:-nano}}"
 visual="${visual:-${VISUAL:-}}"
 
 if [[ -f "$defaults_file" ]]; then
-    lua_term=$(sed -n 's/^[[:space:]]*DEFAULTS\.term[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
-    lua_edit=$(sed -n 's/^[[:space:]]*DEFAULTS\.edit[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
-    lua_visual=$(sed -n 's/^[[:space:]]*DEFAULTS\.visual[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
-    [[ -n "$lua_term" ]] && term="$lua_term"
-    [[ -n "$lua_edit" ]] && edit="$lua_edit"
-    [[ -n "$lua_visual" ]] && visual="$lua_visual"
+  lua_term=$(sed -n 's/^[[:space:]]*DEFAULTS\.term[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+  lua_edit=$(sed -n 's/^[[:space:]]*DEFAULTS\.edit[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+  lua_visual=$(sed -n 's/^[[:space:]]*DEFAULTS\.visual[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$defaults_file" | tail -n1)
+  [[ -n "$lua_term" ]] && term="$lua_term"
+  [[ -n "$lua_edit" ]] && edit="$lua_edit"
+  [[ -n "$lua_visual" ]] && visual="$lua_visual"
 fi
 # ##################################### #
 
@@ -50,62 +50,62 @@ config_workspaces="$configs/workspaces.lua"
 
 # Function to show info notification
 show_info() {
-    if [[ -f "$iDIR/note.png" ]]; then
-        notify-send -i "$iDIR/note.png" "Info" "$1"
-    elif [[ -f "$iDIR/info.png" ]]; then
-        notify-send -i "$iDIR/info.png" "Info" "$1"
-    else
-        notify-send "Info" "$1"
-    fi
+  if [[ -f "$iDIR/note.png" ]]; then
+    notify-send -i "$iDIR/note.png" "Info" "$1"
+  elif [[ -f "$iDIR/info.png" ]]; then
+    notify-send -i "$iDIR/info.png" "Info" "$1"
+  else
+    notify-send "Info" "$1"
+  fi
 }
 
 get_context_monitor_name() {
-    if ! command -v hyprctl >/dev/null 2>&1; then
-        return 1
+  if ! command -v hyprctl >/dev/null 2>&1; then
+    return 1
+  fi
+  local monitor=""
+  if command -v jq >/dev/null 2>&1; then
+    monitor="$(hyprctl activeworkspace -j 2>/dev/null | jq -r '.monitor // empty' | head -n1)"
+    if [[ -z "$monitor" ]]; then
+      monitor="$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused) | .name' | head -n1)"
     fi
-    local monitor=""
-    if command -v jq >/dev/null 2>&1; then
-        monitor="$(hyprctl activeworkspace -j 2>/dev/null | jq -r '.monitor // empty' | head -n1)"
-        if [[ -z "$monitor" ]]; then
-            monitor="$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused) | .name' | head -n1)"
-        fi
-    else
-        monitor="$(hyprctl monitors 2>/dev/null | awk '/^Monitor/{name=$2} /focused: yes/{print name; exit}')"
-    fi
-    printf '%s' "$monitor"
+  else
+    monitor="$(hyprctl monitors 2>/dev/null | awk '/^Monitor/{name=$2} /focused: yes/{print name; exit}')"
+  fi
+  printf '%s' "$monitor"
 }
 
 # Determine whether an editor command is terminal-based (TUI)
 is_tui_editor() {
-    local -a cmd=("$@")
-    local bin base arg
-    [[ ${#cmd[@]} -eq 0 ]] && return 1
+  local -a cmd=("$@")
+  local bin base arg
+  [[ ${#cmd[@]} -eq 0 ]] && return 1
 
-    bin="${cmd[0]}"
-    base="$(basename "$bin")"
+  bin="${cmd[0]}"
+  base="$(basename "$bin")"
 
-    case "$base" in
-        vi|vim|nvim|nano|hx|helix|kak|micro|emacs-nox)
-            return 0
-            ;;
-        emacs|emacsclient)
-            for arg in "${cmd[@]:1}"; do
-                case "$arg" in
-                    -nw|--no-window-system|-t|--tty)
-                        return 0
-                        ;;
-                esac
-            done
-            return 1
-            ;;
-    esac
-
+  case "$base" in
+  vi | vim | nvim | nano | hx | helix | kak | micro | emacs-nox)
+    return 0
+    ;;
+  emacs | emacsclient)
+    for arg in "${cmd[@]:1}"; do
+      case "$arg" in
+      -nw | --no-window-system | -t | --tty)
+        return 0
+        ;;
+      esac
+    done
     return 1
+    ;;
+  esac
+
+  return 1
 }
 
 # Function to display the menu options
 menu() {
-    cat <<EOF
+  cat <<EOF
 --- CONFIG FILES ---
 Edit Defaults
 Edit ENV Variables
@@ -120,112 +120,92 @@ Edit Laptop Settings
 Edit Monitors
 Edit Workspaces
 --- UTILITIES ---
-Set SDDM Wallpaper
-Change Starship Prompt
-Choose Kitty Terminal Theme
-Choose Ghostty Terminal Theme
 Configure Monitors (nwg-displays)
-Configure Workspace Rules (nwg-displays)
 GTK Settings (nwg-look)
 QT Apps Settings (qt6ct)
 QT Apps Settings (qt5ct)
-Set Hyprlock Wallpaper
 Choose Hyprland Animations
 Choose Monitor Profiles
 Search for Keybinds
-Toggle Waybar Weather units (C/F)
-Toggle Waybar Clock (12H/24H)
-Toggle Game Mode
 EOF
 }
 
 # Main function to handle menu selection
 main() {
-    local quick_settings_monitor
-    quick_settings_monitor="$(get_context_monitor_name)"
-    choice=$(menu | noctalia dmenu -p "$msg")
-    
-    # Map choices to corresponding files
-    case "$choice" in
-        "Edit Defaults") file="$config_defaults" ;;
-        "Edit ENV Variables") file="$config_env" ;;
-        "Edit Keybinds") file="$config_keybinds" ;;
-        "Edit Startup Apps") file="$config_startup" ;;
-        "Edit Window Rules") file="$config_window_rules" ;;
-        "Edit Layer Rules") file="$config_layer_rules" ;;
-        "Edit Settings") file="$config_settings" ;;
-        "Edit Decorations") file="$config_decorations" ;;
-        "Edit Animations") file="$config_animations" ;;
-        "Edit Laptop Settings") file="$config_laptops" ;;
-        "Edit Monitors") file="$config_monitors" ;;
-        "Edit Workspaces") file="$config_workspaces" ;;
-        "Set SDDM Wallpaper")
-            if [[ -n "$quick_settings_monitor" ]]; then
-                "$scriptsDir/sddm_wallpaper.sh" --normal "$quick_settings_monitor"
-            else
-                "$scriptsDir/sddm_wallpaper.sh" --normal
-            fi
-            ;;
-        "Change Starship Prompt") $scriptsDir/ChangeStarshipPrompt.sh ;;
-        "Choose Kitty Terminal Theme") $scriptsDir/Kitty_themes.sh ;;
-        "Choose Ghostty Terminal Theme") $scriptsDir/Ghostty_themes.sh ;;
-        "Configure Monitors (nwg-displays)") 
-            if ! command -v nwg-displays &>/dev/null; then
-                notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-displays first"
-                exit 1
-            fi
-            nwg-displays ;;
-        "Configure Workspace Rules (nwg-displays)") 
-            if ! command -v nwg-displays &>/dev/null; then
-                notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-displays first"
-                exit 1
-            fi
-            nwg-displays ;;
-		"GTK Settings (nwg-look)") 
-            if ! command -v nwg-look &>/dev/null; then
-                notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-look first"
-                exit 1
-            fi
-            nwg-look ;;
-		"QT Apps Settings (qt6ct)") 
-            if ! command -v qt6ct &>/dev/null; then
-                notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install qt6ct first"
-                exit 1
-            fi
-            qt6ct ;;
-		"QT Apps Settings (qt5ct)") 
-            if ! command -v qt5ct &>/dev/null; then
-                notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install qt5ct first"
-                exit 1
-            fi
-            qt5ct ;;
-        "Set Hyprlock Wallpaper")
-            notify-send -i "$iDIR/error.png" "Noctalia Lockscreen" "Set the wallpaper via Noctalia Settings → Security → Lock Screen"
-            ;;
-        "Choose Hyprland Animations") $scriptsDir/Animations.sh ;;
-        "Choose Monitor Profiles") $scriptsDir/MonitorProfiles.sh ;;
-        "Search for Keybinds") $scriptsDir/KeyBinds.sh ;;
-        "Toggle Waybar Weather units (C/F)") $scriptsDir/Toggle-weather-waybar-units.sh ;;
-        "Toggle Waybar Clock (12H/24H)") $scriptsDir/ToggleWaybarTime.sh ;;
-        "Toggle Game Mode") $scriptsDir/GameMode.sh ;;
-        *) return ;;  # Do nothing for invalid choices
-    esac
+  local quick_settings_monitor
+  quick_settings_monitor="$(get_context_monitor_name)"
+  choice=$(menu | noctalia dmenu -p "$msg")
 
-    # Open selected file using configured editor
-    if [ -n "$file" ]; then
-        local -a edit_cmd term_cmd visual_cmd selected_cmd
-        read -r -a edit_cmd <<< "$edit"
-        read -r -a term_cmd <<< "$term"
-        [[ -n "$visual" ]] && read -r -a visual_cmd <<< "$visual"
-        selected_cmd=("${edit_cmd[@]}")
-        [[ ${#visual_cmd[@]} -gt 0 ]] && selected_cmd=("${visual_cmd[@]}")
-
-        if is_tui_editor "${selected_cmd[@]}"; then
-            "${term_cmd[@]}" -e "${selected_cmd[@]}" "$file"
-        else
-            "${selected_cmd[@]}" "$file" >/dev/null 2>&1 &
-        fi
+  # Map choices to corresponding files
+  case "$choice" in
+  "Edit Defaults") file="$config_defaults" ;;
+  "Edit ENV Variables") file="$config_env" ;;
+  "Edit Keybinds") file="$config_keybinds" ;;
+  "Edit Startup Apps") file="$config_startup" ;;
+  "Edit Window Rules") file="$config_window_rules" ;;
+  "Edit Layer Rules") file="$config_layer_rules" ;;
+  "Edit Settings") file="$config_settings" ;;
+  "Edit Decorations") file="$config_decorations" ;;
+  "Edit Animations") file="$config_animations" ;;
+  "Edit Laptop Settings") file="$config_laptops" ;;
+  "Edit Monitors") file="$config_monitors" ;;
+  "Edit Workspaces") file="$config_workspaces" ;;
+  "Configure Monitors (nwg-displays)")
+    if ! command -v nwg-displays &>/dev/null; then
+      notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-displays first"
+      exit 1
     fi
+    nwg-displays
+    ;;
+  "Configure Workspace Rules (nwg-displays)")
+    if ! command -v nwg-displays &>/dev/null; then
+      notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-displays first"
+      exit 1
+    fi
+    nwg-displays
+    ;;
+  "GTK Settings (nwg-look)")
+    if ! command -v nwg-look &>/dev/null; then
+      notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install nwg-look first"
+      exit 1
+    fi
+    nwg-look
+    ;;
+  "QT Apps Settings (qt6ct)")
+    if ! command -v qt6ct &>/dev/null; then
+      notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install qt6ct first"
+      exit 1
+    fi
+    qt6ct
+    ;;
+  "QT Apps Settings (qt5ct)")
+    if ! command -v qt5ct &>/dev/null; then
+      notify-send -i "$iDIR/error.png" "E-R-R-O-R" "Install qt5ct first"
+      exit 1
+    fi
+    qt5ct
+    ;;
+  "Choose Hyprland Animations") $scriptsDir/Animations.sh ;;
+  "Choose Monitor Profiles") $scriptsDir/MonitorProfiles.sh ;;
+  "Search for Keybinds") $scriptsDir/KeyBinds.sh ;;
+  *) return ;; # Do nothing for invalid choices
+  esac
+
+  # Open selected file using configured editor
+  if [ -n "$file" ]; then
+    local -a edit_cmd term_cmd visual_cmd selected_cmd
+    read -r -a edit_cmd <<<"$edit"
+    read -r -a term_cmd <<<"$term"
+    [[ -n "$visual" ]] && read -r -a visual_cmd <<<"$visual"
+    selected_cmd=("${edit_cmd[@]}")
+    [[ ${#visual_cmd[@]} -gt 0 ]] && selected_cmd=("${visual_cmd[@]}")
+
+    if is_tui_editor "${selected_cmd[@]}"; then
+      "${term_cmd[@]}" -e "${selected_cmd[@]}" "$file"
+    else
+      "${selected_cmd[@]}" "$file" >/dev/null 2>&1 &
+    fi
+  fi
 }
 
 main
