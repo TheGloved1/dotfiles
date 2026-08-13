@@ -1,10 +1,15 @@
+[audio]
+enable_sounds = true
+sound_volume = 0.29999999329447746
+
 [bar.default]
-background_opacity = 0.95999997854232788
-border = "surface_variant"
+background_opacity = 0.87999998033046722
+border = "outline"
 capsule = true
 capsule_thickness = 0.71999998763203621
 center = [ "active_window" ]
 end = [
+    "recorder",
     "notifications",
     "network",
     "bluetooth",
@@ -19,12 +24,14 @@ end = [
 font_family = "JetBrainsMono Nerd Font"
 font_weight = 400
 margin_ends = 0
+margin_opposite_edge = 2
 panel_overlap = 0
 start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
 
 [brightness]
 enable_ddcutil = true
 minimum_brightness = 0.39999999105930328
+sync_all_monitors = true
 
 [desktop_widgets]
 enabled = false
@@ -47,16 +54,21 @@ widget_order = [ "desktop-widget-0000000000000001" ]
 
 [dock]
 enabled = true
+launcher_position = "start"
+pinned = [ "steam", "equibop", "zen", "kitty" ]
 reserve_space = false
 show_dots = true
+show_instance_count = false
+show_running = false
 smart_auto_hide = true
 
 [idle]
 behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+pre_action_fade_seconds = 30
 
     [idle.behavior.lock]
     action = "lock"
-    enabled = false
+    enabled = true
     timeout = 600.0
 
     [idle.behavior.lock-and-suspend]
@@ -67,7 +79,7 @@ behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
     [idle.behavior.screen-off]
     action = "screen_off"
     enabled = true
-    timeout = 660.0
+    timeout = 750.0
 
 [keybinds]
 down = [ "Down", "Ctrl+j" ]
@@ -80,6 +92,7 @@ auto_locate = true
 
 [lockscreen]
 blurred_desktop = true
+fingerprint = false
 
 [lockscreen_widgets]
 schema_version = 2
@@ -121,31 +134,50 @@ force = true
 temperature_day = 5100
 temperature_night = 4600
 
+[notification]
+background_opacity = 0.9499999787658453
+layer = "overlay"
+offset_x = 4
+offset_y = 4
+
+[osd]
+offset_x = 8
+
+[plugin_settings."noctalia/screen_recorder"]
+replay_duration = 60
+replay_enabled = true
+resolution = "1280x720"
+restore_portal = true
+video_source = "focused"
+
 [plugin_settings."tadomika_ari/config-swap"]
 panel_placement = "attached"
 
 [plugins]
-enabled = [ "tadomika_ari/config-swap", "noctalia/bongocat" ]
+enabled = [ "tadomika_ari/config-swap", "noctalia/bongocat", "noctalia/screen_recorder" ]
 
 [shell]
 app_icon_color = "primary"
+clipboard_auto_paste = "off"
+external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
 niri_overview_type_to_launch_enabled = true
 panel_anchor_bar = "default"
 polkit_agent = true
 
     [shell.greeter_sync]
-    auto_sync = true
+    auto_sync = false
 
     [shell.launcher]
-    categories = false
+    categories = true
+    compact = true
 
         [shell.launcher.providers.emoji]
         global = false
 
     [shell.panel]
     clipboard_placement = "attached"
-    floating_layer = "top"
+    floating_layer = "overlay"
     launcher_placement = "attached"
     launcher_position = "auto"
     polkit_placement = "attached"
@@ -161,13 +193,13 @@ polkit_agent = true
     pipe_command = "swappy -f -"
 
     [shell.session]
-    grid = true
+    grid = false
 
     [shell.shadow]
     direction = "down_right"
 
 [theme]
-builtin = "Rosé Pine"
+builtin = "Catppuccin"
 community_palette = "Catppuccin Mocha Blue"
 custom_palette = "dragon-mc"
 mode = "dark"
@@ -175,22 +207,27 @@ source = "wallpaper"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt" ]
+    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt", "starship" ]
     community_ids = [
         "opencode",
         "zen-browser",
         "discord",
         "gimp",
         "neovim",
+        "heroiclauncher",
         "prismlauncher",
         "steam",
         "rofi",
         "vicinae",
         "fastfetch",
-        "hyprtoolkit"
+        "hyprtoolkit",
+        "lazygit",
+        "yazi"
     ]
 
 [wallpaper]
+fill_mode = "fit"
+transition_duration = 2000
 transition_on_startup = true
 
     [wallpaper.default]
@@ -206,7 +243,7 @@ transition_on_startup = true
     palette_source = "wallpaper"
     path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
     theme_mode = "dark"
-    wallpaper_scheme = "m3-content"
+    wallpaper_scheme = "muted"
 
 [weather]
 unit = "imperial"
@@ -215,6 +252,13 @@ unit = "imperial"
 title_scroll = "on_hover"
 
 [widget.cat]
+input_devices = [
+    "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-event-kbd",
+    "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-if01-event-kbd",
+    "/dev/input/by-id/usb-Razer_Razer_Naga_X-event-mouse",
+    "/dev/input/by-id/usb-Razer_Razer_Naga_X-if01-event-kbd",
+    "/dev/input/by-id/usb-Razer_Razer_Naga_X-if02-event-kbd"
+]
 type = "noctalia/bongocat:cat"
 
 [widget.clock]
@@ -227,15 +271,18 @@ glyph = "hyprland"
 [widget.launcher]
 capsule_radius = "auto"
 custom_image = "/home/gloves/Pictures/Assets/arch-linux.svg"
-font_family = "JetBrainsMono NF"
-font_weight = 800
-scale = 1.5
+font_family = "JetBrainsMono Nerd Font"
+font_weight = 400
+scale = 1.6000000000000001
 
 [widget.network]
 show_label = false
 
 [widget.ram]
 stat = "ram_pct"
+
+[widget.recorder]
+type = "noctalia/screen_recorder:recorder"
 
 [widget.tray]
 hidden = [ "Network", "Blueman" ]
