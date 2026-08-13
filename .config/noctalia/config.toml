@@ -1,5 +1,5 @@
 [bar.default]
-background_opacity = 0.96
+background_opacity = 0.95999997854232788
 border = "surface_variant"
 capsule = true
 capsule_thickness = 0.71999998763203621
@@ -20,7 +20,7 @@ font_family = "JetBrainsMono Nerd Font"
 font_weight = 400
 margin_ends = 0
 panel_overlap = 0
-start = [ "launcher", "workspaces", "tray" ]
+start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
 
 [brightness]
 enable_ddcutil = true
@@ -29,12 +29,21 @@ minimum_brightness = 0.39999999105930328
 [desktop_widgets]
 enabled = false
 schema_version = 2
-widget_order = []
+widget_order = [ "desktop-widget-0000000000000001" ]
 
     [desktop_widgets.grid]
     cell_size = 8
     major_interval = 4
     visible = true
+
+    [desktop_widgets.widget.desktop-widget-0000000000000001]
+    box_height = 144.0
+    box_width = 304.0
+    cx = 1752.0
+    cy = 124.0
+    output = "HDMI-A-1"
+    rotation = 0.0
+    type = "clock"
 
 [dock]
 enabled = true
@@ -112,8 +121,11 @@ force = true
 temperature_day = 5100
 temperature_night = 4600
 
+[plugin_settings."tadomika_ari/config-swap"]
+panel_placement = "attached"
+
 [plugins]
-enabled = [ "tadomika_ari/config-swap" ]
+enabled = [ "tadomika_ari/config-swap", "noctalia/bongocat" ]
 
 [shell]
 app_icon_color = "primary"
@@ -121,6 +133,9 @@ font_family = "JetBrainsMono Nerd Font"
 niri_overview_type_to_launch_enabled = true
 panel_anchor_bar = "default"
 polkit_agent = true
+
+    [shell.greeter_sync]
+    auto_sync = true
 
     [shell.launcher]
     categories = false
@@ -160,11 +175,12 @@ source = "wallpaper"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
-    builtin_ids = [ "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt" ]
     community_ids = [
         "opencode",
         "zen-browser",
         "discord",
+        "gimp",
         "neovim",
         "prismlauncher",
         "steam",
@@ -198,8 +214,15 @@ unit = "imperial"
 [widget.active_window]
 title_scroll = "on_hover"
 
+[widget.cat]
+type = "noctalia/bongocat:cat"
+
 [widget.clock]
-format = "%I:%M:%S %p  %A, %B %d"
+format = "%-I:%M:%S %p  %A, %B %d"
+
+[widget.control-center]
+enabled = false
+glyph = "hyprland"
 
 [widget.launcher]
 capsule_radius = "auto"
@@ -210,6 +233,9 @@ scale = 1.5
 
 [widget.network]
 show_label = false
+
+[widget.ram]
+stat = "ram_pct"
 
 [widget.tray]
 hidden = [ "Network", "Blueman" ]
