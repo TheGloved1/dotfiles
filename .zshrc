@@ -9,6 +9,9 @@ eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/theme.omp.json)"
 # Zoxide
 eval "$(zoxide init zsh)"
 
+# Mommy
+# precmd() { mommy -1 -s $? }
+
 # Zsh plugins (standalone, not tied to oh-my-zsh)
 source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -20,6 +23,7 @@ alias chmodx='chmod +x'
 alias exemake='chmod +x'
 alias neoconf="nvim $HOME/.config/nvim"
 alias ff="fastfetch"
+alias oc="opencode"
 
 # Git aliases (ported from oh-my-zsh git plugin)
 alias g='git'
@@ -437,6 +441,16 @@ dot() {
 
         if [[ ${#staged_files} -eq 0 ]]; then
           echo "No staged changes"
+          local ahead
+          ahead=$(yadm rev-list --count @{upstream}..HEAD 2>/dev/null)
+          if [[ "$ahead" =~ ^[0-9]+$ ]] && (( ahead > 0 )); then
+            echo "You have $ahead unpushed commit(s)"
+            echo "Push to remote? [Y/n]"
+            read -r "REPLY? > "
+            if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
+              yadm push
+            fi
+          fi
           return 0
         fi
 
@@ -508,3 +522,5 @@ tmux() {
     fi
   fi
 }
+
+. "$HOME/.local/share/../bin/env"
