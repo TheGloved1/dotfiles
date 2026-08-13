@@ -34,10 +34,10 @@ require("lazy").setup({
   },
   install = {
     colorscheme = {
-      "neopywal",
+      "mutagen",
+      "catppuccin",
       "tokyonight",
       "habamax",
-      "catppuccin",
     },
   },
   checker = {

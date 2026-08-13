@@ -12,3 +12,14 @@ map("n", "<leader>t", function()
 end, { desc = "Toggle terminal below" })
 map("n", "<F2>", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "<F3>", vim.lsp.buf.code_action, { desc = "Code actions" })
+
+-- Jump
+map({ "n", "x", "o" }, "s", "<Plug>leap")
+map("n", "S", "<Plug>(leap-from-window)")
+
+-- Visit (remote operations)
+map({ "n", "o" }, "gs", "<Plug>(leap-visit)")
+map({ "n", "o" }, "gS", "<Plug>(leap-visit-linewise)")
+map({ "x", "o" }, "ar", "<Plug>(leap-visit-text-object)")
+map({ "x", "o" }, "ir", "<Plug>(leap-visit-inner-text-object)")
+map({ "o" }, "rr", "<Plug>(leap-visit-line)")
