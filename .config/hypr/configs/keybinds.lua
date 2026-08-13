@@ -277,7 +277,7 @@ bind("SUPER + W", exec("noctalia msg panel-toggle wallpaper"), { description = "
 --  UTILITIES
 -- ============================================
 bind("SUPER + SHIFT + R", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
-bind("SUPER + ALT + E", exec('noctalia msg panel-toggle launcher "/emo"'), { description = "emoji menu" })
+bind("SUPER + ALT + E", exec('noctalia msg panel-toggle launcher "/emo "'), { description = "emoji menu" })
 bind("SUPER + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
 bind("SUPER + SHIFT + E", exec(script("QuickSettings.sh")), { description = "Quick settings menu" })
 
