@@ -5,17 +5,16 @@
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
-# Rofi SSH menu - list SSH hosts from ~/.ssh/config and connect.
+# SSH menu - list SSH hosts from ~/.ssh/config and connect via Noctalia dmenu.
 
 set -euo pipefail
 
 SSH_CONFIG="${HOME}/.ssh/config"
-ROFI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config.rasi"
 MSG='Select a host to connect via SSH'
 
 notify() {
   if command -v notify-send >/dev/null 2>&1; then
-    notify-send -u low "Rofi SSH" "$1"
+    notify-send -u low "SSH Menu" "$1"
   else
     printf '%s\n' "$1" >&2
   fi
@@ -85,12 +84,7 @@ menu_entries="$(
   done <<< "${host_entries}"
 )"
 
-# Close any existing rofi before launching
-if pgrep -x "rofi" >/dev/null 2>&1; then
-  pkill rofi
-fi
-
-selection="$(printf '%s\n' "${menu_entries}" | rofi -dmenu -i -p "SSH" -mesg "${MSG}" -config "${ROFI_CONFIG}")"
+selection="$(printf '%s\n' "${menu_entries}" | noctalia dmenu -p "SSH")"
 
 if [[ -z "${selection}" ]]; then
   exit 0

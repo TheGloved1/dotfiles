@@ -30,7 +30,6 @@ fi
 
 # 2) Fall back to AGS template
 if command -v ags >/dev/null 2>&1; then
-  pkill rofi || true
   if ags -t 'overview' >/dev/null 2>&1; then
     exit 0
   fi

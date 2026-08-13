@@ -32,17 +32,11 @@ if [[ -z "$Search_Engine" ]]; then
     exit 1
 fi
 
-# Rofi theme and message
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-search.rasi"
+# Noctalia dmenu prompt
 msg='‼️ **note** ‼️ search via default web browser'
 
-# Kill Rofi if already running before execution
-if pgrep -x "rofi" >/dev/null; then
-    pkill rofi
-fi
-
-# Open Rofi and pass the selected query to xdg-open for the configured search engine
-query=$(printf '' | rofi -dmenu -config "$rofi_theme" -mesg "$msg")
+# Open Noctalia dmenu and pass the selected query to xdg-open for the configured search engine
+query=$(printf '' | noctalia dmenu -p "$msg")
 
 if [[ -z "$query" ]]; then
     exit 0

@@ -5,21 +5,15 @@
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
-# searchable enabled keybinds using rofi (supports bindd descriptions)
+# searchable enabled keybinds using Noctalia dmenu (supports bindd descriptions)
 # Adapted for the pure-Lua config system (configs/keybinds.lua)
 
 # kill yad to not interfere with this binds
 pkill yad || true
 
-# check if rofi is already running
-if pidof rofi > /dev/null; then
-  pkill rofi
-fi
-
 config_home="${XDG_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
 hypr_dir="$config_home/hypr"
 keybinds_lua="$hypr_dir/configs/keybinds.lua"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-keybinds.rasi"
 msg='☣️ NOTE ☣️: Clicking with Mouse or Pressing ENTER will have NO function'
 
 display_keybinds=""
@@ -63,9 +57,9 @@ if [[ -z "$display_keybinds" ]]; then
   ' "$keybinds_lua" | sort -f -k1)
 fi
 
-# use rofi to display the keybinds
+# use noctalia dmenu to display the keybinds
 if [[ -n "$display_keybinds" ]]; then
-  printf '%s\n' "$display_keybinds" | rofi -dmenu -i -config "$rofi_theme" -mesg "$msg"
+  printf '%s\n' "$display_keybinds" | noctalia dmenu -p "Keybinds"
 else
   notify-send -u low -i "${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images/ja.png" "KeyBinds" "No keybinds found"
 fi

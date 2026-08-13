@@ -14,7 +14,6 @@ iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 # shellcheck source=/dev/null
 . "$scriptsDir/WallpaperCmd.sh" 2>/dev/null || true
 
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper.rasi"
 lock_cache_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects"
 lock_wallpaper_link="$lock_cache_dir/.hyprlock_current"
 lock_wallpaper_current="$lock_cache_dir/.wallpaper_current"
@@ -52,8 +51,8 @@ notify_ok() {
   fi
 }
 
-if ! command -v rofi >/dev/null 2>&1; then
-  notify_err "rofi not found"
+if ! command -v noctalia >/dev/null 2>&1; then
+  notify_err "noctalia not found"
   exit 1
 fi
 if ! command -v hyprctl >/dev/null 2>&1; then
@@ -155,12 +154,6 @@ fi
 per_monitor_rofi_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper_${focused_monitor}"
 per_monitor_wallpaper_current="$lock_cache_dir/.wallpaper_current_${focused_monitor}"
 
-scale_factor=$(hyprctl monitors -j | jq -r --arg mon "$focused_monitor" '.[] | select(.name == $mon) | .scale')
-monitor_height=$(hyprctl monitors -j | jq -r --arg mon "$focused_monitor" '.[] | select(.name == $mon) | .height')
-icon_size=$(echo "scale=1; ($monitor_height * 3) / ($scale_factor * 150)" | bc)
-adjusted_icon_size=$(echo "$icon_size" | awk '{if ($1 < 15) $1 = 20; if ($1 > 25) $1 = 25; print $1}')
-rofi_override="element-icon{size:${adjusted_icon_size}%;}"
-
 mapfile -d '' PICS < <(find -L "${wallDIR}" -type f \( \
   -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" -o \
   -iname "*.bmp" -o -iname "*.tiff" -o -iname "*.webp" -o \
@@ -209,36 +202,20 @@ if [ -n "$current_monitor_path" ]; then
   current_monitor_name="Current monitor: $(basename "$current_monitor_path")"
 fi
 
-rofi_command="rofi -i -show -dmenu -config $rofi_theme -theme-str $rofi_override"
+dmenu_command="noctalia dmenu -p Select-Hyprlock-Wallpaper"
 
 menu() {
   IFS=$'\n' sorted_options=($(sort <<<"${PICS[*]}"))
-  printf "%s\x00icon\x1f%s\n" "$RANDOM_PIC_NAME" "$RANDOM_PIC"
+  printf "%s\n" "$RANDOM_PIC_NAME"
   if [ -n "$current_monitor_name" ]; then
-    printf "%s\x00icon\x1f%s\n" "$current_monitor_name" "$current_monitor_path"
+    printf "%s\n" "$current_monitor_name"
   fi
   if [ -n "$current_lock_name" ]; then
-    printf "%s\x00icon\x1f%s\n" "$current_lock_name" "$current_lock_path"
+    printf "%s\n" "$current_lock_name"
   fi
   for pic_path in "${sorted_options[@]}"; do
     pic_name=$(basename "$pic_path")
-    if [[ "$pic_name" =~ \.gif$ ]]; then
-      cache_gif_image="$HOME/.cache/gif_preview/${pic_name}.png"
-      if [[ ! -f "$cache_gif_image" ]]; then
-        mkdir -p "$HOME/.cache/gif_preview"
-        magick "$pic_path[0]" -resize 1920x1080 "$cache_gif_image"
-      fi
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$cache_gif_image"
-    elif [[ "$pic_name" =~ \.(mp4|mkv|mov|webm|MP4|MKV|MOV|WEBM)$ ]]; then
-      cache_preview_image="$HOME/.cache/video_preview/${pic_name}.png"
-      if [[ ! -f "$cache_preview_image" ]]; then
-        mkdir -p "$HOME/.cache/video_preview"
-        ffmpeg -v error -y -i "$pic_path" -ss 00:00:01.000 -vframes 1 "$cache_preview_image"
-      fi
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$cache_preview_image"
-    else
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$pic_path"
-    fi
+    printf "%s\n" "$pic_name"
   done
 }
 
@@ -314,7 +291,7 @@ set_hyprlock_wallpaper() {
 }
 
 main() {
-  choice=$(menu | $rofi_command)
+  choice=$(menu | $dmenu_command)
   choice=$(echo "$choice" | xargs)
 
   if [[ -z "$choice" ]]; then
@@ -350,9 +327,5 @@ main() {
 
   set_hyprlock_wallpaper "$selected_file" "$focused_monitor" || exit 1
 }
-
-if pidof rofi >/dev/null; then
-  pkill rofi
-fi
 
 main

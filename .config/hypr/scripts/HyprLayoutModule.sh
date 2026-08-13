@@ -10,7 +10,6 @@
 IFS=$'\n\t'
 
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-rofi_config="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-layout.rasi"
 change_layout="${SCRIPTSDIR}/ChangeLayout.sh"
 layouts=(dwindle scrolling monocle master)
 
@@ -102,12 +101,7 @@ show_menu() {
 		options+=("${prefix}$(layout_icon "$layout")  $(layout_name "$layout")")
 	done
 
-	if pgrep -x rofi >/dev/null; then
-		pkill rofi
-		return 0
-	fi
-
-	choice="$(printf '%s\n' "${options[@]}" | rofi -i -dmenu -p "Workspace layout" -mesg "Select layout for this workspace" -selected-row "$default_row" -config "$rofi_config")"
+	choice="$(printf '%s\n' "${options[@]}" | noctalia dmenu -p "Workspace layout")"
 	[[ -z "$choice" ]] && exit 0
 
 	case "$choice" in

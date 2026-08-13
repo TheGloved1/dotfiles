@@ -200,23 +200,11 @@ generate_list() {
   done
 }
 
-# --- 6. rofi ---
-THEME="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config.rasi"
+# --- 6. pick a package with noctalia dmenu ---
+# The list keeps the │ separator so we can parse the package name out later.
+# Noctalia has no custom keybinds, so we choose the action in a second prompt.
+SELECTION=$(generate_list | noctalia dmenu -p "󰒓 Java runtimes")
 
-SELECTION=$(generate_list | rofi -dmenu -i \
-  -p "󰒓 Java" \
-  -config "$THEME" \
-  -theme-str '
-    window { width: 1400px; }
-    listview { scrollbar: true; }
-    inputbar { children: [ "prompt", "textbox-prompt-colon", "entry" ]; }
-    prompt { background-color: @selected; text-color: @background; padding: 4px 8px; border-radius: 4px; }
-    ' \
-  -kb-custom-1 "Alt+i" \
-  -kb-custom-2 "Alt+r" \
-  -mesg "<b>$ICON_ACTIVE</b> Default | <b>$ICON_INSTALLED</b> Installed | <b>Enter:</b> Set default | <b>Alt+I:</b> Install | <b>Alt+R:</b> Remove")
-
-EXIT_CODE=$?
 [ -z "$SELECTION" ] && exit 0
 
 # --- 7. Clean selection ---
@@ -231,15 +219,18 @@ if [ -z "$SEL_RAW_NUM" ]; then
   SEL_RAW_NUM="$LATEST_VERSION"
 fi
 
-# --- 8. Actions ---
-case $EXIT_CODE in
-0) # SET DEFAULT
+# --- 8. Action selection ---
+ACTION=$(printf "Set as default\nInstall\nRemove\nCancel" | noctalia dmenu -p "Action for $PKG_NAME")
+[ -z "$ACTION" ] && exit 0
+
+case "$ACTION" in
+"Set as default")
   set_default_java "$SEL_RAW_NUM"
   ;;
-10) # INSTALL
+"Install")
   install_pkg "$PKG_NAME"
   ;;
-11) # REMOVE
+"Remove")
   remove_pkg "$PKG_NAME"
   ;;
 esac

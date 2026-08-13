@@ -22,7 +22,8 @@ end
 bind("SUPER + Return", exec(script("LaunchTerminal.sh") .. " " .. term), { description = "Open terminal" })
 bind("SUPER + E", exec(script("LaunchFileManager.sh") .. " " .. files .. " " .. term), { description = "file manager" })
 bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default browser" })
-bind("SUPER + SPACE", exec("noctalia msg panel-toggle launcher"), { description = "App launcher" })
+bind("SUPER + SUPER_L", exec("noctalia msg panel-toggle launcher"), { description = "App launcher" })
+bind("SUPER + SPACE", exec("noctalia msg panel-toggle control-center home"), { description = "App launcher" })
 bind("SUPER + SHIFT + Return", exec(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
 bind("SUPER + slash", exec(script("KeyHints.sh")), { description = "Help / cheat sheet" })
 bind(
@@ -59,7 +60,6 @@ local blur_opaque_rule = hl.window_rule({
 	opaque = true,
 })
 blur_opaque_rule:set_enabled(false)
-
 bind("SUPER + ALT + O", function()
 	local enabled = hl.get_config("decoration.blur.enabled")
 	if enabled then
@@ -198,7 +198,6 @@ bind("SUPER + G", group.toggle(), { description = "toggle group" })
 -- ============================================
 bind("SUPER + Print", exec("noctalia msg screenshot-fullscreen"), { description = "screenshot now" })
 bind("SUPER + SHIFT + Print", exec("noctalia msg screenshot-region"), { description = "screenshot (area)" })
--- Caelestia has no delay/active-window/history equivalents; kept on custom script.
 bind("SUPER + CTRL + Print", exec(script("ScreenShot.sh --in5")), { description = "screenshot in 5s" })
 bind("SUPER + CTRL + SHIFT + Print", exec(script("ScreenShot.sh --in10")), { description = "screenshot in 10s" })
 bind("ALT + Print", exec(script("ScreenShot.sh --active")), { description = "screenshot active window" })
@@ -273,13 +272,7 @@ bind("XF86Rfkill", exec(script("AirplaneMode.sh")), { description = "airplane mo
 --  APPEARANCE / THEMES
 -- ============================================
 bind("SUPER + T", exec(script("ThemeChanger.sh")), { description = "Global theme switcher using Wallust" })
-bind("SUPER + CTRL + R", exec(script("RofiThemeSelector.sh")), { description = "rofi theme selector" })
-bind(
-	"SUPER + CTRL + SHIFT + R",
-	exec("pkill rofi || true && " .. script("RofiThemeSelector-modified.sh")),
-	{ description = "rofi theme selector (modified)" }
-)
-bind("SUPER + CTRL + SHIFT + K", exec(script("Kitty_themes.sh")), { description = "Kitty theme selector" })
+bind("SUPER + CTRL + R", exec("noctalia msg settings-open theme"), { description = "Noctalia theme settings" })
 bind("SUPER + SHIFT + R", exec(script("ZshChangeTheme.sh")), { description = "change oh-my-zsh theme" })
 bind("SUPER + SHIFT + A", exec(script("Animations.sh")), { description = "animations menu" })
 bind("SUPER + N", exec(script("Hyprsunset.sh toggle")), { description = "Toggle Hyprsunset - night light" })
@@ -287,31 +280,20 @@ bind("SUPER + N", exec(script("Hyprsunset.sh toggle")), { description = "Toggle 
 -- ============================================
 --  WALLPAPER
 -- ============================================
-bind("SUPER + W", exec(script("WallpaperSelect.sh")), { description = "select wallpaper" })
-bind("SUPER + SHIFT + W", exec(script("WallpaperEffects.sh")), { description = "wallpaper effects" })
-bind("CTRL + ALT + W", exec(script("WallpaperRandom.sh")), { description = "random wallpaper" })
-
--- ============================================
---  WAYBAR
--- ============================================
-bind("SUPER + CTRL + B", exec(script("WaybarStyles.sh")), { description = "waybar styles menu" })
-bind("SUPER + SHIFT + B", exec(script("WaybarReload.sh")), { description = "reload waybar" })
-bind("SUPER + ALT + B", exec(script("WaybarLayout.sh")), { description = "waybar layout menu" })
-bind("SUPER + CTRL + ALT + B", exec("pkill -SIGUSR1 waybar"), { description = "toggle waybar on/off" })
-bind("SUPER + CTRL + ALT + SHIFT + B", exec(script("WaybarStartup.sh")), { description = "waybar startup" })
+bind("SUPER + W", exec("noctalia msg panel-toggle wallpaper"), { description = "select wallpaper" })
 
 -- ============================================
 --  UTILITIES
 -- ============================================
 bind("SUPER + F5", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
 bind("SUPER + ALT + E", exec("pkill fuzzel || fuzzel --emoji"), { description = "emoji menu" })
-bind("SUPER + ALT + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
+bind("SUPER + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
 bind("SUPER + SHIFT + E", exec(script("QuickSettings.sh")), { description = "Quick settings menu" })
 bind("SUPER + SHIFT + G", exec(script("GameMode.sh")), { description = "toggle game mode" })
 bind("SUPER + SHIFT + M", exec(script("RofiBeats.sh")), { description = "online music" })
 
 -- ============================================
---  SCREEN RECORD (Caelestia)
+--  SCREEN RECORD
 -- ============================================
 bind(
 	"CTRL + ALT + R",
@@ -327,20 +309,6 @@ bind(
 	"SUPER + SHIFT + ALT + R",
 	exec("noctalia msg plugin noctalia/screen_recorder:service all start region"),
 	{ description = "record region" }
-)
-
--- ============================================
---  KEYBOARD LAYOUT
--- ============================================
-bind(
-	"ALT_L + SHIFT_L",
-	exec(script("KeyboardLayout.sh switch")),
-	{ description = "switch keyboard layout globally", locked = true }
-)
-bind(
-	"SHIFT_L + ALT_L",
-	exec(script("Tak0-Per-Window-Switch.sh")),
-	{ description = "switch keyboard layout per-window", locked = true }
 )
 
 -- ============================================

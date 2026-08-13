@@ -11,7 +11,6 @@ set -euo pipefail
 
 sDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
-ROFI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config.rasi"
 
 IMAGE="${1:-}"
 
@@ -45,10 +44,6 @@ if [[ -z "${text}" ]]; then
 	exit 1
 fi
 
-if pgrep -x "rofi" >/dev/null 2>&1; then
-	pkill rofi
-fi
-
 list="Copy ALL text"
 list+="\nOpen in editor"
 while IFS= read -r line; do
@@ -56,7 +51,7 @@ while IFS= read -r line; do
 	list+="\n${line}"
 done <<< "${text}"
 
-selection="$(printf '%b' "${list}" | rofi -dmenu -i -p "OCR Text" -config "${ROFI_CONFIG}")"
+selection="$(printf '%b' "${list}" | noctalia dmenu -p "OCR Text")"
 
 if [[ -z "${selection}" ]]; then
 	exit 0

@@ -11,7 +11,6 @@
 kitty_themes_DiR="${XDG_CONFIG_HOME:-$HOME/.config}/kitty/kitty-themes" # Kitty Themes Directory
 kitty_config="${XDG_CONFIG_HOME:-$HOME/.config}/kitty/kitty.conf"
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images" # For notifications
-rofi_theme_for_this_script="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-kitty-theme.rasi"
 wallust_refresh_script="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/WallustSwww.sh"
 debug_log="${XDG_CACHE_HOME:-$HOME/.cache}/kooldots-kitty-themes.log"
 
@@ -26,25 +25,25 @@ log_debug() {
 }
 
 resolve_theme_selection() {
-  local rofi_output="$1"
+  local selection="$1"
   local idx
 
-  rofi_output="${rofi_output//$'\r'/}"
-  rofi_output="${rofi_output//$'\n'/}"
-
-  if [[ "$rofi_output" =~ ^[0-9]+$ ]] && [ "$rofi_output" -lt "${#available_theme_names[@]}" ]; then
-    current_selection_index="$rofi_output"
-    theme_to_preview_now="${available_theme_names[$current_selection_index]}"
-    return 0
-  fi
+  selection="${selection//$'\r'/}"
+  selection="${selection//$'\n'/}"
 
   for idx in "${!available_theme_names[@]}"; do
-    if [[ "${available_theme_names[$idx]}" == "$rofi_output" ]]; then
+    if [[ "${available_theme_names[$idx]}" == "$selection" ]]; then
       current_selection_index="$idx"
       theme_to_preview_now="${available_theme_names[$current_selection_index]}"
       return 0
     fi
   done
+
+  if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -lt "${#available_theme_names[@]}" ]; then
+    current_selection_index="$selection"
+    theme_to_preview_now="${available_theme_names[$current_selection_index]}"
+    return 0
+  fi
 
   return 1
 }
@@ -122,11 +121,6 @@ if [ ! -d "$kitty_themes_DiR" ]; then
   exit 1
 fi
 
-if [ ! -f "$rofi_theme_for_this_script" ]; then
-  notify_user "$iDIR/error.png" "Rofi Config Missing" "Rofi theme for Kitty selector not found at: $rofi_theme_for_this_script."
-  exit 1
-fi
-
 original_kitty_config_content_backup=$(cat "$kitty_config")
 
 mapfile -t available_theme_names < <(find "$kitty_themes_DiR" -maxdepth 1 -name "*.conf" -type f -printf "%f\n" | sed 's/\.conf$//' | grep -v -E '^(00-Default|01-Wallust)$' | sort)
@@ -155,57 +149,52 @@ if [ -n "$current_active_theme_name" ]; then
 fi
 theme_to_preview_now="${available_theme_names[$current_selection_index]}"
 
-while true; do
-
-  rofi_input_list=""
-  for theme_name_in_list in "${available_theme_names[@]}"; do
-    rofi_input_list+="$theme_name_in_list\n"
-  done
-  rofi_input_list_trimmed="${rofi_input_list%\\n}"
-
-  chosen_selection_from_rofi=$(echo -e "$rofi_input_list_trimmed" |
-    rofi -dmenu -i \
-      -no-custom \
-      -format 'i' \
-      -p "Kitty Theme" \
-      -mesg "Enter: Preview | Ctrl+S (or Alt+1): Apply & Exit | Esc: Cancel" \
-      -config "$rofi_theme_for_this_script" \
-      -selected-row "$current_selection_index" \
-      -kb-custom-1 "Control+s,Control+S,Alt+1")
-
-  rofi_exit_code=$?
-  log_debug "rofi_exit=$rofi_exit_code rofi_output='${chosen_selection_from_rofi}' current_index=$current_selection_index current_theme='${available_theme_names[$current_selection_index]}'"
-
-  if [ $rofi_exit_code -eq 0 ]; then
-    if resolve_theme_selection "$chosen_selection_from_rofi"; then
-      log_debug "resolved_enter index=$current_selection_index theme='${theme_to_preview_now}'"
-      if ! apply_kitty_theme_to_config "$theme_to_preview_now" "preview"; then
-        echo "$original_kitty_config_content_backup" >"$kitty_config"
-        for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
-        notify_user "$iDIR/error.png" "Preview Error" "Failed to apply $theme_to_preview_now. Reverted."
-        exit 1
-      fi
-      continue
-    else
-      :
-    fi
-  elif [ $rofi_exit_code -eq 1 ]; then
-    notify_user "$iDIR/note.png" "Kitty Theme" "Selection cancelled. Reverting to original theme."
-    echo "$original_kitty_config_content_backup" >"$kitty_config"
-    for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
-    break
-  elif [ $rofi_exit_code -ge 10 ] && [ $rofi_exit_code -le 28 ]; then # custom keybindings
-    resolve_theme_selection "$chosen_selection_from_rofi" || true
-    log_debug "resolved_custom index=$current_selection_index theme='${theme_to_preview_now}' exit=$rofi_exit_code"
-    apply_kitty_theme_to_config "$theme_to_preview_now" "apply"
-    notify_user "$iDIR/ja.png" "Kitty Theme Applied" "$theme_to_preview_now"
-    break
-  else
-    notify_user "$iDIR/error.png" "Rofi Error" "Unexpected Rofi exit ($rofi_exit_code). Reverting."
-    echo "$original_kitty_config_content_backup" >"$kitty_config"
-    for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
+# mark the active theme so noctalia shows it
+MARKER="👉"
+display_list=("${available_theme_names[@]}")
+for i in "${!display_list[@]}"; do
+  if [[ "${display_list[$i]}" == "$current_active_theme_name" ]]; then
+    display_list[$i]="$MARKER ${display_list[$i]}"
     break
   fi
 done
+
+# pick a theme with noctalia dmenu
+chosen_selection=$(printf "%s\n" "${display_list[@]}" | noctalia dmenu -p "Kitty Theme")
+
+if [ -z "$chosen_selection" ]; then
+  notify_user "$iDIR/note.png" "Kitty Theme" "Selection cancelled. Reverting to original theme."
+  echo "$original_kitty_config_content_backup" >"$kitty_config"
+  for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
+  exit 0
+fi
+
+# strip the marker
+chosen_selection="${chosen_selection#"$MARKER "}"
+if ! resolve_theme_selection "$chosen_selection"; then
+  notify_user "$iDIR/error.png" "Rofi Error" "Unexpected selection '$chosen_selection'. Reverting."
+  echo "$original_kitty_config_content_backup" >"$kitty_config"
+  for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
+  exit 1
+fi
+
+# choose what to do with the selected theme
+action=$(printf "Preview theme\nApply & Exit\nCancel" | noctalia dmenu -p "Kitty Theme: $theme_to_preview_now")
+case "$action" in
+  "Apply & Exit")
+    log_debug "resolved_custom theme='${theme_to_preview_now}'"
+    apply_kitty_theme_to_config "$theme_to_preview_now" "apply"
+    notify_user "$iDIR/ja.png" "Kitty Theme Applied" "$theme_to_preview_now"
+    ;;
+  "Preview theme")
+    log_debug "resolved_enter theme='${theme_to_preview_now}'"
+    apply_kitty_theme_to_config "$theme_to_preview_now" "preview"
+    ;;
+  *)
+    notify_user "$iDIR/note.png" "Kitty Theme" "Selection cancelled. Reverting to original theme."
+    echo "$original_kitty_config_content_backup" >"$kitty_config"
+    for pid_kitty in $(pidof kitty); do if [ -n "$pid_kitty" ]; then kill -SIGUSR1 "$pid_kitty"; fi; done
+    ;;
+esac
 
 exit 0

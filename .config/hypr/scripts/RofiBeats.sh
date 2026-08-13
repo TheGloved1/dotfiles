@@ -9,8 +9,6 @@
 
 mDIR="$HOME/Music/"
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-rofi-Beats.rasi"
-rofi_theme_menu="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-rofi-Beats-menu.rasi"
 music_list="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/online_music.list"
 
 mkdir -p "$(dirname "$music_list")"
@@ -51,8 +49,7 @@ populate_local_music() {
 # Play selected local music file
 play_local_music() {
   populate_local_music
-  choice=$(printf "%s\n" "${filenames[@]}" | rofi -i -dmenu -config "$rofi_theme" \
-    -theme-str 'entry { placeholder: "🎵 Choose Local Music"; }')
+  choice=$(printf "%s\n" "${filenames[@]}" | noctalia dmenu -p "🎵 Choose Local Music")
   [[ -z "$choice" ]] && exit 1
   for ((i = 0; i < "${#filenames[@]}"; ++i)); do
     if [ "${filenames[$i]}" = "$choice" ]; then
@@ -77,8 +74,7 @@ play_online_music() {
     notify-send -u low -i "$iDIR/music.png" "No online music found" "Add some with Manage Music"
     exit 0
   fi
-  choice=$(awk -F'|' '{print $1}' "$music_list" | sort | rofi -i -dmenu -config "$rofi_theme" \
-    -theme-str 'entry { placeholder: "🌐 Choose Online Station"; }')
+  choice=$(awk -F'|' '{print $1}' "$music_list" | sort | noctalia dmenu -p "🌐 Choose Online Station")
   [[ -z "$choice" ]] && exit 1
   link=$(awk -F'|' -v name="$choice" '$1 == name {print $2; exit}' "$music_list")
   [[ -z "$link" ]] && {
@@ -92,32 +88,26 @@ play_online_music() {
 
 # Manage online music list (add, remove, view)
 manage_music() {
-  sub_choice=$(printf "Add Music\nRemove Music\nView List" | rofi -dmenu \
-    -config "$rofi_theme_menu" \
-    -theme-str 'entry { placeholder: "🛠️ Manage Music List"; }')
+  sub_choice=$(printf "Add Music\nRemove Music\nView List" | noctalia dmenu -p "🛠️ Manage Music List")
 
   case "$sub_choice" in
   "Add Music")
-    name=$(rofi -dmenu -lines 0 -config "$rofi_theme_menu" \
-      -theme-str 'entry { placeholder: "🎼 Enter Music Title"; }')
+    name=$(printf '' | noctalia dmenu -p "🎼 Enter Music Title")
     [[ -z "$name" ]] && return
-    url=$(rofi -dmenu -lines 0 -config "$rofi_theme_menu" \
-      -theme-str 'entry { placeholder: "🔗 Enter Music URL"; }')
+    url=$(printf '' | noctalia dmenu -p "🔗 Enter Music URL")
     [[ -z "$url" ]] && return
     echo "$name|$url" >>"$music_list"
     notification "Added" "$name"
     ;;
   "Remove Music")
-    entry=$(awk -F'|' '{print $1}' "$music_list" | rofi -dmenu -config "$rofi_theme_menu" \
-      -theme-str 'entry { placeholder: "🗑️ Select Music to Remove"; }')
+    entry=$(awk -F'|' '{print $1}' "$music_list" | noctalia dmenu -p "🗑️ Select Music to Remove")
     [[ -z "$entry" ]] && return
     grep -vF "$entry" "$music_list" >"$music_list.tmp" && mv "$music_list.tmp" "$music_list"
     notification "Removed" "$entry"
     ;;
   "View List")
     # Show only titles, not URLs
-    awk -F'|' '{print $1}' "$music_list" | rofi -dmenu -config "$rofi_theme_menu" \
-      -theme-str 'entry { placeholder: "📜 Online Music List"; }' >/dev/null
+    awk -F'|' '{print $1}' "$music_list" | noctalia dmenu -p "📜 Online Music List" >/dev/null
     ;;
   esac
 }
@@ -129,8 +119,7 @@ user_choice=$(printf "%s\n" \
   "Shuffle Play from Music directory" \
   "Stop RofiBeats" \
   "Manage Music List" |
-  rofi -dmenu -config "$rofi_theme_menu" \
-    -theme-str 'entry { placeholder: "🎧 RofiBeats Menu"; }')
+  noctalia dmenu -p "🎧 RofiBeats Menu")
 
 case "$user_choice" in
 "Play from Online Stations") play_online_music ;;

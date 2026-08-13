@@ -27,7 +27,7 @@ require() {
 }
 
 require wallust
-require rofi
+require noctalia
 
 # notify-send is optional
 have_notify() { command -v notify-send >/dev/null 2>&1; }
@@ -151,9 +151,9 @@ apply_hypr_border_fallback() {
 # Prompt for theme; guard -e on cancel
 set +e
 if [ -s "$theme_cache" ]; then
-  choice="$(rofi -dmenu -i -p 'Select Global Theme' <"$theme_cache")"
+  choice="$(noctalia dmenu -p 'Select Global Theme' <"$theme_cache")"
 else
-  choice="$(build_theme_list | rofi -dmenu -i -p 'Select Global Theme')"
+  choice="$(build_theme_list | noctalia dmenu -p 'Select Global Theme')"
 fi
 prompt_status=$?
 set -e

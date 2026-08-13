@@ -3,7 +3,6 @@ BACKEND=wayland
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/hypr"
 CACHE_FILE="$CACHE_DIR/keybinds.cache"
 
-if pidof rofi >/dev/null; then pkill rofi; fi
 if pidof yad >/dev/null; then pkill yad; fi
 
 NEED_REBUILD=1

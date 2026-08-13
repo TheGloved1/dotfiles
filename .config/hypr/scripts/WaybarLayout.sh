@@ -13,7 +13,6 @@ IFS=$'\n\t'
 waybar_layouts="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/configs"
 waybar_config="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/config"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-rofi_config="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-waybar-layout.rasi"
 msg=' 🎌 NOTE: Some waybar LAYOUT NOT fully compatible with some STYLES'
 
 # Apply selected configuration
@@ -43,12 +42,9 @@ main() {
         fi
     done
 
-    # Launch rofi with the annotated list, pre‑selecting the active row
+    # Launch noctalia dmenu with the annotated list, keeping the active-row marker
     choice=$(printf '%s\n' "${options[@]}" \
-        | rofi -i -dmenu \
-               -config "$rofi_config" \
-               -mesg "$msg" \
-               -selected-row "$default_row"
+        | noctalia dmenu -p "Select Waybar Layout"
     )
 
     # Exit if nothing chosen
@@ -66,11 +62,5 @@ main() {
             ;;
     esac
 }
-
-# Kill Rofi if already running before execution
-if pgrep -x "rofi" >/dev/null; then
-    pkill rofi
-    #exit 0
-fi
 
 main

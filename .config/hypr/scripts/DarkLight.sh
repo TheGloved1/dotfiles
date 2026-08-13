@@ -87,7 +87,7 @@ EOF
 done
 
 # intial kill process
-for pid in waybar rofi ags swaybg; do
+for pid in waybar ags swaybg; do
     killall -SIGUSR1 "$pid"
 done
 
@@ -311,7 +311,7 @@ ${SCRIPTSDIR}/WallustSwww.sh &&
 
 sleep 2
 # kill process
-for pid1 in waybar rofi ags swaybg; do
+for pid1 in waybar ags swaybg; do
     killall "$pid1"
 done
 

@@ -9,8 +9,6 @@
 
 config_file="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config"
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
-rofi_theme_primary="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-ghostty-theme.rasi"
-rofi_theme_fallback="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-edit.rasi"
 wallust_include_path="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/wallust.conf"
 wallust_option_label="Set by wallpaper"
 default_option_label="Default - no color"
@@ -37,13 +35,6 @@ refresh_wallpaper_theme() {
 if [[ ! -f "$config_file" ]]; then
   notify_user "$iDIR/error.png" "Ghostty Theme" "Config not found: $config_file"
   exit 1
-fi
-
-rofi_config_args=()
-if [[ -f "$rofi_theme_primary" ]]; then
-  rofi_config_args=(-config "$rofi_theme_primary")
-elif [[ -f "$rofi_theme_fallback" ]]; then
-  rofi_config_args=(-config "$rofi_theme_fallback")
 fi
 
 current_theme=$(
@@ -97,7 +88,7 @@ fi
 
 choice=$(
   printf "%s\n" "${menu_entries[@]}" |
-    rofi -i -dmenu -p "Ghostty Theme" "${rofi_config_args[@]}" -mesg "Select a theme to apply" -selected-row "$current_selection_index"
+    noctalia dmenu -p "Ghostty Theme"
 )
 
 [[ -z "$choice" ]] && exit 0

@@ -7,16 +7,10 @@
 # ==================================================
 # For applying Animations from different users
 
-# Check if rofi is already running
-if pidof rofi > /dev/null; then
-  pkill rofi
-fi
-
 # Variables
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 animations_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/animations"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-Animations.rasi"
 
 # Pure-Lua config system: presets are copied into configs/animations.lua
 animation_ext="lua"
@@ -31,8 +25,8 @@ if [[ -z "$animations_list" ]]; then
     exit 0
 fi
 
-# Rofi Menu
-chosen_file=$(echo "$animations_list" | rofi -i -dmenu -config "$rofi_theme" -mesg "$msg")
+# Noctalia menu
+chosen_file=$(echo "$animations_list" | noctalia dmenu -p "$msg")
 
 # Check if a file was selected
 if [[ -n "$chosen_file" ]]; then

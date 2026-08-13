@@ -20,7 +20,6 @@ focused_monitor=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')
 per_monitor_wallpaper_base="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_base_${focused_monitor}"
 per_monitor_wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_current_${focused_monitor}"
 per_monitor_wallpaper_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper_${focused_monitor}"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper-effect.rasi"
 
 # Directory for notification icons
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
@@ -84,15 +83,15 @@ no-effects() {
     cp "$wallpaper_base" "$wallpaper_output"
 }
 
-# Function to run rofi menu
+# Function to run the wallpaper effects menu
 main() {
-    # Populate rofi menu options
+    # Populate menu options
     options=("No Effects")
     for effect in "${!effects[@]}"; do
         [[ "$effect" != "No Effects" ]] && options+=("$effect")
     done
 
-    choice=$(printf "%s\n" "${options[@]}" | LC_COLLATE=C sort | rofi -dmenu -i -config $rofi_theme)
+    choice=$(printf "%s\n" "${options[@]}" | LC_COLLATE=C sort | noctalia dmenu -p "Wallpaper Effects")
 
     # Process user choice
     if [[ -n "$choice" ]]; then
@@ -129,11 +128,6 @@ main() {
         fi
     fi
 }
-
-# Check if rofi is already running and kill it
-if pidof rofi > /dev/null; then
-    pkill rofi
-fi
 
 main
 

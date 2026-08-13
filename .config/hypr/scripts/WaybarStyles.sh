@@ -13,7 +13,6 @@ IFS=$'\n\t'
 waybar_styles="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/style"
 waybar_style="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/style.css"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
-rofi_config="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-waybar-style.rasi"
 msg=' 🎌 NOTE: Some waybar STYLES NOT fully compatible with some LAYOUTS'
 
 # Apply selected style
@@ -45,12 +44,9 @@ main() {
         fi
     done
 
-    # launch rofi with the annotated list and pre‑selected row
+    # launch noctalia dmenu with the annotated list, keeping the active-row marker
     choice=$(printf '%s\n' "${options[@]}" \
-        | rofi -i -dmenu \
-               -config "$rofi_config" \
-               -mesg "$msg" \
-               -selected-row "$default_row"
+        | noctalia dmenu -p "Select Waybar Style"
     )
 
     [[ -z "$choice" ]] && { echo "No option selected. Exiting."; exit 0; }
@@ -59,11 +55,5 @@ main() {
     choice=${choice#"$MARKER "}
     apply_style "$choice"
 }
-
-# Kill Rofi if already running before execution
-if pgrep -x "rofi" >/dev/null; then
-    pkill rofi
-    #exit 0
-fi
 
 main

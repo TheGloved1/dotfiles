@@ -20,7 +20,7 @@ file_exists() {
 }
 
 # Kill already running processes (exclude waybar to avoid double reloads)
-_ps=(rofi ags)
+_ps=(ags)
 for _prs in "${_ps[@]}"; do
   if pidof "${_prs}" >/dev/null; then
     pkill "${_prs}"
@@ -38,7 +38,7 @@ ags -q && ags &
 pkill qs && qs &
 
 # some process to kill (exclude waybar to avoid restart loops)
-for pid in $(pidof rofi ags swaybg); do
+for pid in $(pidof ags swaybg); do
   kill -SIGUSR1 "$pid"
   sleep 0.1
 done

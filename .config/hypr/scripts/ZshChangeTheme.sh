@@ -12,7 +12,6 @@
 
 # Variables
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-zsh-theme.rasi"
 
 if [ -n "$(grep -i nixos < /etc/os-release)" ]; then
   notify-send -i "$iDIR/note.png" "NOT Supported" "Sorry NixOS does not support this KooL feature"
@@ -28,8 +27,6 @@ themes_array=($(find -L "$themes_dir" -type f -name "*$file_extension" -exec bas
 # Add "Random" option to the beginning of the array
 themes_array=("Random" "${themes_array[@]}")
 
-rofi_command="rofi -i -dmenu -config $rofi_theme"
-
 menu() {
     for theme in "${themes_array[@]}"; do
         echo "$theme"
@@ -37,7 +34,7 @@ menu() {
 }
 
 main() {
-    choice=$(menu | ${rofi_command})
+    choice=$(menu | noctalia dmenu -p "Select OMZ Theme")
 
     # if nothing selected, script won't change anything
     if [ -z "$choice" ]; then
@@ -65,10 +62,5 @@ main() {
         notify-send -i "$iDIR/error.png" "E-R-R-O-R" "~.zshrc file not found!"
     fi
 }
-
-# Check if rofi is already running
-if pidof rofi > /dev/null; then
-  pkill rofi
-fi
 
 main

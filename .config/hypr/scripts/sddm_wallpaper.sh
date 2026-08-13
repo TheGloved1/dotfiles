@@ -15,7 +15,6 @@ SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 wallpaper_link="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/.current_wallpaper"
 wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_current"
 wallpaper_modified="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_modified"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper.rasi"
 # Directory for notification icons
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 iDIRi="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/icons"
@@ -117,38 +116,6 @@ read_wallpaper_from_cache() {
 
     [[ -n "$path" && -f "$path" ]] || return 1
     printf '%s\n' "$path"
-}
-
-calculate_rofi_icon_size() {
-    local monitor="$1"
-    local scale_factor=""
-    local monitor_height=""
-    local icon_size=""
-    local adjusted_icon_size=""
-
-    if [[ -z "$monitor" ]]; then
-        monitor="$(get_focused_monitor 2>/dev/null || true)"
-    fi
-
-    if [[ -z "$monitor" ]]; then
-        printf '22\n'
-        return 0
-    fi
-
-    if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1 && command -v bc >/dev/null 2>&1; then
-        scale_factor="$(hyprctl monitors -j 2>/dev/null | jq -r --arg mon "$monitor" '.[] | select(.name == $mon) | .scale' | head -n1)"
-        monitor_height="$(hyprctl monitors -j 2>/dev/null | jq -r --arg mon "$monitor" '.[] | select(.name == $mon) | .height' | head -n1)"
-        if [[ -n "$scale_factor" && -n "$monitor_height" && "$scale_factor" != "null" && "$monitor_height" =~ ^[0-9]+$ ]]; then
-            icon_size="$(echo "scale=1; ($monitor_height * 3) / ($scale_factor * 150)" | bc 2>/dev/null || true)"
-            adjusted_icon_size="$(echo "$icon_size" | awk '{if ($1 < 15) $1 = 20; if ($1 > 25) $1 = 25; print int($1)}')"
-            if [[ "$adjusted_icon_size" =~ ^[0-9]+$ ]]; then
-                printf '%s\n' "$adjusted_icon_size"
-                return 0
-            fi
-        fi
-    fi
-
-    printf '22\n'
 }
 
 resolve_link_or_file() {
@@ -372,8 +339,8 @@ if [[ ! -d "$wallDIR" ]]; then
     notify_err "Wallpaper directory not found ($wallDIR)."
     exit 1
 fi
-if ! command -v rofi >/dev/null 2>&1; then
-    notify_err "rofi not found."
+if ! command -v noctalia >/dev/null 2>&1; then
+    notify_err "noctalia not found."
     exit 1
 fi
 if ! command -v "$terminal" >/dev/null 2>&1; then
@@ -465,52 +432,27 @@ if command -v ffmpeg >/dev/null 2>&1; then
     has_ffmpeg=1
 fi
 
-menu_message="Select SDDM wallpaper"
-if [[ -n "$target_monitor" ]]; then
-    menu_message="Select SDDM wallpaper for $target_monitor"
-fi
-rofi_icon_size="$(calculate_rofi_icon_size "$target_monitor")"
-rofi_override="element-icon{size:${rofi_icon_size}%;}"
-
 menu() {
     local -a sorted_options=()
-    local pic_path pic_name cache_preview_image
+    local pic_path pic_name
 
     mapfile -t sorted_options < <(printf '%s\n' "${WALLPAPERS[@]}" | sort)
 
-    printf "%s\x00icon\x1f%s\n" "$random_label" "$random_wallpaper"
+    printf "%s\n" "$random_label"
     if [[ -n "$current_monitor_label" && -n "$current_monitor_path" ]]; then
-        printf "%s\x00icon\x1f%s\n" "$current_monitor_label" "$current_monitor_path"
+        printf "%s\n" "$current_monitor_label"
     fi
     if [[ -n "$current_sddm_label" && -n "$current_sddm_path" ]]; then
-        printf "%s\x00icon\x1f%s\n" "$current_sddm_label" "$current_sddm_path"
+        printf "%s\n" "$current_sddm_label"
     fi
 
     for pic_path in "${sorted_options[@]}"; do
         pic_name="$(basename "$pic_path")"
-        if [[ "$pic_name" =~ \.(mp4|mkv|mov|webm|MP4|MKV|MOV|WEBM)$ ]]; then
-            cache_preview_image="$video_preview_cache/${pic_name}.png"
-            if [[ ! -f "$cache_preview_image" && "$has_ffmpeg" -eq 1 ]]; then
-                mkdir -p "$video_preview_cache"
-                ffmpeg -v error -y -i "$pic_path" -ss 00:00:01.000 -vframes 1 "$cache_preview_image" >/dev/null 2>&1 || true
-            fi
-            if [[ -f "$cache_preview_image" ]]; then
-                printf "%s\x00icon\x1f%s\n" "$pic_name" "$cache_preview_image"
-            else
-                printf "%s\n" "$pic_name"
-            fi
-        else
-            printf "%s\x00icon\x1f%s\n" "$pic_name" "$pic_path"
-        fi
+        printf "%s\n" "$pic_name"
     done
 }
 
-rofi_cmd=(rofi -i -show -dmenu -mesg "$menu_message" -theme-str "$rofi_override")
-if [[ -f "$rofi_theme" ]]; then
-    rofi_cmd+=(-config "$rofi_theme")
-fi
-
-choice="$(menu | "${rofi_cmd[@]}")"
+choice="$(menu | noctalia dmenu -p "Select SDDM wallpaper${target_monitor:+ for $target_monitor}")"
 choice="${choice#"${choice%%[![:space:]]*}"}"
 choice="${choice%"${choice##*[![:space:]]}"}"
 

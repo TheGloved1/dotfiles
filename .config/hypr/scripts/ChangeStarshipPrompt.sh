@@ -12,16 +12,10 @@ STARSHIP_DIR="$CONFIG_HOME/starship"
 HYPR_STARSHIP_DIR="$CONFIG_HOME/hypr/starship"
 STARSHIP_CONFIG="$CONFIG_HOME/starship.toml"
 BACKUP_FILE="$STARSHIP_CONFIG.original"
-ROFI_THEME="$CONFIG_HOME/rofi/config-starship.rasi"
 RESTORE_LABEL="Retore orignal prompt"
 
 if ! command -v starship >/dev/null 2>&1; then
   echo "starship is not installed"
-  exit 1
-fi
-
-if [[ ! -f "$ROFI_THEME" ]]; then
-  echo "Rofi theme not found: $ROFI_THEME"
   exit 1
 fi
 
@@ -42,7 +36,7 @@ if [[ -f "$BACKUP_FILE" ]]; then
   rofi_options+=("$RESTORE_LABEL")
 fi
 
-selection="$(printf '%s\n' "${rofi_options[@]}" | rofi -dmenu -i -p "Select Starship Prompt" -mesg "Select Starship Prompt" -theme "$ROFI_THEME")"
+selection="$(printf '%s\n' "${rofi_options[@]}" | noctalia dmenu -p "Select Starship Prompt")"
 
 if [[ -z "$selection" ]]; then
   exit 0

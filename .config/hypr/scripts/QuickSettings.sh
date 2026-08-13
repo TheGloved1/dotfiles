@@ -30,7 +30,6 @@ fi
 
 # variables
 configs="$hypr_dir/configs"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-edit.rasi"
 msg=' ⁉️ Choose what to do ⁉️'
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 scriptsDir="$hypr_dir/scripts"
@@ -133,7 +132,6 @@ QT Apps Settings (qt5ct)
 Set Hyprlock Wallpaper
 Choose Hyprland Animations
 Choose Monitor Profiles
-Choose Rofi Themes
 Search for Keybinds
 Toggle Waybar Weather units (C/F)
 Toggle Waybar Clock (12H/24H)
@@ -146,7 +144,7 @@ EOF
 main() {
     local quick_settings_monitor
     quick_settings_monitor="$(get_context_monitor_name)"
-    choice=$(menu | rofi -i -dmenu -config $rofi_theme -mesg "$msg")
+    choice=$(menu | noctalia dmenu -p "$msg")
     
     # Map choices to corresponding files
     case "$choice" in
@@ -211,7 +209,6 @@ main() {
             ;;
         "Choose Hyprland Animations") $scriptsDir/Animations.sh ;;
         "Choose Monitor Profiles") $scriptsDir/MonitorProfiles.sh ;;
-        "Choose Rofi Themes") $scriptsDir/RofiThemeSelector.sh ;;
         "Search for Keybinds") $scriptsDir/KeyBinds.sh ;;
         "Toggle Waybar Weather units (C/F)") $scriptsDir/Toggle-weather-waybar-units.sh ;;
         "Toggle Waybar Clock (12H/24H)") $scriptsDir/ToggleWaybarTime.sh ;;
@@ -236,10 +233,5 @@ main() {
         fi
     fi
 }
-
-# Check if rofi is already running
-if pidof rofi > /dev/null; then
-  pkill rofi
-fi
 
 main

@@ -7,11 +7,6 @@
 # ==================================================
 # For applying Pre-configured Monitor Profiles
 
-# Check if rofi is already running
-if pidof rofi > /dev/null; then
-  pkill rofi
-fi
-
 # Pure-Lua config system: profiles are copied into configs/monitors.lua
 
 # Variables
@@ -19,7 +14,6 @@ iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 SCRIPTSDIR="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
 monitor_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/Monitor_Profiles"
 target="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/monitors.lua"
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-Monitors.rasi"
 
 profile_ext="lua"
 msg="❗NOTE:❗ This will overwrite ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/monitors.lua"
@@ -41,8 +35,8 @@ if [[ -z "$mon_profiles_list" ]]; then
     exit 1
 fi
 
-# Rofi Menu
-chosen_file=$(echo "$mon_profiles_list" | rofi -i -dmenu -config "$rofi_theme" -mesg "$msg")
+# Noctalia Menu
+chosen_file=$(echo "$mon_profiles_list" | noctalia dmenu -p "$msg")
 
 if [[ -n "$chosen_file" ]]; then
     full_path="$monitor_dir/$chosen_file.$profile_ext"

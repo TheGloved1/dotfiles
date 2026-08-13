@@ -41,7 +41,6 @@ if ! command -v bc &>/dev/null; then
 fi
 
 # Variables
-rofi_theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/config-wallpaper.rasi"
 focused_monitor=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')
 
 per_monitor_wallpaper_current="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallpaper_effects/.wallpaper_current_${focused_monitor}"
@@ -57,10 +56,6 @@ fi
 # Monitor details
 scale_factor=$(hyprctl monitors -j | jq -r --arg mon "$focused_monitor" '.[] | select(.name == $mon) | .scale')
 monitor_height=$(hyprctl monitors -j | jq -r --arg mon "$focused_monitor" '.[] | select(.name == $mon) | .height')
-
-icon_size=$(echo "scale=1; ($monitor_height * 3) / ($scale_factor * 150)" | bc)
-adjusted_icon_size=$(echo "$icon_size" | awk '{if ($1 < 15) $1 = 20; if ($1 > 25) $1 = 25; print $1}')
-rofi_override="element-icon{size:${adjusted_icon_size}%;}"
 
 # Kill existing wallpaper daemons for video on the focused monitor only
 kill_wallpaper_for_video() {
@@ -93,37 +88,21 @@ if [[ -z "$CURRENT_MON_PIC_PATH" ]]; then
 fi
 CURRENT_MON_PIC_NAME=$(basename "$CURRENT_MON_PIC_PATH")
 
-# Rofi command
-rofi_command="rofi -i -show -dmenu -config $rofi_theme -theme-str $rofi_override"
+# Noctalia dmenu command
+dmenu_command="noctalia dmenu -p Select-Wallpaper"
 
 # Sorting Wallpapers
 menu() {
   IFS=$'\n' sorted_options=($(sort <<<"${PICS[*]}"))
 
-  printf "%s\x00icon\x1f%s\n" "Random: $RANDOM_PIC_NAME" "$RANDOM_PIC"
+  # Noctalia does not support rofi's \x00icon markup, show names only
+  printf "Random: %s\n" "$RANDOM_PIC_NAME"
   if [[ -n "$CURRENT_MON_PIC_PATH" ]]; then
-    printf "%s\x00icon\x1f%s\n" "Current: $CURRENT_MON_PIC_NAME" "$CURRENT_MON_PIC_PATH"
+    printf "Current: %s\n" "$CURRENT_MON_PIC_NAME"
   fi
 
   for pic_path in "${sorted_options[@]}"; do
-    pic_name=$(basename "$pic_path")
-    if [[ "$pic_name" =~ \.gif$ ]]; then
-      cache_gif_image="$HOME/.cache/gif_preview/${pic_name}.png"
-      if [[ ! -f "$cache_gif_image" ]]; then
-        mkdir -p "$HOME/.cache/gif_preview"
-        magick "$pic_path[0]" -resize 1920x1080 "$cache_gif_image"
-      fi
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$cache_gif_image"
-    elif [[ "$pic_name" =~ \.(mp4|mkv|mov|webm|MP4|MKV|MOV|WEBM)$ ]]; then
-      cache_preview_image="$HOME/.cache/video_preview/${pic_name}.png"
-      if [[ ! -f "$cache_preview_image" ]]; then
-        mkdir -p "$HOME/.cache/video_preview"
-        ffmpeg -v error -y -i "$pic_path" -ss 00:00:01.000 -vframes 1 "$cache_preview_image"
-      fi
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$cache_preview_image"
-    else
-      printf "%s\x00icon\x1f%s\n" "$pic_name" "$pic_path"
-    fi
+    printf "%s\n" "$(basename "$pic_path")"
   done
 }
 
@@ -213,7 +192,7 @@ apply_video_wallpaper() {
 
 # Main function
 main() {
-  choice=$(menu | $rofi_command)
+  choice=$(menu | $dmenu_command)
   choice=$(echo "$choice" | xargs)
   RANDOM_PIC_NAME=$(echo "$RANDOM_PIC_NAME" | xargs)
   raw_choice="$choice"
@@ -259,9 +238,5 @@ main() {
   fi
 }
 
-# Check if rofi is already running
-if pidof rofi >/dev/null; then
-  pkill rofi
-fi
-
 main
+
