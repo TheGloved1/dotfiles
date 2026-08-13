@@ -9,7 +9,7 @@ local shadow_colour = "rgba(" .. SCHEME.inversePrimary .. "10)"
 
 hl.config({
 	general = {
-		border_size = 1,
+		border_size = 2,
 		gaps_in = 6,
 		gaps_out = 6,
 		col = {

@@ -47,6 +47,7 @@ exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
 -- DBus / systemd environment
 exec_once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+exec_once("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'")
 
 -- Core services
 exec_once("$HOME/.config/hypr/scripts/Polkit.sh")

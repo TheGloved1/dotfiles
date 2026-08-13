@@ -7,6 +7,13 @@ local function apply_window_rule(rule)
 	end
 end
 
+-- Noctalia Settings
+apply_window_rule({
+	match = { class = "dev.noctalia.Noctalia" },
+	float = true,
+	size = { 920, 920 },
+})
+
 apply_window_rule({
 	name = "tag-browser-firefox",
 	match = {
