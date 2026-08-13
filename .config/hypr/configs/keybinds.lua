@@ -296,9 +296,15 @@ bind(
 )
 bind(
 	"SUPER + SHIFT + ALT + R",
-	exec("noctalia msg plugin noctalia/screen_recorder:service all start region"),
-	{ description = "record region" }
+	exec("noctalia msg plugin noctalia/screen_recorder:service all replay-stop"),
+	{ description = "Stop replay buffer" }
 )
+local save_replay = function()
+	return exec("noctalia msg plugin noctalia/screen_recorder:service all replay-start")
+end
+bind("SUPER + SHIFT + CTRL + R", function()
+	return save_replay()
+end, { description = "Start replay buffer / Save replay" })
 
 -- ============================================
 --  MOUSE / ZOOM
