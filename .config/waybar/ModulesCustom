@@ -5,19 +5,6 @@
 /* Custom Modules like weather browser, tty, file manager at the beginning */
 
 {
-"custom/weather": {
-	"format": "{}",
-	"format-alt": "{alt}: {}",
-	"format-alt-click": "click",
-	"interval": 3600,
-	"return-type": "json",
-	//"exec": "$HOME/.config/hypr/scripts/Weather.py",
-	//"exec": "$HOME/.config/hypr/scripts/Weather.sh",
-	"exec": "$HOME/.config/hypr/scripts/WeatherWrap.sh",
-	//"exec-if": "ping wttr.in -c1",
-	"tooltip": true,
-},
-
 "custom/weather2": {
     "exec": "waybar-weather",
     "restart-interval": 60,
@@ -151,7 +138,7 @@
 
 "custom/lock": {
 	"format": "󰌾",
-	"on-click": "$HOME/.config/hypr/scripts/LockScreen.sh",
+	"on-click": "noctalia msg session lock",
 	"tooltip": true,
 	"tooltip-format": "󰷛 Screen Lock",
 },
