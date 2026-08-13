@@ -8,10 +8,13 @@ Usage: check-script-usage.sh
 Scans $XDG_CONFIG_HOME (default ~/.config) for references to every script in
 this directory. A script counts as "used" when:
 
-  1) any config/file outside this scripts dir references its basename, or
-  2) any *used* script calls it (transitively resolved to a fixpoint).
+	  1) any config/file outside this scripts dir (and not dormant) references
+	     its basename, or
+	  2) any *used* script calls it (transitively resolved to a fixpoint).
 
 Scripts referenced nowhere are reported as orphan candidates, safe to delete.
+Dormant config trees (e.g. waybar/, which is no longer autostarted) are excluded,
+so a script referenced only from a dormant tree counts as an orphan.
 
 No options.
 EOF
@@ -21,7 +24,8 @@ fi
 SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-# globs relative to CONFIG_DIR (applied via `cd`); skip backups, caches, IDEs
+# globs relative to CONFIG_DIR (applied via `cd`); skip backups, caches, IDEs,
+# and dormant config trees whose references would otherwise mark dead scripts used.
 EXCLUDE_GLOBS=(
 	'--glob' '!hypr.bak/**'
 	'--glob' '!hypr-backup*/**'
@@ -35,6 +39,7 @@ EXCLUDE_GLOBS=(
 	'--glob' '!legcord/**'
 	'--glob' '!node_modules/**'
 	'--glob' '!*.dat'
+	'--glob' '!waybar/**'
 )
 
 mapfile -t SCRIPTS < <(

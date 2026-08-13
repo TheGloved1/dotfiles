@@ -254,20 +254,17 @@ bind("XF86MonBrightnessDown", exec("noctalia msg brightness-down"), { descriptio
 -- ============================================
 bind("CTRL + ALT + Delete", exec("noctalia msg panel-toggle session"), { description = "session menu" })
 bind("CTRL + ALT + L", exec("noctalia msg session lock"), { description = "lock screen" })
-bind("CTRL + ALT + P", exec(script("Wlogout.sh")), { description = "powermenu" })
 bind(
 	"SUPER + SHIFT + N",
 	exec("noctalia msg panel-toggle control-center notification"),
 	{ description = "notification sidebar" }
 )
 bind("XF86Sleep", exec("systemctl suspend"), { description = "sleep", locked = true })
-bind("XF86Rfkill", exec(script("AirplaneMode.sh")), { description = "airplane mode", locked = true })
 
 -- ============================================
 --  APPEARANCE / THEMES
 -- ============================================
 bind("SUPER + T", exec("noctalia msg settings-open theme"), { description = "Noctalia theme settings" })
-bind("SUPER + SHIFT + R", exec(script("ZshChangeTheme.sh")), { description = "change oh-my-zsh theme" })
 bind("SUPER + SHIFT + A", exec(script("Animations.sh")), { description = "animations menu" })
 bind("SUPER + N", exec(script("Hyprsunset.sh toggle")), { description = "Toggle Hyprsunset - night light" })
 
@@ -279,12 +276,10 @@ bind("SUPER + W", exec("noctalia msg panel-toggle wallpaper"), { description = "
 -- ============================================
 --  UTILITIES
 -- ============================================
-bind("SUPER + F5", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
+bind("SUPER + SHIFT + R", exec(script("Refresh.sh")), { description = "refresh bar and menus" })
 bind("SUPER + ALT + E", exec('noctalia msg panel-toggle launcher "/emo"'), { description = "emoji menu" })
 bind("SUPER + V", exec("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
 bind("SUPER + SHIFT + E", exec(script("QuickSettings.sh")), { description = "Quick settings menu" })
-bind("SUPER + SHIFT + G", exec(script("GameMode.sh")), { description = "toggle game mode" })
-bind("SUPER + SHIFT + M", exec(script("RofiBeats.sh")), { description = "online music" })
 
 -- ============================================
 --  SCREEN RECORD

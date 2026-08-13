@@ -38,9 +38,6 @@ end
 -- Wallpaper (with sleep for startup)
 exec_once("sh -c 'sleep 2; $HOME/.config/hypr/scripts/WallpaperDaemon.sh'")
 
--- Initial boot
-exec_once("$HOME/.config/hypr/initial-boot.sh")
-
 -- Auto-reload Hyprland when configs/*.lua change
 exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
 
@@ -48,6 +45,8 @@ exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
 exec_once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 exec_once("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'")
+exec_once("gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-mocha-blue'")
+exec_once("gsettings set org.gnome.desktop.interface cursor-size 24")
 
 -- Core services
 exec_once("$HOME/.config/hypr/scripts/Polkit.sh")
@@ -55,7 +54,6 @@ exec_once("nm-applet")
 
 -- Portals and theme
 exec_once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
-exec_once("$HOME/.config/hypr/scripts/ApplyThemeMode.sh")
 
 -- Caelestia shell (bar, launcher, notifications, session, OSD)
 -- Waybar kept on disk as fallback but no longer autostarted.

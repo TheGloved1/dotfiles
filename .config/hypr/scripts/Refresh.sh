@@ -5,85 +5,19 @@
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
-# Scripts for refreshing ags, waybar, rofi, noctalia, wallust
+# Refresh the Noctalia shell (bar, dock, menus) and Hyprland
+# after wallpaper / color-scheme / theme-mode changes.
+# The old ags/quickshell/waybar/swaybg relaunch chain was removed
+# because Noctalia runs as a persistent daemon and needs no restart.
 
 SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
-SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
 
-# Define file_exists function
-file_exists() {
-  if [ -e "$1" ]; then
-    return 0 # File exists
-  else
-    return 1 # File does not exist
-  fi
-}
+# Reload Noctalia config so the bar, dock, and generated templates
+# pick up the current palette / theme mode.
+noctalia msg config-reload >/dev/null 2>&1
 
-# Kill already running processes (exclude waybar to avoid double reloads)
-_ps=(ags)
-for _prs in "${_ps[@]}"; do
-  if pidof "${_prs}" >/dev/null; then
-    pkill "${_prs}"
-  fi
-done
-
-# Clean up any Waybar-spawned cava instances (unique temp conf names)
-pkill -f 'waybar-cava\..*\.conf' 2>/dev/null || true
-
-
-# quit ags & relaunch ags
-ags -q && ags &
-
-# quit quickshell & relaunch quickshell
-pkill qs && qs &
-
-# some process to kill (exclude waybar to avoid restart loops)
-for pid in $(pidof ags swaybg); do
-  kill -SIGUSR1 "$pid"
-  sleep 0.1
-done
-
-# Restart waybar once (works with systemd user unit or manual launch setups)
-restart_waybar() {
-  local manage_with_systemd=0
-
-  if command -v systemctl >/dev/null 2>&1; then
-    if systemctl --user --quiet is-active waybar.service 2>/dev/null || systemctl --user --quiet is-enabled waybar.service 2>/dev/null; then
-      manage_with_systemd=1
-    fi
-  fi
-
-  if [ "$manage_with_systemd" -eq 1 ]; then
-    systemctl --user stop waybar.service >/dev/null 2>&1 || true
-  fi
-
-  pkill -x waybar >/dev/null 2>&1 || true
-  pkill -x '.waybar-wrapped' >/dev/null 2>&1 || true
-  sleep 0.2
-  if pgrep -x waybar >/dev/null 2>&1 || pgrep -x '.waybar-wrapped' >/dev/null 2>&1; then
-    pkill -9 -x waybar >/dev/null 2>&1 || true
-    pkill -9 -x '.waybar-wrapped' >/dev/null 2>&1 || true
-  fi
-  sleep 0.2
-
-  if [ "$manage_with_systemd" -eq 1 ]; then
-    if ! systemctl --user start waybar.service >/dev/null 2>&1; then
-      waybar >/dev/null 2>&1 &
-    fi
-  else
-    waybar >/dev/null 2>&1 &
-  fi
-}
-
-restart_waybar
-
-# reload noctalia (runs as a daemon; no relaunch needed)
-noctalia msg config-reload
-
-# Relaunching rainbow borders if the script exists
-sleep 1
-if file_exists "${SCRIPTSDIR}/RainbowBorders.sh"; then
-  ${SCRIPTSDIR}/RainbowBorders.sh &
-fi
+# Re-run Hyprland startup Lua so noctalia.apply_theme() refreshes
+# Hyprland-side colors (window / border / gtk window decorations).
+hyprctl reload >/dev/null 2>&1
 
 exit 0
