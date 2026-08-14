@@ -140,13 +140,15 @@ temperature_day = 5100
 temperature_night = 4600
 
 [notification]
-background_opacity = 0.9499999787658453
+background_opacity = 0.89999997988343239
 layer = "overlay"
-offset_x = 4
+offset_x = 6
 offset_y = 4
 
 [osd]
-offset_x = 8
+background_opacity = 0.89999997988343239
+offset_x = 4
+offset_y = 4
 
 [plugin_settings."alexander/screen-toolkit"]
 search-engine-url = "https://duckduckgo.com/?q="
@@ -319,4 +321,6 @@ hidden = [ "Network", "Blueman" ]
 show_condition = false
 
 [widget.workspaces]
+active_pill_size = 1.8500000000000001
 hide_when_empty = true
+inactive_pill_size = 1.25
