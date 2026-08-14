@@ -9,6 +9,8 @@ eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/theme.omp.json)"
 # Zoxide
 eval "$(zoxide init zsh)"
 
+alias cd="z"
+
 # Mommy
 # precmd() { mommy -1 -s $? }
 
@@ -82,6 +84,15 @@ alias yaloc='yay -Qi'
 alias yalocs='yay -Qs'
 alias yaycon='yay --noconfirm'
 alias yayf="yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -5"
+
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(cat "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
 
 pac() {
   case "$1" in
