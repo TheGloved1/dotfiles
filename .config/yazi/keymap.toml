@@ -1,5 +1,5 @@
 
-[manager]
+[mgr]
 
 prepend_keymap = [
   { on = [
@@ -49,6 +49,7 @@ prepend_keymap = [
     "yank",
   ], desc = "yank files and copy to clipboard" },
   { on = "A", run = "create --dir", desc = "Create a dir" },
+  { on = "<A-e>", run = '''shell 'nvim "%h"' --block''', desc = "Open hovered folder in neovim" },
 ]
 
 append_keymap = [
@@ -65,23 +66,23 @@ append_keymap = [
   { on = [
     "g",
     "v",
-  ], run = "cd ~/videos/", desc = "Go to the videos directory" },
+  ], run = "cd ~/Videos/", desc = "Go to the videos directory" },
   { on = [
     "g",
     "p",
-  ], run = "cd ~/pictures/", desc = "Go to the pictures directory" },
+  ], run = "cd ~/Pictures/", desc = "Go to the pictures directory" },
   { on = [
     "g",
     "s",
-  ], run = "cd ~/pictures/screenshots/", desc = "Go to the screenshots directory" },
+  ], run = "cd ~/Pictures/screenshots/", desc = "Go to the screenshots directory" },
   { on = [
     "g",
     "D",
-  ], run = "cd ~/documents/", desc = "Go to the docs directory" },
+  ], run = "cd ~/Documents/", desc = "Go to the docs directory" },
   { on = [
     "g",
     "o",
-  ], run = "cd ~/documents/obsidian-vaults", desc = "Go to the obsidian directory" },
+  ], run = "cd ~/Documents/obsidian-vaults", desc = "Go to the obsidian directory" },
   { on = [
     "g",
     "e",

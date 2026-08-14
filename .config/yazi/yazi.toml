@@ -1,9 +1,9 @@
-
-[manager]
+[mgr]
 ratio = [1, 4, 3]
 sort_by = "natural"
 sort_dir_first = true
 show_hidden = true
+
 [opener]
 folder = [
   { run = 'hyprctl dispatch exec "[float; size 60% 60%; center 1] nemo" "$@"', orphan = true, desc = "nemo", for = "linux" },
@@ -13,6 +13,10 @@ folder = [
   { run = 'codium  "$@"', orphan = true, desc = "vscodium", for = "linux" },
   { run = 'kitty "$@"', orphan = true, desc = "kitty", for = "linux" },
   { run = 'xdg-open "$@"', orphan = true, desc = "xdg-open", for = "linux" },
+]
+
+edit = [
+	{ run = "$EDITOR %s", block = true, for = "unix" },
 ]
 
 text = [

@@ -18,11 +18,10 @@ use = "imsi32/yatline-githead"
 rev = "929e52c"
 hash = "8282baf02fcd6aac00ccad2276775358"
 
-[[plugin.deps]]
-use = "yazi-rs/plugins:smart-filter"
-rev = "1db18bb"
-hash = "c887903a63a2ff520081b6d90a4b3392"
-
+# [[plugin.deps]]
+# use = "yazi-rs/plugins:smart-filter"
+# rev = "1db18bb"
+# hash = "c887903a63a2ff520081b6d90a4b3392"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"

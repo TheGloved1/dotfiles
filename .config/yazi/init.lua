@@ -40,84 +40,85 @@ require("session"):setup({
 	sync_yanked = true,
 })
 
+local term_bg = "#1b1a23"
+
+require("yatline")
+
+Yatline.notch = {
+	has_separator = false,
+	get = {
+		left = function()
+			return ""
+		end,
+		right = function()
+			return ""
+		end,
+	},
+	create = function(glyph, component_type)
+		local style = Yatline.config.style_a
+		local mode = cx.active.mode
+		local bg = style.bg_mode.normal
+		if mode.is_select then
+			bg = style.bg_mode.select
+		elseif mode.is_unset then
+			bg = style.bg_mode.un_set
+		end
+		return ui.Line({ ui.Span(glyph):fg(bg):bg(term_bg) })
+	end,
+}
+
 require("yatline"):setup({
-	section_separator = { open = "", close = "" },
-	inverse_separator = { open = "", close = "" },
-	part_separator = { open = "", close = "" },
+	section_separator = { open = "", close = "" },
+	part_separator = { open = "", close = "" },
+	inverse_separator = { open = "", close = "" },
 
 	style_a = {
-		fg = catppuccin_palette.mantle,
-		bg_mode = {
-			normal = catppuccin_palette.blue,
-			select = catppuccin_palette.mauve,
-			un_set = catppuccin_palette.red,
-		},
+		fg = "#1c1b22",
+		bg = "#242130",
+		fg_mode = { normal = "#1c1b22", select = "#1c1b22", un_set = "#1c1b22" },
+		bg_mode = { normal = "#b0a9d1", select = "#c3adcd", un_set = "#cbafc6" },
 	},
-	style_b = { bg = catppuccin_palette.surface0, fg = catppuccin_palette.text },
-	style_c = { bg = catppuccin_palette.base, fg = catppuccin_palette.text },
-
-	permissions_t_fg = catppuccin_palette.green,
-	permissions_r_fg = catppuccin_palette.yellow,
-	permissions_w_fg = catppuccin_palette.red,
-	permissions_x_fg = catppuccin_palette.sky,
-	permissions_s_fg = catppuccin_palette.lavender,
-
-	selected = { icon = "󰻭", fg = catppuccin_palette.yellow },
-	copied = { icon = "", fg = catppuccin_palette.green },
-	cut = { icon = "", fg = catppuccin_palette.red },
-
-	total = { icon = "", fg = catppuccin_palette.yellow },
-	succ = { icon = "", fg = catppuccin_palette.green },
-	fail = { icon = "", fg = catppuccin_palette.red },
-	found = { icon = "", fg = catppuccin_palette.blue },
-	processed = { icon = "", fg = catppuccin_palette.green },
-
-	tab_width = 20,
-	tab_use_inverse = true,
-
-	show_background = false,
-
-	display_header_line = true,
-	display_status_line = true,
+	style_b = { bg = "#242130", fg = "#b0afb6" },
+	style_c = { bg = "#242130", fg = "#f2f2f3" },
 
 	header_line = {
 		left = {
 			section_a = {
-				{ type = "line", custom = false, name = "tabs", params = { "left" } },
+				{ type = "notch", custom = false, name = "left" },
+				{ type = "line", custom = false, name = "tabs" },
 			},
-			section_b = {
-				{ type = "coloreds", custom = false, name = "githead" },
-			},
+			section_b = {},
 			section_c = {},
 		},
 		right = {
 			section_a = {
-				{ type = "string", custom = false, name = "tab_path" },
+				{ type = "notch", custom = false, name = "right" },
+				{ type = "string", custom = false, name = "date", params = { "%A, %d %B %Y" } },
 			},
 			section_b = {
-				{ type = "coloreds", custom = false, name = "task_workload" },
+				{ type = "string", custom = false, name = "date", params = { "%X" } },
 			},
-			section_c = {
-				{ type = "coloreds", custom = false, name = "task_states" },
-			},
+			section_c = {},
 		},
 	},
 
 	status_line = {
 		left = {
 			section_a = {
+				{ type = "notch", custom = false, name = "left" },
 				{ type = "string", custom = false, name = "tab_mode" },
 			},
 			section_b = {
 				{ type = "string", custom = false, name = "hovered_size" },
 			},
 			section_c = {
-				{ type = "string", custom = false, name = "hovered_name" },
+				{ type = "string", custom = false, name = "hovered_path" },
 				{ type = "coloreds", custom = false, name = "count" },
 			},
 		},
 		right = {
 			section_a = {
+				{ type = "notch", custom = false, name = "right" },
 				{ type = "string", custom = false, name = "cursor_position" },
 			},
 			section_b = {
