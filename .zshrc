@@ -360,6 +360,50 @@ _dot_detect_type() {
   fi
 }
 
+# stage all given files, group-commit, prompt push
+_dot_commit_and_push() {
+  local staged_files=(${(f)"$(yadm diff --cached --name-only 2>/dev/null)"})
+
+  if [[ ${#staged_files} -eq 0 ]]; then
+    echo "No staged changes"
+    local ahead
+    ahead=$(yadm rev-list --count @{upstream}..HEAD 2>/dev/null)
+    if [[ "$ahead" =~ ^[0-9]+$ ]] && (( ahead > 0 )); then
+      echo "You have $ahead unpushed commit(s)"
+      echo "Push to remote? [Y/n]"
+      read -r "REPLY? > "
+      if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
+        yadm push
+      fi
+    fi
+    return 0
+  fi
+
+  local -A groups
+  local f key
+  for f in "${staged_files[@]}"; do
+    key=$(print -r -- "$f" | awk -F/ '{ if (NF >= 2) print $2; else print $1 }')
+    groups[$key]="${groups[$key]:-}$f"$'\n'
+  done
+
+  yadm reset -q
+
+  local sorted_keys=(${(ok)groups})
+  local k files ctype
+  for k in "${sorted_keys[@]}"; do
+    files=(${(f)groups[$k]})
+    yadm add -- "${files[@]}"
+    ctype=$(_dot_detect_type "${files[@]}")
+    yadm commit -m "$ctype($k): update $k"
+  done
+
+  echo "Push to remote? [Y/n]"
+  read -r "REPLY? > "
+  if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
+    yadm push
+  fi
+}
+
 # yadm wrapper — selective add, commit, optional push
 dot() {
   local subcmd="${1:-}"
@@ -440,6 +484,16 @@ dot() {
     discard)
       yadm checkout -- "$@"
       ;;
+    sync)
+      local -a files
+      files=(${(f)"$(yadm diff --name-only 2>/dev/null)"})
+      if [[ ${#files} -eq 0 ]]; then
+        echo "No unstaged changes to commit"
+        return 0
+      fi
+      yadm add -- "${files[@]}"
+      _dot_commit_and_push
+      ;;
     "")
       yadm status -s
       ;;
@@ -448,46 +502,7 @@ dot() {
       if [[ -e "$subcmd" ]] || [[ "$subcmd" == "." ]] || [[ "$subcmd" == -* ]]; then
         yadm add "$subcmd" "$@"
 
-        local staged_files=(${(f)"$(yadm diff --cached --name-only 2>/dev/null)"})
-
-        if [[ ${#staged_files} -eq 0 ]]; then
-          echo "No staged changes"
-          local ahead
-          ahead=$(yadm rev-list --count @{upstream}..HEAD 2>/dev/null)
-          if [[ "$ahead" =~ ^[0-9]+$ ]] && (( ahead > 0 )); then
-            echo "You have $ahead unpushed commit(s)"
-            echo "Push to remote? [Y/n]"
-            read -r "REPLY? > "
-            if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
-              yadm push
-            fi
-          fi
-          return 0
-        fi
-
-        local -A groups
-        local f key
-        for f in "${staged_files[@]}"; do
-          key=$(print -r -- "$f" | awk -F/ '{ if (NF >= 2) print $2; else print $1 }')
-          groups[$key]="${groups[$key]:-}$f"$'\n'
-        done
-
-        yadm reset -q
-
-        local sorted_keys=(${(ok)groups})
-        local k files ctype
-        for k in "${sorted_keys[@]}"; do
-          files=(${(f)groups[$k]})
-          yadm add -- "${files[@]}"
-          ctype=$(_dot_detect_type "${files[@]}")
-          yadm commit -m "$ctype($k): update $k"
-        done
-
-        echo "Push to remote? [Y/n]"
-        read -r "REPLY? > "
-        if [[ -z "$REPLY" || "$REPLY" =~ ^[yY]$ ]]; then
-          yadm push
-        fi
+        _dot_commit_and_push
       else
         yadm "$subcmd" "$@"
       fi
