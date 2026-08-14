@@ -9,3 +9,5 @@
 	name = TheGloved1
 [init]
 	defaultBranch = main
+[safe]
+	directory = *
