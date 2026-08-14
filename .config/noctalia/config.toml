@@ -3,10 +3,9 @@ enable_sounds = true
 sound_volume = 0.29999999329447746
 
 [bar.default]
-background_opacity = 0.87999998033046722
+background_opacity = 0.89999997988343239
 border = "outline"
 capsule = true
-capsule_thickness = 0.71999998763203621
 center = [ "active_window" ]
 end = [
     "recorder",
@@ -26,7 +25,13 @@ font_weight = 400
 margin_ends = 0
 margin_opposite_edge = 2
 panel_overlap = 0
+radius = 32
 start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
+
+    [bar.default.dead_zone.actions]
+    left = "panel-toggle control-center home"
+    middle = "settings-toggle bar"
+    right = "settings-toggle"
 
 [brightness]
 enable_ddcutil = true
@@ -143,6 +148,15 @@ offset_y = 4
 [osd]
 offset_x = 8
 
+[plugin_settings."alexander/screen-toolkit"]
+search-engine-url = "https://duckduckgo.com/?q="
+x02-expiry = "1h"
+
+[plugin_settings."kenn/keybind-cheatsheet"]
+cheatsheet_open_near_click = false
+hyprland_parser = "lua"
+show_actions = true
+
 [plugin_settings."noctalia/screen_recorder"]
 replay_duration = 60
 replay_enabled = true
@@ -154,14 +168,20 @@ video_source = "focused"
 panel_placement = "attached"
 
 [plugins]
-enabled = [ "tadomika_ari/config-swap", "noctalia/bongocat", "noctalia/screen_recorder" ]
+enabled = [
+    "tadomika_ari/config-swap",
+    "noctalia/bongocat",
+    "noctalia/screen_recorder",
+    "noctalia/wallhaven",
+    "kenn/keybind-cheatsheet",
+    "alexander/screen-toolkit"
+]
 
 [shell]
 app_icon_color = "primary"
 clipboard_auto_paste = "off"
 external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
-niri_overview_type_to_launch_enabled = true
 panel_anchor_bar = "default"
 polkit_agent = true
 
@@ -181,11 +201,11 @@ polkit_agent = true
     launcher_placement = "attached"
     launcher_position = "auto"
     polkit_placement = "attached"
-    transparency_mode = "soft"
+    shadow = false
 
     [shell.screen_corners]
     enabled = true
-    size = 24
+    size = 32
 
     [shell.screenshot]
     confirm_region = true
@@ -204,7 +224,7 @@ community_palette = "Catppuccin Mocha Blue"
 custom_palette = "dragon-mc"
 mode = "dark"
 source = "wallpaper"
-wallpaper_scheme = "m3-content"
+wallpaper_scheme = "soft"
 
     [theme.templates]
     builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt", "starship" ]
@@ -226,7 +246,7 @@ wallpaper_scheme = "m3-content"
     ]
 
 [wallpaper]
-fill_mode = "fit"
+fill_mode = "span"
 transition_duration = 2000
 transition_on_startup = true
 
@@ -243,15 +263,20 @@ transition_on_startup = true
     palette_source = "wallpaper"
     path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
     theme_mode = "dark"
-    wallpaper_scheme = "muted"
+    wallpaper_scheme = "soft"
 
 [weather]
 unit = "imperial"
 
 [widget.active_window]
+capsule_opacity = 0.0
+capsule_radius = "auto"
+icon_size = 16
+min_length = 45
 title_scroll = "on_hover"
 
 [widget.cat]
+audio_spectrum = true
 input_devices = [
     "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-event-kbd",
     "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-if01-event-kbd",
@@ -259,9 +284,12 @@ input_devices = [
     "/dev/input/by-id/usb-Razer_Razer_Naga_X-if01-event-kbd",
     "/dev/input/by-id/usb-Razer_Razer_Naga_X-if02-event-kbd"
 ]
+tappy_mode = true
 type = "noctalia/bongocat:cat"
 
 [widget.clock]
+capsule = true
+capsule_radius = 8
 format = "%-I:%M:%S %p  %A, %B %d"
 
 [widget.control-center]
