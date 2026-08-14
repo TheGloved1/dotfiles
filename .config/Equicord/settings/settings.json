@@ -17,7 +17,7 @@
     ],
     "eagerPatches": false,
     "enabledThemes": [
-        "colors-wallust.css"
+        "noctalia.theme.css"
     ],
     "enabledThemeLinks": [],
     "enableOnlineThemes": false,
@@ -29,8 +29,8 @@
     "themeNames": {},
     "themeActivationModes": {},
     "enableReactDevtools": false,
-    "mainWindowFrameless": false,
-    "frameless": false,
+    "mainWindowFrameless": true,
+    "frameless": true,
     "transparent": true,
     "winCtrlQ": false,
     "windowsMaterial": "none",
@@ -609,7 +609,7 @@
             "chatIcon": true,
             "defaultHidden": true,
             "enabledLocations": "",
-            "disabledLocations": "892413768749940786",
+            "disabledLocations": "",
             "chatIconLeftClickAction": "channel",
             "chatIconMiddleClickAction": "settings",
             "chatIconRightClickAction": "global",
@@ -1270,7 +1270,7 @@
             "notifyOnNewExcludedQuests": false,
             "notifyOnNewQuests": true,
             "questButtonIndicator": "both",
-            "questButtonBadgeCount": 21,
+            "questButtonBadgeCount": 24,
             "questButtonBadgeColor": 2842239,
             "questButtonLeftClickAction": "open-quests",
             "questButtonMiddleClickAction": "plugin-settings",
@@ -1966,7 +1966,7 @@
         "authenticated": true,
         "url": "https://cloud.equicord.org/",
         "settingsSync": true,
-        "settingsSyncVersion": 1786334136007
+        "settingsSyncVersion": 1786607868799
     },
     "ignoreResetWarning": false,
     "userCssVars": {},
