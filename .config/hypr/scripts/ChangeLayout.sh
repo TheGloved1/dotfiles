@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # Switch Hyprland layouts per active monitor/workspace.
 # This avoids global layout mutations and keeps workspace-specific rules intact.
 

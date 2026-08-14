@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # Logout helper for wlogout and keybind callers.
 LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/hypr"
 LOG_FILE="${LOG_DIR}/hypr-logout.log"

@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # Dispatch layout-sensitive navigation actions per active workspace.
 # This keeps SUPER+J/K and SUPER+arrow behavior aligned with workspace rules.
 

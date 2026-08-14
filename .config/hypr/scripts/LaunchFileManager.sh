@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # Launch preferred file manager with fallback handling.
 # Usage:
 #   LaunchFileManager.sh "<preferred-file-manager-cmd>" "<preferred-terminal-cmd>"
@@ -81,14 +75,50 @@ append_unique_candidate() {
   CANDIDATES+=("$candidate")
 }
 
+terminal_file_managers=(yazi lf ranger broot)
+
+is_terminal_fm() {
+  local fm bin t
+  fm="$(trim "${1:-}")"
+  [[ -n "$fm" ]] || return 1
+  bin="$(command_bin_from_string "$fm" 2>/dev/null || true)"
+  for t in "${terminal_file_managers[@]}"; do
+    [[ "$bin" == "$t" ]] && return 0
+  done
+  return 1
+}
+
+build_tui_payload() {
+  local fm bin
+  fm="$(trim "${1:-}")"
+  bin="$(command_bin_from_string "$fm" 2>/dev/null || true)"
+  if [[ "$bin" == "yazi" ]]; then
+    printf 'f=$(mktemp); %s --cwd-file="$f"; cwd=$(cat "$f" 2>/dev/null); [ -n "$cwd" ] && cd -- "$cwd" 2>/dev/null; rm -f "$f"; exec "${SHELL:-bash}"' "$fm"
+  else
+    printf '%s; exec "${SHELL:-bash}"' "$fm"
+  fi
+}
+
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 terminal_launcher="$script_dir/LaunchTerminal.sh"
 
 preferred_files="$(trim "${1:-${FILE_MANAGER:-}}")"
 preferred_term="$(trim "${2:-${TERMINAL:-kitty}}")"
 
+if is_terminal_fm "$preferred_files"; then
+  if ! command_exists_from_string "$preferred_files"; then
+    notify_msg normal "Preferred file manager '$preferred_files' is not installed. Falling back."
+  elif [[ -x "$terminal_launcher" ]] && "$terminal_launcher" "$preferred_term" "$(build_tui_payload "$preferred_files")"; then
+    exit 0
+  else
+    notify_msg normal "Preferred file manager '$preferred_files' failed to launch. Falling back."
+  fi
+fi
+
 declare -a CANDIDATES=()
-append_unique_candidate "$preferred_files"
+if ! is_terminal_fm "$preferred_files"; then
+  append_unique_candidate "$preferred_files"
+fi
 append_unique_candidate "thunar"
 append_unique_candidate "dolphin"
 append_unique_candidate "nautilus"
@@ -111,7 +141,7 @@ for candidate in "${CANDIDATES[@]}"; do
 done
 
 if command -v yazi >/dev/null 2>&1; then
-  if [[ -x "$terminal_launcher" ]] && "$terminal_launcher" "$preferred_term" "yazi"; then
+  if [[ -x "$terminal_launcher" ]] && "$terminal_launcher" "$preferred_term" "$(build_tui_payload "yazi")"; then
     exit 0
   fi
 else

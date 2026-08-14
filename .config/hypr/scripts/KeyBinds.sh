@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # searchable enabled keybinds using Noctalia dmenu (supports bindd descriptions)
 # Adapted for the pure-Lua config system (configs/keybinds.lua)
 

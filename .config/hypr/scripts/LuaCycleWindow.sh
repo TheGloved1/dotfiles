@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
-#  License: GNU GPLv3
-#  SPDX-License-Identifier: GPL-3.0-or-later
-# ==================================================
 # Cycle focus through visible windows on the active workspace using the
 # Hyprland Lua dispatcher API. This avoids cyclenext/focuswindow no-ops on
 # Lua config builds.
