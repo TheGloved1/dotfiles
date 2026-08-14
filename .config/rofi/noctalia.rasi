@@ -1,10 +1,10 @@
 * {
-  bg: #1a2322;
-  bg-alt: #2b3b38;
-  fg: #f2f3f3;
-  accent: #75d7c6;
-  accent-fg: #1b2221;
-  border: #5e6e6c;
+  bg: #1b1a23;
+  bg-alt: #2e2b3b;
+  fg: #f2f2f3;
+  accent: #b0a9d1;
+  accent-fg: #1c1b22;
+  border: #686474;
 }
 
 window {
