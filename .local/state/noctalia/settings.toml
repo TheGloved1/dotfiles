@@ -7,6 +7,9 @@ sound_volume = 0.29999999329447746
 [bar.default]
 background_opacity = 0.89999997988343239
 border = "outline"
+capsule = true
+capsule_thickness = 0.71999998763203621
+center = [ "active_window" ]
 end = [
     "recorder",
     "notifications",
@@ -22,13 +25,25 @@ end = [
 ]
 font_family = "JetBrainsMono Nerd Font"
 font_weight = 400
+margin_ends = 0
 margin_opposite_edge = 2
+padding = 6
+radius = 32
+shadow = false
 start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
+
+    [bar.default.dead_zone.actions]
+    left = "panel-toggle control-center home"
+    middle = "settings-toggle bar"
+    right = "settings-toggle"
 
 [brightness]
 enable_ddcutil = true
 minimum_brightness = 0.39999999105930328
 sync_all_monitors = true
+
+[control_center]
+width = 800
 
 [desktop_widgets]
 enabled = false
@@ -50,6 +65,7 @@ widget_order = [ "desktop-widget-0000000000000001" ]
     type = "clock"
 
 [dock]
+enabled = true
 launcher_position = "start"
 pinned = [ "steam", "equibop", "zen", "kitty" ]
 reserve_space = false
@@ -131,13 +147,14 @@ temperature_day = 5100
 temperature_night = 4600
 
 [notification]
-background_opacity = 0.9499999787658453
+background_opacity = 0.89999997988343239
 layer = "overlay"
-offset_x = 4
-offset_y = 4
+offset_x = 6
 
 [osd]
-offset_x = 8
+background_opacity = 0.89999997988343239
+offset_x = 4
+offset_y = 4
 
 [plugin_settings."alexander/screen-toolkit"]
 search-engine-url = "https://duckduckgo.com/?q="
@@ -165,7 +182,8 @@ enabled = [
     "noctalia/screen_recorder",
     "noctalia/wallhaven",
     "kenn/keybind-cheatsheet",
-    "alexander/screen-toolkit"
+    "alexander/screen-toolkit",
+    "noctalia/timer"
 ]
 
 [shell]
@@ -175,6 +193,9 @@ external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
 panel_anchor_bar = "default"
 polkit_agent = true
+
+    [shell.animation]
+    speed = 1.2500000186264515
 
     [shell.greeter_sync]
     auto_sync = false
@@ -188,14 +209,14 @@ polkit_agent = true
 
     [shell.panel]
     clipboard_placement = "attached"
-    floating_layer = "overlay"
     launcher_placement = "attached"
     launcher_position = "auto"
     polkit_placement = "attached"
+    shadow = false
 
     [shell.screen_corners]
     enabled = true
-    size = 24
+    size = 32
 
     [shell.screenshot]
     confirm_region = true
@@ -205,7 +226,50 @@ polkit_agent = true
     [shell.session]
     grid = false
 
+        [[shell.session.actions]]
+        action = "lock"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "1"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "logout"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "2"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "lock_and_suspend"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "3"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "reboot"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "4"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "shutdown"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "5"
+        variant = "destructive"
+
+        [[shell.session.actions]]
+        action = "command"
+        command = "notify-send 'Noctalia' 'Custom session entry'"
+        countdown_seconds = 0.0
+        enabled = true
+        variant = "default"
+
     [shell.shadow]
+    alpha = 0.59999998658895493
     direction = "down_right"
 
 [theme]
@@ -258,6 +322,13 @@ transition_on_startup = true
 [weather]
 unit = "imperial"
 
+[widget.active_window]
+capsule_opacity = 0.0
+capsule_radius = "auto"
+icon_size = 16
+min_length = 45
+title_scroll = "on_hover"
+
 [widget.cat]
 audio_spectrum = true
 input_devices = [
@@ -271,7 +342,11 @@ tappy_mode = true
 type = "noctalia/bongocat:cat"
 
 [widget.clock]
+capsule_radius = "auto"
 format = "%-I:%M:%S %p  %A, %B %d"
+
+    [widget.clock.actions]
+    right = "panel-toggle noctalia/timer:panel"
 
 [widget.control-center]
 enabled = false
@@ -296,8 +371,6 @@ type = "noctalia/screen_recorder:recorder"
 [widget.tray]
 hidden = [ "Network", "Blueman" ]
 
-[widget.weather]
-show_condition = false
-
 [widget.workspaces]
-hide_when_empty = true
+active_pill_size = 1.8500000000000001
+inactive_pill_size = 1.25
