@@ -25,7 +25,16 @@ bind("SUPER + B", exec('xdg-open "https://"'), { description = "open default bro
 bind("SUPER + SUPER_L", exec("noctalia msg panel-toggle launcher"), { description = "App launcher" })
 bind("SUPER + SPACE", exec("noctalia msg panel-toggle control-center home"), { description = "App launcher" })
 bind("SUPER + SHIFT + Return", exec(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
-bind("SUPER + slash", exec(script("KeyHints.sh")), { description = "Help / cheat sheet" })
+bind(
+	"SUPER + slash",
+	exec("noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet"),
+	{ description = "Help / cheat sheet" }
+)
+bind(
+	"SUPER + SHIFT + slash",
+	exec("noctalia msg plugin alexander/screen-toolkit:service all toggle"),
+	{ description = "Noctalia Screen Toolkit" }
+)
 bind("SUPER + P", exec("hyprpicker -a -f hex --lowercase-hex"), { description = "Color picker" })
 bind("ALT + SPACE", exec("vicinae toggle"), { description = "Toggle vicinae" })
 
@@ -197,7 +206,6 @@ bind("SUPER + CTRL + Print", exec(script("ScreenShot.sh --in5")), { description 
 bind("SUPER + CTRL + SHIFT + Print", exec(script("ScreenShot.sh --in10")), { description = "screenshot in 10s" })
 bind("ALT + Print", exec(script("ScreenShot.sh --active")), { description = "screenshot active window" })
 bind("SUPER + SHIFT + S", exec(script("ScreenShot.sh --swappy")), { description = "screenshot (region)" })
-bind("SUPER + S", exec(script("ScreenShotHistory.sh")), { description = "screenshot history" })
 bind(
 	"ALT + SHIFT + S",
 	exec("noctalia msg screenshot-region"),

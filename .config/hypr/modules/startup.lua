@@ -46,15 +46,12 @@ exec_once("gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-mo
 exec_once("gsettings set org.gnome.desktop.interface cursor-size 24")
 
 -- Core services
-exec_once("$HOME/.config/hypr/scripts/Polkit.sh")
+exec_once("systemctl --user enable --now hyprpolkitagent.service")
+exec_once("sh -c 'sleep 0.3; $HOME/.config/hypr/scripts/Polkit.sh")
 exec_once("nm-applet")
 
 -- Portals and theme
 exec_once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
-
--- Caelestia shell (bar, launcher, notifications, session, OSD)
--- Waybar kept on disk as fallback but no longer autostarted.
--- exec_once("sh $HOME/.config/hypr/scripts/WaybarStartup.sh")
 
 -- Cursor refresh
 exec_once(
