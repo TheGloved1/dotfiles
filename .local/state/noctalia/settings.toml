@@ -65,6 +65,7 @@ widget_order = [ "desktop-widget-0000000000000001" ]
     type = "clock"
 
 [dock]
+active_monitor_only = true
 enabled = true
 launcher_position = "start"
 pinned = [ "steam", "equibop", "zen", "kitty" ]
@@ -73,6 +74,22 @@ show_dots = true
 show_instance_count = false
 show_running = false
 smart_auto_hide = true
+
+[hot_corners]
+enabled = true
+
+    [hot_corners.bottom_left]
+    action = "window_switcher"
+
+    [hot_corners.bottom_right]
+    action = "command"
+    command = "notify-send \"Guh?\""
+
+    [hot_corners.top_left]
+    action = "launcher"
+
+    [hot_corners.top_right]
+    action = "control_center"
 
 [idle]
 behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
@@ -193,9 +210,6 @@ external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
 panel_anchor_bar = "default"
 polkit_agent = true
-
-    [shell.animation]
-    speed = 1.2500000186264515
 
     [shell.greeter_sync]
     auto_sync = false
