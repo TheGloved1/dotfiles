@@ -184,6 +184,7 @@ app_icon_color = "primary"
 clipboard_auto_paste = "off"
 external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
+launch_apps_custom_command = "/home/gloves/.config/noctalia/wrap/noctalia-wrap $CMD"
 panel_anchor_bar = "default"
 polkit_agent = true
 
