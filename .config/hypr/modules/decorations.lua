@@ -1,11 +1,8 @@
 -- Caelestia styling applied to the existing config structure.
 -- Colours follow the caelestia scheme (~/.config/hypr/scheme/current.lua).
 
+local colors = Noctalia.colors
 local SCHEME = require("scheme.current")
-
-local active_border = "rgba(" .. SCHEME.primary .. "e6)"
-local inactive_border = "rgba(" .. SCHEME.primary .. "e6)"
-local shadow_colour = "rgba(" .. SCHEME.inversePrimary .. "10)"
 
 hl.config({
 	general = {
@@ -13,8 +10,8 @@ hl.config({
 		gaps_in = 6,
 		gaps_out = 6,
 		col = {
-			active_border = active_border,
-			inactive_border = inactive_border,
+			active_border = colors.primary,
+			inactive_border = colors.surface,
 		},
 	},
 	decoration = {
@@ -30,19 +27,17 @@ hl.config({
 			enabled = true,
 			range = 4,
 			render_power = 3,
-			color = shadow_colour,
 		},
 		blur = {
 			enabled = true,
-			size = 3,
-			passes = 3,
+			size = 12,
+			passes = 2,
 			new_optimizations = true,
 			xray = false,
-			ignore_opacity = true,
-			special = false,
+			ignore_opacity = false,
+			special = true,
 			popups = true,
 			input_methods = true,
-			vibrancy = 0.1696,
 		},
 		-- Not released yet in v0.56
 		-- wobble = {
@@ -51,8 +46,10 @@ hl.config({
 	},
 	group = {
 		col = {
-			border_active = active_border,
-			border_inactive = inactive_border,
+			border_active = colors.secondary,
+			border_inactive = colors.surface,
+			border_locked_active = colors.error,
+			border_locked_inactive = colors.surface,
 		},
 		groupbar = {
 			font_family = "JetBrainsMono Nerd Font",
@@ -63,12 +60,12 @@ hl.config({
 			indicator_height = 0,
 			gaps_in = 2,
 			gaps_out = 2,
-			text_color = "rgb(" .. SCHEME.onPrimary .. ")",
+			text_color = colors.surface,
 			col = {
-				active = "rgba(" .. SCHEME.primary .. "d4)",
-				inactive = "rgba(" .. SCHEME.outline .. "d4)",
-				locked_active = "rgba(" .. SCHEME.primary .. "d4)",
-				locked_inactive = "rgba(" .. SCHEME.secondary .. "d4)",
+				active = colors.secondary,
+				inactive = colors.surface,
+				locked_active = colors.error,
+				locked_inactive = colors.surface,
 			},
 		},
 	},

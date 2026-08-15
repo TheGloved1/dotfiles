@@ -3,8 +3,5 @@ local hyprDir = configHome .. "/hypr"
 
 HYPR_BASE_DIR = hyprDir
 
+-- Setup config
 require("setup")
-
--- For Noctalia Color templates
-Noctalia = require("noctalia")
-Noctalia.apply_theme()

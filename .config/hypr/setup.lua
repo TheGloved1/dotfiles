@@ -3,6 +3,9 @@ HYPR_DIR = HYPR_BASE_DIR
 MODULES_DIR = HYPR_DIR .. "/modules"
 SCRIPTS_DIR = HYPR_DIR .. "/scripts"
 
+-- For Noctalia Color templates
+Noctalia = require("noctalia")
+
 local kvantum_checked = false
 local kvantum_found = false
 
