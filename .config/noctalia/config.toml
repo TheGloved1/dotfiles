@@ -6,6 +6,7 @@ sound_volume = 0.29999999329447746
 background_opacity = 0.89999997988343239
 border = "outline"
 capsule = true
+capsule_thickness = 0.71999998763203621
 center = [ "active_window" ]
 end = [
     "recorder",
@@ -24,8 +25,10 @@ font_family = "JetBrainsMono Nerd Font"
 font_weight = 400
 margin_ends = 0
 margin_opposite_edge = 2
+padding = 6
 panel_overlap = 0
 radius = 32
+shadow = false
 start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
 
     [bar.default.dead_zone.actions]
@@ -37,6 +40,9 @@ start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
 enable_ddcutil = true
 minimum_brightness = 0.39999999105930328
 sync_all_monitors = true
+
+[control_center]
+width = 800
 
 [desktop_widgets]
 enabled = false
@@ -58,6 +64,7 @@ widget_order = [ "desktop-widget-0000000000000001" ]
     type = "clock"
 
 [dock]
+active_monitor_only = true
 enabled = true
 launcher_position = "start"
 pinned = [ "steam", "equibop", "zen", "kitty" ]
@@ -66,6 +73,22 @@ show_dots = true
 show_instance_count = false
 show_running = false
 smart_auto_hide = true
+
+[hot_corners]
+enabled = true
+
+    [hot_corners.bottom_left]
+    action = "window_switcher"
+
+    [hot_corners.bottom_right]
+    action = "command"
+    command = "notify-send \"Guh?\""
+
+    [hot_corners.top_left]
+    action = "launcher"
+
+    [hot_corners.top_right]
+    action = "control_center"
 
 [idle]
 behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
@@ -176,7 +199,8 @@ enabled = [
     "noctalia/screen_recorder",
     "noctalia/wallhaven",
     "kenn/keybind-cheatsheet",
-    "alexander/screen-toolkit"
+    "alexander/screen-toolkit",
+    "noctalia/timer"
 ]
 
 [shell]
@@ -184,7 +208,7 @@ app_icon_color = "primary"
 clipboard_auto_paste = "off"
 external_ip_enabled = true
 font_family = "JetBrainsMono Nerd Font"
-launch_apps_custom_command = "/home/gloves/.config/noctalia/wrap/noctalia-wrap $CMD"
+launch_apps_custom_command = "~/.config/noctalia/wrap/noctalia-wrap $CMD"
 panel_anchor_bar = "default"
 polkit_agent = true
 
@@ -218,7 +242,50 @@ polkit_agent = true
     [shell.session]
     grid = false
 
+        [[shell.session.actions]]
+        action = "lock"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "1"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "logout"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "2"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "lock_and_suspend"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "3"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "reboot"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "4"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "shutdown"
+        countdown_seconds = 0.0
+        enabled = true
+        shortcut = "5"
+        variant = "destructive"
+
+        [[shell.session.actions]]
+        action = "command"
+        command = "notify-send 'Noctalia' 'Custom session entry'"
+        countdown_seconds = 0.0
+        enabled = true
+        variant = "default"
+
     [shell.shadow]
+    alpha = 0.59999998658895493
     direction = "down_right"
 
 [theme]
@@ -292,8 +359,11 @@ type = "noctalia/bongocat:cat"
 
 [widget.clock]
 capsule = true
-capsule_radius = 8
+capsule_radius = "auto"
 format = "%-I:%M:%S %p  %A, %B %d"
+
+    [widget.clock.actions]
+    right = "panel-toggle noctalia/timer:panel"
 
 [widget.control-center]
 enabled = false
