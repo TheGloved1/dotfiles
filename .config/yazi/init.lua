@@ -167,3 +167,6 @@ require("yatline-githead"):setup({
 })
 
 require("git"):setup()
+
+require("recycle-bin"):setup()
+require("restore"):setup()

@@ -18,15 +18,20 @@ use = "imsi32/yatline-githead"
 rev = "929e52c"
 hash = "8282baf02fcd6aac00ccad2276775358"
 
-# [[plugin.deps]]
-# use = "yazi-rs/plugins:smart-filter"
-# rev = "1db18bb"
-# hash = "c887903a63a2ff520081b6d90a4b3392"
-
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
 rev = "1db18bb"
 hash = "c8d30a70659f1b880407e61c564ab4e8"
+
+[[plugin.deps]]
+use = "uhs-robert/recycle-bin"
+rev = "82da16a"
+hash = "7383d80862d3cdcc85f8658dac7b90c2"
+
+[[plugin.deps]]
+use = "boydaihungst/restore"
+rev = "7bfcfcb"
+hash = "bbb1569978e6d2b3e8343c6ca08a4ea6"
 
 [flavor]
 deps = []
