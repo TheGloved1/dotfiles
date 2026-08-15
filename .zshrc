@@ -318,11 +318,15 @@ _dot_detect_type() {
   for f in "$@"; do
     st=$(yadm status --porcelain -- "$f" 2>/dev/null)
     if [[ "$st" == A* ]]; then
-      print -r -- feat
+      print -r -- add
+      return
+    fi
+    if [[ "$st" == D* ]]; then
+      print -r -- remove
       return
     fi
     if [[ "$st" == R* ]]; then
-      print -r -- refactor
+      print -r -- update
       return
     fi
   done
@@ -352,11 +356,13 @@ _dot_detect_type() {
   done <<< "$diff_text"
 
   if [[ $meaningful -eq 0 ]]; then
-    print -r -- style
-  elif [[ $removed -eq 1 ]]; then
-    print -r -- fix
+    print -r -- update
+  elif [[ $added -eq 1 && $removed -eq 1 ]]; then
+    print -r -- update
+  elif [[ $added -eq 1 ]]; then
+    print -r -- add
   else
-    print -r -- feat
+    print -r -- remove
   fi
 }
 
@@ -487,8 +493,9 @@ dot() {
     sync)
       local -a files
       files=(${(f)"$(yadm diff --name-only 2>/dev/null)"})
+      files+=(${(f)"$(yadm diff --cached --name-only --diff-filter=D 2>/dev/null)"})
       if [[ ${#files} -eq 0 ]]; then
-        echo "No unstaged changes to commit"
+        echo "No changes to commit"
         return 0
       fi
       yadm add -- "${files[@]}"
