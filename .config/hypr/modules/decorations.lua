@@ -4,7 +4,7 @@
 local SCHEME = require("scheme.current")
 
 local active_border = "rgba(" .. SCHEME.primary .. "e6)"
-local inactive_border = "rgba(" .. SCHEME.onSurfaceVariant .. "11)"
+local inactive_border = "rgba(" .. SCHEME.primary .. "e6)"
 local shadow_colour = "rgba(" .. SCHEME.inversePrimary .. "10)"
 
 hl.config({
@@ -21,10 +21,10 @@ hl.config({
 		rounding = 6,
 		rounding_power = 20,
 		active_opacity = 0.95,
-		inactive_opacity = 0.85,
+		inactive_opacity = 0.95,
 		fullscreen_opacity = 1.0,
 		dim_inactive = true,
-		dim_strength = 0.05,
+		dim_strength = 0,
 		dim_special = 0.8,
 		shadow = {
 			enabled = true,
@@ -35,7 +35,7 @@ hl.config({
 		blur = {
 			enabled = true,
 			size = 3,
-			passes = 2,
+			passes = 3,
 			new_optimizations = true,
 			xray = false,
 			ignore_opacity = true,

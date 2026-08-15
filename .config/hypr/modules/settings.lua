@@ -2,7 +2,6 @@ hl.config({
 	general = {
 		resize_on_border = true,
 		layout = "scrolling",
-		gaps_workspaces = 12,
 	},
 	scrolling = {
 		column_width = 0.90,
@@ -137,9 +136,6 @@ hl.gesture({
 	direction = "down",
 	action = "float",
 })
-
-local noctalia = require("noctalia")
-noctalia.apply_theme()
 
 -- Dynamic cursor plugin configuration
 if hl.plugin.dynamic_cursors then

@@ -35,9 +35,6 @@ local function exec_once(cmd, opts)
 	os.execute("sh -c " .. shell_quote(script))
 end
 
--- Auto-reload Hyprland when configs/*.lua change
-exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
-
 -- DBus / systemd environment
 exec_once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
@@ -85,3 +82,7 @@ exec_once("blueman-applet")
 
 -- pm2
 exec_once("pm2 resurrect")
+
+-- Not needed since I switched to using hyprland native `require` func
+-- Auto-reload Hyprland when configs/*.lua change
+-- exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")

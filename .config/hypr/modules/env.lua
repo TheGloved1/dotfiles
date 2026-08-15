@@ -13,6 +13,7 @@ hl.env("GDK_SCALE", "1")
 hl.env("QT_SCALE_FACTOR", "1")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+hl.env("DISPLAY", ":0")
 
 -- Cursor theme
 hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-blue")

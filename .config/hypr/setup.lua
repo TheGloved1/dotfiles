@@ -48,21 +48,6 @@ local function apply_qt_style_fallbacks()
 	end
 end
 
----Load lua files
----@param path string path to file
----@return boolean
-local function load_optional(path)
-	local ok, err = pcall(dofile, path)
-	if ok then
-		return true
-	end
-	if err and tostring(err):find("No such file or directory", 1, true) == nil then
-		print("[WARN] Unable to load " .. path .. ": " .. tostring(err))
-	end
-	return false
-end
-
----Scan for lua files
 ---@param dir string Dir to search in
 ---@return table files
 local function scan_lua_files(dir)
@@ -81,10 +66,15 @@ local function scan_lua_files(dir)
 	return files
 end
 
----Load lua config files
+---Load lua module files
 ---@param file string
 for _, file in ipairs(scan_lua_files(MODULES_DIR)) do
-	load_optional(MODULES_DIR .. "/" .. file)
+	local path = MODULES_DIR .. "/" .. file
+	-- use pcall(dofile, path) if this stops working
+	local _, err = pcall(require, path)
+	if err and tostring(err):find("No such file or directory", 1, true) == nil then
+		print("[WARN] Unable to load " .. path .. ": " .. tostring(err))
+	end
 end
 
 apply_qt_style_fallbacks()
