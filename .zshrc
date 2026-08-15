@@ -516,8 +516,35 @@ alias reload='clear && exec zsh'
 # Display Pokemon-colorscripts
 # Project page: https://gitlab.com/phoneybadger/pokemon-colorscripts#on-other-distros-and-macos
 #pokemon-colorscripts --no-title -s -r #without fastfetch
-pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/kooldots-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+pokefetch() {
+  local subcmd="${1:-}"
+  shift 2>/dev/null || true
 
+  case "$subcmd" in
+    -c)
+      pokemon-colorscripts --no-title -s -r | fastfetch -c $@ --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      ;;
+    *)
+      pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/kooldots-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      ;;
+  esac
+}
+
+nocfetch() {
+  local subcmd="${1:-}"
+  shift 2>/dev/null || true
+
+  case "$subcmd" in
+    -c)
+      fastfetch -c $HOME/.config/fastfetch/themes/noctalia.jsonc | fastfetch -c $@ --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      ;;
+    *)
+      fastfetch -c $HOME/.config/fastfetch/themes/noctalia.jsonc | fastfetch -c $HOME/.config/fastfetch/kooldots-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      ;;
+  esac
+}
+
+pokefetch
 # fastfetch. Will be disabled if above colorscript was chosen to install
 #fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
 
