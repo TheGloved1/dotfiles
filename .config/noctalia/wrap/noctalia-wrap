@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# noctalia-wrap: per-app launch override for Noctalia (launcher / dock / taskbar).
+# Detects the app Noctalia is launching and replaces it with the command configured
+# in the config file. Apps without an entry pass through unchanged.
+#
+# Config: ~/.config/noctalia/launch-args.conf  (or $NOCTALIA_LAUNCH_CONF)
+#   Format: one entry per line:  appname=command to run [args...]
+#   '#' starts a comment.
+
+CONF="${NOCTALIA_LAUNCH_CONF:-$HOME/.config/noctalia/wrap/launch-args.conf}"
+
+env_tokens=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        env) env_tokens+=("$1"); shift ;;
+        *=*) env_tokens+=("$1"); shift ;;
+        *) break ;;
+    esac
+done
+
+bin="$1"; shift
+[[ -n "$bin" ]] || exec "${env_tokens[@]}"
+
+base="${bin##*/}"
+base="${base#./}"
+
+key="$base"
+if [[ "$base" == "flatpak" ]]; then
+    for arg in "$@"; do
+        [[ "$arg" == run || "$arg" == --* || "$arg" == *=* ]] && continue
+        key="${arg##*/}"
+        break
+    done
+fi
+
+replacement=""
+if [[ -r "$CONF" ]]; then
+    while IFS= read -r line; do
+        [[ -z "$line" || "$line" == \#* || "$line" == ' '* ]] && continue
+        name="${line%%=*}"
+        value="${line#*=}"
+        name="${name// /}"
+        [[ "$name" == "$key" || "$name" == "$base" ]] || continue
+        replacement="$value"
+        break
+    done < "$CONF"
+fi
+
+if [[ -n "$replacement" ]]; then
+    read -r -a rep <<< "$replacement"
+    exec "${env_tokens[@]}" "${rep[@]}" "$@"
+else
+    exec "${env_tokens[@]}" "$bin" "$@"
+fi
