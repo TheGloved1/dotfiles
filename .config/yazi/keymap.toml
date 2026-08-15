@@ -1,6 +1,12 @@
 [mgr]
 prepend_keymap = [
   { on = ["d", "u"], run = "plugin restore", desc = "Restore last deleted files/folders" },
+  { on = ["d", "d"], run = "shell 'trash-put \"$@\"' --confirm", desc = "Trash (trash-cli)" },
+  { on = ["R","o"], run = "plugin recycle-bin -- open",        desc = "Open Trash" },
+  { on = ["R","e"], run = "plugin recycle-bin -- empty",       desc = "Empty Trash" },
+  { on = ["R","D"], run = "plugin recycle-bin -- emptyDays",   desc = "Empty by days deleted" },
+  { on = ["R","d"], run = "plugin recycle-bin -- delete",      desc = "Delete from Trash" },
+  { on = ["R","r"], run = "plugin recycle-bin -- restore",     desc = "Restore from Trash" },
   { on = ["R","b"], run = "plugin recycle-bin",              desc = "Open Recycle Bin menu" },
   { on = [
     "<C-s>",
