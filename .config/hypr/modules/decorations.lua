@@ -1,8 +1,4 @@
--- Caelestia styling applied to the existing config structure.
--- Colours follow the caelestia scheme (~/.config/hypr/scheme/current.lua).
-
 local colors = Noctalia.colors
-local SCHEME = require("scheme.current")
 
 hl.config({
 	general = {
