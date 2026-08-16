@@ -21,7 +21,7 @@ end = [
     "control-center",
     "session"
 ]
-font_family = "JetBrainsMono Nerd Font"
+font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 margin_ends = 0
 margin_opposite_edge = 2
@@ -78,17 +78,17 @@ smart_auto_hide = true
 enabled = true
 
     [hot_corners.bottom_left]
-    action = "window_switcher"
+    action = "none"
 
     [hot_corners.bottom_right]
-    action = "command"
-    command = "notify-send \"Guh?\""
+    action = "none"
+    command = ""
 
     [hot_corners.top_left]
-    action = "launcher"
+    action = "none"
 
     [hot_corners.top_right]
-    action = "control_center"
+    action = "none"
 
 [idle]
 behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
@@ -192,6 +192,9 @@ video_source = "focused"
 [plugin_settings."tadomika_ari/config-swap"]
 panel_placement = "attached"
 
+[plugin_settings."weinguyen/shell-command"]
+snippets = [ "notify-send \"Test\"" ]
+
 [plugins]
 enabled = [
     "tadomika_ari/config-swap",
@@ -200,14 +203,16 @@ enabled = [
     "noctalia/wallhaven",
     "kenn/keybind-cheatsheet",
     "alexander/screen-toolkit",
-    "noctalia/timer"
+    "noctalia/timer",
+    "weinguyen/shell-command"
 ]
 
 [shell]
 app_icon_color = "primary"
 clipboard_auto_paste = "off"
+clipboard_history_max_entries = 500
 external_ip_enabled = true
-font_family = "JetBrainsMono Nerd Font"
+font_family = "CaskaydiaCove Nerd Font"
 launch_apps_custom_command = "~/.config/noctalia/wrap/noctalia-wrap $CMD"
 panel_anchor_bar = "default"
 polkit_agent = true
@@ -289,11 +294,11 @@ polkit_agent = true
     direction = "down_right"
 
 [theme]
-builtin = "Catppuccin"
-community_palette = "Catppuccin Mocha Blue"
+builtin = "Dracula"
+community_palette = "Tokyo Night Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
-source = "wallpaper"
+source = "community"
 wallpaper_scheme = "soft"
 
     [theme.templates]
@@ -321,13 +326,13 @@ transition_duration = 2000
 transition_on_startup = true
 
     [wallpaper.default]
-    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
 
     [wallpaper.last]
-    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
@@ -339,7 +344,7 @@ transition_on_startup = true
 unit = "imperial"
 
 [widget.active_window]
-capsule_opacity = 0.0
+capsule_opacity = 0.90000000000000002
 capsule_radius = "auto"
 icon_size = 16
 min_length = 45
@@ -372,7 +377,7 @@ glyph = "hyprland"
 [widget.launcher]
 capsule_radius = "auto"
 custom_image = "/home/gloves/Pictures/Assets/arch-linux.svg"
-font_family = "JetBrainsMono Nerd Font"
+font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 scale = 1.6000000000000001
 
@@ -383,6 +388,7 @@ show_label = false
 stat = "ram_pct"
 
 [widget.recorder]
+enabled = false
 type = "noctalia/screen_recorder:recorder"
 
 [widget.tray]
@@ -392,6 +398,6 @@ hidden = [ "Network", "Blueman" ]
 show_condition = false
 
 [widget.workspaces]
-active_pill_size = 1.8500000000000001
+active_pill_size = 2.25
 hide_when_empty = true
 inactive_pill_size = 1.25
