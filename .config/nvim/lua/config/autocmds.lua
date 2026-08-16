@@ -53,15 +53,29 @@ vim.defer_fn(function()
   if vim.fn.filereadable(file) ~= 1 then
     file = persistence.current({ branch = false })
   end
+  local load_session = false
   if file and vim.fn.filereadable(file) == 1 then
     local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
-    vim.ui.select({ "    Load Session", "    Continue" }, {
-      prompt = "Session found for " .. dir .. ":",
-    }, function(choice)
-      if choice == "    Load Session" then
-        vim.cmd("Neotree close")
-        persistence.load()
-      end
-    end)
+    local choice = vim.fn.confirm(
+      "Session found for " .. dir .. ":",
+      "&Load session\n&q Skip",
+      1,
+      "Question"
+    )
+    load_session = choice == 1
   end
+  if load_session then
+    vim.cmd("Neotree close")
+    persistence.load()
+    return
+  end
+  vim.cmd("Neotree close")
+  vim.schedule(function()
+    local buf = vim.api.nvim_get_current_buf()
+    if vim.api.nvim_buf_get_name(buf) == "" and vim.bo[buf].buftype == "" and not vim.bo[buf].modified then
+      pcall(function()
+        require("snacks").dashboard.open({ buf = buf, win = vim.api.nvim_get_current_win() })
+      end)
+    end
+  end)
 end, 100)

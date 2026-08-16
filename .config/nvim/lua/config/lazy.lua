@@ -34,10 +34,8 @@ require("lazy").setup({
   },
   install = {
     colorscheme = {
-      "mutagen",
-      "catppuccin",
-      "tokyonight",
-      "habamax",
+      -- "tokyonight",
+      -- "mutagen",
     },
   },
   checker = {
