@@ -6,7 +6,7 @@ end
 
 ---@param cmd string
 ---@param opts table|nil
-local function exec_once(cmd, opts)
+local function once(cmd, opts)
 	-- Why this wrapper exists:
 	-- 1) Enforce once-per-Hypr-session startup behavior using marker files.
 	-- 2) Avoid startup race conditions by waiting for Wayland/Hypr sockets.
@@ -36,53 +36,47 @@ local function exec_once(cmd, opts)
 end
 
 -- DBus / systemd environment
-exec_once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-exec_once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-exec_once("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'")
-exec_once("gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-mocha-blue'")
-exec_once("gsettings set org.gnome.desktop.interface cursor-size 24")
+once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+once("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'")
+once("gsettings set org.gnome.desktop.interface cursor-theme 'Nordzy-cursors'")
+once("gsettings set org.gnome.desktop.interface cursor-size 24")
 
 -- Core services
-exec_once("systemctl --user enable --now hyprpolkitagent.service")
-exec_once("sh -c 'sleep 0.3; $HOME/.config/hypr/scripts/Polkit.sh")
-exec_once("nm-applet")
+once("systemctl --user enable --now hyprpolkitagent.service")
+once("sh -c 'sleep 0.3; $HOME/.config/hypr/scripts/Polkit.sh")
+once("nm-applet")
 
 -- Portals and theme
-exec_once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
+once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
 
 -- Cursor refresh
-exec_once(
-	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-catppuccin-mocha-blue}" "${HYPRCURSOR_SIZE:-24}"\''
-)
+once('sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-Nordzy-hyprcursors}" "${HYPRCURSOR_SIZE:-24}"\'')
 
 -- Noctalia shell
-exec_once("noctalia --daemon")
+once("noctalia --daemon")
 
 -- Idle manager
--- exec_once("hypridle")
+-- once("hypridle")
 
 -- Hypr plugins
-exec_once("hyprpm reload")
+once("hyprpm reload")
 
 -- Vicinae
-exec_once("vicinae server")
+once("vicinae server")
 
 -- Hyprsunset
-exec_once("$HOME/.config/hypr/scripts/Hyprsunset.sh init")
+once("$HOME/.config/hypr/scripts/Hyprsunset.sh init")
 
 -- Drop terminal
-exec_once("$HOME/.config/hypr/scripts/Dropterminal.sh --startup kitty")
+once("$HOME/.config/hypr/scripts/Dropterminal.sh --startup kitty")
 
 -- Clipboard manager
-exec_once("wl-paste --type text --watch cliphist store")
-exec_once("wl-paste --type image --watch cliphist store")
+once("wl-paste --type text --watch cliphist store")
+once("wl-paste --type image --watch cliphist store")
 
 -- Bluetooth
-exec_once("blueman-applet")
+once("blueman-applet")
 
 -- pm2
-exec_once("pm2 resurrect")
-
--- Not needed since I switched to using hyprland native `require` func
--- Auto-reload Hyprland when configs/*.lua change
--- exec_once("$HOME/.config/hypr/scripts/LuaAutoReload.sh")
+once("pm2 resurrect")

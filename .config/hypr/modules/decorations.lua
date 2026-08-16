@@ -4,7 +4,7 @@ hl.config({
 	general = {
 		border_size = 2,
 		gaps_in = 6,
-		gaps_out = 6,
+		gaps_out = 8,
 		col = {
 			active_border = colors.primary,
 			inactive_border = colors.surface,
@@ -26,11 +26,11 @@ hl.config({
 		},
 		blur = {
 			enabled = true,
-			size = 12,
+			size = 4,
 			passes = 2,
 			new_optimizations = true,
 			xray = false,
-			ignore_opacity = false,
+			ignore_opacity = true,
 			special = true,
 			popups = true,
 			input_methods = true,

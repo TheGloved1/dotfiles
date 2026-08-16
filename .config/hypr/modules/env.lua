@@ -16,9 +16,9 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("DISPLAY", ":0")
 
 -- Cursor theme
-hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-blue")
+hl.env("HYPRCURSOR_THEME", "Nordzy-hyprcursors")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "catppuccin-mocha-blue")
+hl.env("XCURSOR_THEME", "Nordzy-cursors")
 hl.env("XCURSOR_SIZE", "24")
 
 -- DEFAULTS is populated by lua/defaults.lua (loaded before this).

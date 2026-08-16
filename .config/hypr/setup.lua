@@ -69,14 +69,20 @@ local function scan_lua_files(dir)
 	return files
 end
 
----Load lua module files
+---Namespace a lua filename into a require-able module name
+---@param file string
+---@return string
+local function get_module(file)
+	return "modules." .. file:gsub("%.lua$", ""):gsub("/", ".")
+end
+
+---Load lua module files by relative name
 ---@param file string
 for _, file in ipairs(scan_lua_files(MODULES_DIR)) do
-	local path = MODULES_DIR .. "/" .. file
-	-- use pcall(dofile, path) if this stops working
-	local _, err = pcall(require, path)
+	local module = get_module(file)
+	local _, err = pcall(require, module)
 	if err and tostring(err):find("No such file or directory", 1, true) == nil then
-		print("[WARN] Unable to load " .. path .. ": " .. tostring(err))
+		print("[WARN] Unable to load " .. module .. ": " .. tostring(err))
 	end
 end
 

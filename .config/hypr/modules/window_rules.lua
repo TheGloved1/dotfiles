@@ -481,6 +481,8 @@ apply_window_rule({
 		class = "^(mpv|com.github.rafostar.Clapper)$",
 	},
 	float = true,
+	no_blur = true,
+	tag = "+hyprglass_disabled",
 })
 
 apply_window_rule({
@@ -653,6 +655,8 @@ apply_window_rule({
 	},
 	center = true,
 })
+
+apply_window_rule({ match = { fullscreen = true }, tag = "+hyprglass_disabled" })
 
 apply_window_rule({
 	name = "idle-inhibit-fullscreen-bool",
