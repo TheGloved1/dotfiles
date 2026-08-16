@@ -1,0 +1,2 @@
+# Startup banner
+pokefetch
