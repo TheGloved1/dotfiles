@@ -1,4 +1,5 @@
 [audio]
+enable_overdrive = true
 enable_sounds = true
 sound_volume = 0.29999999329447746
 
@@ -8,19 +9,7 @@ border = "outline"
 capsule = true
 capsule_thickness = 0.71999998763203621
 center = [ "active_window" ]
-end = [
-    "recorder",
-    "notifications",
-    "network",
-    "bluetooth",
-    "volume",
-    "brightness",
-    "battery",
-    "weather",
-    "clock",
-    "control-center",
-    "session"
-]
+end = [ "recorder", "group:g2", "brightness", "battery", "weather", "clock", "control-center", "session" ]
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 margin_ends = 0
@@ -29,12 +18,42 @@ padding = 6
 panel_overlap = 0
 radius = 32
 shadow = false
-start = [ "launcher", "workspaces", "tray", "ram", "cpu", "cat" ]
+start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
 
     [bar.default.dead_zone.actions]
     left = "panel-toggle control-center home"
     middle = "settings-toggle bar"
     right = "settings-toggle"
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    id = "g1"
+    members = [ "workspaces", "taskbar" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    id = "g2"
+    members = [ "notifications", "network", "bluetooth", "volume" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    id = "g3"
+    members = [ "ram", "cpu" ]
+    opacity = 1.0
+    padding = 6.0
 
 [brightness]
 enable_ddcutil = true
@@ -65,9 +84,12 @@ widget_order = [ "desktop-widget-0000000000000001" ]
 
 [dock]
 active_monitor_only = true
+background_opacity = 0.7799999825656414
 enabled = true
 launcher_position = "start"
+margin_edge = 8
 pinned = [ "steam", "equibop", "zen", "kitty" ]
+radius = 24
 reserve_space = false
 show_dots = true
 show_instance_count = false
@@ -75,7 +97,7 @@ show_running = false
 smart_auto_hide = true
 
 [hot_corners]
-enabled = true
+enabled = false
 
     [hot_corners.bottom_left]
     action = "none"
@@ -179,6 +201,8 @@ x02-expiry = "1h"
 
 [plugin_settings."kenn/keybind-cheatsheet"]
 cheatsheet_open_near_click = false
+cheatsheet_placement = "attached"
+columns = 2
 hyprland_parser = "lua"
 show_actions = true
 
@@ -233,11 +257,12 @@ polkit_agent = true
     launcher_placement = "attached"
     launcher_position = "auto"
     polkit_placement = "attached"
-    shadow = false
+    shadow = true
+    transparency_mode = "soft"
 
     [shell.screen_corners]
     enabled = true
-    size = 32
+    size = 24
 
     [shell.screenshot]
     confirm_region = true
@@ -282,13 +307,6 @@ polkit_agent = true
         shortcut = "5"
         variant = "destructive"
 
-        [[shell.session.actions]]
-        action = "command"
-        command = "notify-send 'Noctalia' 'Custom session entry'"
-        countdown_seconds = 0.0
-        enabled = true
-        variant = "default"
-
     [shell.shadow]
     alpha = 0.59999998658895493
     direction = "down_right"
@@ -308,7 +326,6 @@ wallpaper_scheme = "soft"
         "zen-browser",
         "discord",
         "gimp",
-        "neovim",
         "heroiclauncher",
         "prismlauncher",
         "steam",
@@ -326,13 +343,13 @@ transition_duration = 2000
 transition_on_startup = true
 
     [wallpaper.default]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
 
     [wallpaper.last]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/storm/os/arch_01_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
@@ -349,6 +366,15 @@ capsule_radius = "auto"
 icon_size = 16
 min_length = 45
 title_scroll = "on_hover"
+
+[widget.battery]
+enabled = false
+
+[widget.bluetooth]
+enabled = false
+
+[widget.brightness]
+enabled = false
 
 [widget.cat]
 audio_spectrum = true
@@ -391,8 +417,18 @@ stat = "ram_pct"
 enabled = false
 type = "noctalia/screen_recorder:recorder"
 
+[widget.taskbar]
+hide_empty_workspaces = true
+inactive_opacity = 0.80000000000000004
+only_active_workspace = true
+taskbar_max_width = 754
+window_title_max_width = 77
+
 [widget.tray]
 hidden = [ "Network", "Blueman" ]
+
+[widget.volume]
+show_label = false
 
 [widget.weather]
 show_condition = false
