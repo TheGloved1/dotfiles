@@ -21,8 +21,10 @@ hl.config({
 		dim_special = 0.8,
 		shadow = {
 			enabled = true,
-			range = 4,
-			render_power = 3,
+			range = 30,
+			render_power = 5,
+			offset = { 0, 5 },
+			color = "rgba(00000070)",
 		},
 		blur = {
 			enabled = true,

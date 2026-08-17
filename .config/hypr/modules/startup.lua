@@ -69,7 +69,7 @@ once("vicinae server")
 once("$HOME/.config/hypr/scripts/Hyprsunset.sh init")
 
 -- Drop terminal
-once("$HOME/.config/hypr/scripts/Dropterminal.sh --startup kitty")
+-- once("$HOME/.config/hypr/scripts/Dropterminal.sh --startup kitty")
 
 -- Clipboard manager
 once("wl-paste --type text --watch cliphist store")

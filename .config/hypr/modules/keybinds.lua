@@ -24,7 +24,7 @@ bind("SUPER + E", cmd(script("LaunchFileManager.sh") .. " " .. files .. " " .. t
 bind("SUPER + B", cmd('xdg-open "https://"'), { description = "open default browser" })
 bind("SUPER + SUPER_L", cmd("noctalia msg panel-toggle launcher"), { description = "App launcher" })
 bind("SUPER + SPACE", cmd("noctalia msg panel-toggle control-center home"), { description = "App launcher" })
-bind("SUPER + SHIFT + Return", cmd(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
+-- bind("SUPER + SHIFT + Return", cmd(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
 bind(
 	"SUPER + slash",
 	cmd("noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet"),

@@ -5,3 +5,6 @@ HYPR_BASE_DIR = hyprDir
 
 -- Setup config
 require("setup")
+
+-- HyprMod managed settings
+require("hyprland-gui")

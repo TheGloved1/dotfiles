@@ -7,7 +7,7 @@ config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
 hypr_dir="$config_home/hypr"
 
 # Resolve defaults file used to get terminal/editor values
-defaults_file="$hypr_dir/configs/defaults.lua"
+defaults_file="$hypr_dir/modules/defaults.lua"
 term="${term:-${TERM:-kitty}}"
 edit="${edit:-${EDITOR:-nano}}"
 visual="${visual:-${VISUAL:-}}"
@@ -23,24 +23,24 @@ fi
 # ##################################### #
 
 # variables
-configs="$hypr_dir/configs"
+modules="$hypr_dir/modules"
 msg=' ⁉️ Choose what to do ⁉️'
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/noctalia/images"
 scriptsDir="$hypr_dir/scripts"
 
 # Config files (all live in configs/*.lua)
-config_defaults="$configs/defaults.lua"
-config_env="$configs/env.lua"
-config_keybinds="$configs/keybinds.lua"
-config_startup="$configs/startup.lua"
-config_window_rules="$configs/window_rules.lua"
-config_layer_rules="$configs/layer_rules.lua"
-config_settings="$configs/settings.lua"
-config_decorations="$configs/decorations.lua"
-config_animations="$configs/animations.lua"
-config_laptops="$configs/laptops.lua"
-config_monitors="$configs/monitors.lua"
-config_workspaces="$configs/workspaces.lua"
+config_defaults="$modules/defaults.lua"
+config_env="$modules/env.lua"
+config_keybinds="$modules/keybinds.lua"
+config_startup="$modules/startup.lua"
+config_window_rules="$modules/window_rules.lua"
+config_layer_rules="$modules/layer_rules.lua"
+config_settings="$modules/settings.lua"
+config_decorations="$modules/decorations.lua"
+config_animations="$modules/animations.lua"
+config_laptops="$modules/laptops.lua"
+config_monitors="$modules/monitors.lua"
+config_workspaces="$modules/workspaces.lua"
 
 # Function to show info notification
 show_info() {
@@ -119,7 +119,6 @@ GTK Settings (nwg-look)
 QT Apps Settings (qt6ct)
 QT Apps Settings (qt5ct)
 Choose Hyprland Animations
-Choose Monitor Profiles
 Search for Keybinds
 EOF
 }
@@ -180,7 +179,6 @@ main() {
     qt5ct
     ;;
   "Choose Hyprland Animations") $scriptsDir/Animations.sh ;;
-  "Choose Monitor Profiles") $scriptsDir/MonitorProfiles.sh ;;
   "Search for Keybinds") $scriptsDir/KeyBinds.sh ;;
   *) return ;; # Do nothing for invalid choices
   esac

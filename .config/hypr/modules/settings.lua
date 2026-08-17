@@ -39,6 +39,7 @@ hl.config({
 		no_hardware_cursors = 0,
 		enable_hyprcursor = true,
 		warp_on_change_workspace = 2,
+		persistent_warps = true,
 		no_warps = false,
 		no_break_fs_vrr = false,
 		min_refresh_rate = 24,
