@@ -580,16 +580,6 @@ apply_window_rule({
 })
 
 apply_window_rule({
-	name = "float-center-yad-dialog",
-	match = {
-		class = "^(yad)$",
-	},
-	float = true,
-	center = true,
-	size = "(monitor_w*0.2) (monitor_h*0.2)",
-})
-
-apply_window_rule({
 	name = "float-center-hyprland-donate",
 	match = {
 		class = "^(hyprland-donate-screen)$",

@@ -4,10 +4,11 @@ hl.config({
 		layout = "scrolling",
 	},
 	scrolling = {
-		column_width = 0.90,
+		column_width = 0.5,
 		fullscreen_on_one_column = true,
 		direction = "right",
 		follow_focus = true,
+		follow_min_visible = 0.95,
 		focus_fit_method = 1,
 		wrap_focus = true,
 		wrap_swapcol = true,
@@ -81,7 +82,7 @@ hl.config({
 		},
 		tablet = {
 			transform = 0,
-			left_handed = 0,
+			left_handed = false,
 		},
 	},
 	gestures = {

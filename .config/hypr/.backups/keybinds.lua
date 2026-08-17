@@ -10,19 +10,21 @@ local window = hl.dsp.window
 local workspace = hl.dsp.workspace
 local group = hl.dsp.group
 
+---@param name string
+---@return string
+local script = function(name)
+	return SCRIPTS_DIR .. "/" .. name
+end
+
 -- ============================================
 --  LAUNCHERS
 -- ============================================
-bind("SUPER + Return", function()
-	Utils.launch_terminal(term)
-end, { description = "Open terminal" })
-bind("SUPER + E", function()
-	Utils.launch_file_manager(files, term)
-end, { description = "file manager" })
+bind("SUPER + Return", cmd(script("LaunchTerminal.sh") .. " " .. term), { description = "Open terminal" })
+bind("SUPER + E", cmd(script("LaunchFileManager.sh") .. " " .. files .. " " .. term), { description = "file manager" })
 bind("SUPER + B", cmd('xdg-open "https://"'), { description = "open default browser" })
 bind("SUPER + SUPER_L", cmd("noctalia msg panel-toggle launcher"), { description = "App launcher" })
 bind("SUPER + SPACE", cmd("noctalia msg panel-toggle control-center home"), { description = "App launcher" })
--- bind("SUPER + SHIFT + Return", function() Utils.dropterminal("toggle", "kitty") end, { description = "DropDown terminal" })
+-- bind("SUPER + SHIFT + Return", cmd(script("Dropterminal.sh kitty")), { description = "DropDown terminal" })
 bind(
 	"SUPER + slash",
 	cmd("noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet"),
@@ -42,24 +44,24 @@ bind("ALT + SPACE", cmd("vicinae toggle"), { description = "Toggle vicinae" })
 bind("SUPER + A", cmd("noctalia msg window-switcher"), { description = "desktop overview" })
 -- bind("SUPER + CTRL + S", exec("rofi -show window"), { description = "window switcher" })
 if hl.plugin.scrolloverview then
-	bind("SUPER + tab", function()
-		hl.plugin.scrolloverview.overview("toggle all")
-	end, { description = "niri-style overview" })
+	bind(
+		"SUPER + tab",
+		function()
+			hl.plugin.scrolloverview.overview("toggle all")
+		end,
+		{ description = "niri-style overview" }
+	)
 end
 
 -- ============================================
 --  WINDOW MANAGEMENT
 -- ============================================
 bind("SUPER + Q", window.close(), { description = "close active window" })
-bind("SUPER + SHIFT + Q", function()
-	Utils.kill_active_process()
-end, { description = "Terminate active process" })
+bind("SUPER + SHIFT + Q", cmd(script("KillActiveProcess.sh")), { description = "Terminate active process" })
 bind("SUPER + F", window.fullscreen({ mode = "maximized" }), { description = "maximize window" })
 bind("SUPER + SHIFT + F", window.fullscreen(), { description = "fullscreen" })
 bind("SUPER + D", window.float({ action = "toggle" }), { description = "Toggle float" })
-bind("SUPER + ALT + SPACE", function()
-	Utils.float_all_windows()
-end, { description = "Float all windows" })
+bind("SUPER + ALT + SPACE", cmd(script("Float-all-Windows.sh")), { description = "Float all windows" })
 bind(
 	"SUPER + CTRL + O",
 	window.set_prop({ prop = "opaque", value = "toggle" }),
@@ -97,31 +99,27 @@ end, { description = "toggle blur & opacity" })
 -- ============================================
 --  FOCUS / NAVIGATION
 -- ============================================
-bind("SUPER + H", function()
-	Utils.layout_keybind_dispatch("focus-left")
-end, { description = "Focus left", repeating = true })
-bind("SUPER + L", function()
-	Utils.layout_keybind_dispatch("focus-right")
-end, { description = "Focus right", repeating = true })
-bind("SUPER + J", function()
-	Utils.focus_wrap("d")
-end, { description = "Focus down / next workspace", repeating = true })
-bind("SUPER + K", function()
-	Utils.focus_wrap("u")
-end, { description = "Focus up / prev workspace", repeating = true })
-bind("SUPER + up", function()
-	Utils.layout_keybind_dispatch("focus-up")
-end, { description = "focus up (layout-aware)" })
-bind("SUPER + down", function()
-	Utils.layout_keybind_dispatch("focus-down")
-end, { description = "focus down (layout-aware)" })
+bind("SUPER + H", cmd(script("LayoutKeybindDispatch.sh focus-left")), { description = "Focus left", repeating = true })
+bind(
+	"SUPER + L",
+	cmd(script("LayoutKeybindDispatch.sh focus-right")),
+	{ description = "Focus right", repeating = true }
+)
+bind("SUPER + J", cmd(script("FocusWrap.sh d")), { description = "Focus down / next workspace", repeating = true })
+bind("SUPER + K", cmd(script("FocusWrap.sh u")), { description = "Focus up / prev workspace", repeating = true })
+bind("SUPER + up", cmd(script("LayoutKeybindDispatch.sh focus-up")), { description = "focus up (layout-aware)" })
+bind("SUPER + down", cmd(script("LayoutKeybindDispatch.sh focus-down")), { description = "focus down (layout-aware)" })
 bind("ALT + Tab", window.cycle_next(), { description = "cycle next window" })
-bind("SUPER + bracketleft", function()
-	Utils.layout_keybind_dispatch("cycle-next")
-end, { description = "Cycle next (layout-aware)" })
-bind("SUPER + bracketright", function()
-	Utils.layout_keybind_dispatch("cycle-prev")
-end, { description = "Cycle previous (layout-aware)" })
+bind(
+	"SUPER + bracketleft",
+	cmd(script("LayoutKeybindDispatch.sh cycle-next")),
+	{ description = "Cycle next (layout-aware)" }
+)
+bind(
+	"SUPER + bracketright",
+	cmd(script("LayoutKeybindDispatch.sh cycle-prev")),
+	{ description = "Cycle previous (layout-aware)" }
+)
 
 -- ============================================
 --  MOVE / SWAP / RESIZE
@@ -134,18 +132,10 @@ bind("SUPER + ALT + left", window.swap({ direction = "left" }), { description = 
 bind("SUPER + ALT + right", window.swap({ direction = "right" }), { description = "swap window right" })
 bind("SUPER + ALT + up", window.swap({ direction = "up" }), { description = "swap window up" })
 bind("SUPER + ALT + down", window.swap({ direction = "down" }), { description = "swap window down" })
-bind("SUPER + SHIFT + H", function()
-	Utils.move_wrap("l")
-end, { description = "Move window left", repeating = true })
-bind("SUPER + SHIFT + L", function()
-	Utils.move_wrap("r")
-end, { description = "Move window right", repeating = true })
-bind("SUPER + SHIFT + K", function()
-	Utils.move_wrap("u")
-end, { description = "Move window up / prev workspace", repeating = true })
-bind("SUPER + SHIFT + J", function()
-	Utils.move_wrap("d")
-end, { description = "Move window down / next workspace", repeating = true })
+bind("SUPER + SHIFT + H", window.swap({ direction = "left" }), { description = "Move window left" })
+bind("SUPER + SHIFT + L", window.swap({ direction = "right" }), { description = "Move window right" })
+bind("SUPER + SHIFT + K", cmd(script("MoveWrap.sh u")), { description = "Move window up / prev workspace" })
+bind("SUPER + SHIFT + J", cmd(script("MoveWrap.sh d")), { description = "Move window down / next workspace" })
 bind(
 	"SUPER + ALT + H",
 	window.resize({ x = -50, y = 0, relative = true }),
@@ -176,18 +166,10 @@ bind("SUPER + I", layout("addmaster"), { description = "add master" })
 bind("SUPER + CTRL + D", layout("removemaster"), { description = "remove master" })
 bind("SUPER + CTRL + Return", layout("swapwithmaster"), { description = "swap with master" })
 bind("SUPER + SHIFT + I", layout("togglesplit"), { description = "toggle split (dwindle)" })
-bind("SUPER + ALT + 1", function()
-	Utils.change_layout("dwindle")
-end, { description = "layout dwindle" })
-bind("SUPER + ALT + 2", function()
-	Utils.change_layout("master")
-end, { description = "layout master" })
-bind("SUPER + ALT + 3", function()
-	Utils.change_layout("scrolling")
-end, { description = "layout scrolling" })
-bind("SUPER + ALT + 4", function()
-	Utils.change_layout("monocle")
-end, { description = "layout monocle" })
+bind("SUPER + ALT + 1", cmd(script("ChangeLayout.sh dwindle")), { description = "layout dwindle" })
+bind("SUPER + ALT + 2", cmd(script("ChangeLayout.sh master")), { description = "layout master" })
+bind("SUPER + ALT + 3", cmd(script("ChangeLayout.sh scrolling")), { description = "layout scrolling" })
+bind("SUPER + ALT + 4", cmd(script("ChangeLayout.sh monocle")), { description = "layout monocle" })
 bind("SUPER + SHIFT + period", layout("move +col"), { description = "move to right column" })
 bind("SUPER + SHIFT + comma", layout("move -col"), { description = "move to left column" })
 bind("SUPER + ALT + comma", layout("swapcol l"), { description = "swap columns left" })
@@ -196,6 +178,7 @@ bind("SUPER + ALT + period", layout("swapcol r"), { description = "swap columns 
 -- ============================================
 --  WORKSPACES
 -- ============================================
+
 bind("SUPER + mouse_down", focus({ workspace = "e+1" }), { description = "next workspace" })
 bind("SUPER + mouse_up", focus({ workspace = "e-1" }), { description = "previous workspace" })
 bind("SUPER + U", workspace.toggle_special(), { description = "toggle special workspace" })
@@ -227,50 +210,22 @@ bind("SUPER + SHIFT + 0", window.move({ workspace = 10 }), { description = "move
 bind("SUPER + G", group.toggle(), { description = "toggle group" })
 
 -- ============================================
---  SCREENSHOTS / RECORD
+--  SCREENSHOTS / RECORD (Caelestia)
 -- ============================================
 bind("SUPER + Print", cmd("noctalia msg screenshot-fullscreen"), { description = "screenshot now" })
 bind("SUPER + SHIFT + Print", cmd("noctalia msg screenshot-region"), { description = "screenshot (area)" })
-bind("SUPER + CTRL + Print", function()
-	Utils.screenshot("--in5")
-end, { description = "screenshot in 5s" })
-bind("SUPER + CTRL + SHIFT + Print", function()
-	Utils.screenshot("--in10")
-end, { description = "screenshot in 10s" })
-bind("ALT + Print", function()
-	Utils.screenshot("--active")
-end, { description = "screenshot active window" })
-bind("SUPER + SHIFT + S", function()
-	Utils.screenshot("--swappy")
-end, { description = "screenshot (region)" })
+bind("SUPER + CTRL + Print", cmd(script("ScreenShot.sh --in5")), { description = "screenshot in 5s" })
+bind("SUPER + CTRL + SHIFT + Print", cmd(script("ScreenShot.sh --in10")), { description = "screenshot in 10s" })
+bind("ALT + Print", cmd(script("ScreenShot.sh --active")), { description = "screenshot active window" })
+bind("SUPER + SHIFT + S", cmd(script("ScreenShot.sh --swappy")), { description = "screenshot (region)" })
 bind(
 	"ALT + SHIFT + S",
 	cmd("noctalia msg screenshot-region"),
 	{ description = "screenshot (freeze) [fallback to region]" }
 )
-bind(
-	"CTRL + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
-	{ description = "record screen" }
-)
-bind(
-	"SUPER + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
-	{ description = "record screen with sound" }
-)
-bind(
-	"SUPER + SHIFT + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all replay-stop"),
-	{ description = "Stop replay buffer" }
-)
-bind(
-	"SUPER + SHIFT + CTRL + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all replay-start"),
-	{ description = "Start replay buffer / Save replay" }
-)
 
 -- ============================================
---  MEDIA / VOLUME
+--  MEDIA / VOLUME (Caelestia OSD)
 -- ============================================
 bind(
 	"XF86AudioRaiseVolume",
@@ -305,7 +260,7 @@ bind("XF86AudioPrev", cmd("noctalia msg media previous"), { description = "previ
 bind("XF86AudioStop", cmd("noctalia msg media stop"), { description = "stop", locked = true })
 
 -- ============================================
---  BRIGHTNESS
+--  BRIGHTNESS (Caelestia OSD)
 -- ============================================
 bind("XF86MonBrightnessUp", cmd("noctalia msg brightness-up"), { description = "brightness up", locked = true })
 bind("XF86MonBrightnessDown", cmd("noctalia msg brightness-down"), { description = "brightness down", locked = true })
@@ -326,12 +281,8 @@ bind("XF86Sleep", cmd("systemctl suspend"), { description = "sleep", locked = tr
 --  APPEARANCE / THEMES
 -- ============================================
 bind("SUPER + T", cmd("noctalia msg settings-open theme"), { description = "Noctalia theme settings" })
-bind("SUPER + SHIFT + A", function()
-	Utils.animations()
-end, { description = "animations menu" })
-bind("SUPER + N", function()
-	Utils.hyprsunset("toggle")
-end, { description = "Toggle Hyprsunset - night light" })
+bind("SUPER + SHIFT + A", cmd(script("Animations.sh")), { description = "animations menu" })
+bind("SUPER + N", cmd(script("Hyprsunset.sh toggle")), { description = "Toggle Hyprsunset - night light" })
 
 -- ============================================
 --  WALLPAPER
@@ -346,14 +297,35 @@ bind(
 -- ============================================
 --  UTILITIES
 -- ============================================
-bind("SUPER + SHIFT + R", function()
-	Utils.refresh()
-end, { description = "refresh bar and menus" })
+bind("SUPER + SHIFT + R", cmd(script("Refresh.sh")), { description = "refresh bar and menus" })
 bind("SUPER + ALT + E", cmd('noctalia msg panel-toggle launcher "/emo "'), { description = "emoji menu" })
 bind("SUPER + V", cmd("noctalia msg panel-toggle clipboard"), { description = "clipboard manager" })
-bind("SUPER + SHIFT + E", function()
-	Utils.quick_settings()
-end, { description = "Quick settings menu" })
+bind("SUPER + SHIFT + E", cmd(script("QuickSettings.sh")), { description = "Quick settings menu" })
+
+-- ============================================
+--  SCREEN RECORD
+-- ============================================
+bind(
+	"CTRL + ALT + R",
+	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
+	{ description = "record screen" }
+)
+bind(
+	"SUPER + ALT + R",
+	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
+	{ description = "record screen with sound" }
+)
+bind(
+	"SUPER + SHIFT + ALT + R",
+	cmd("noctalia msg plugin noctalia/screen_recorder:service all replay-stop"),
+	{ description = "Stop replay buffer" }
+)
+local save_replay = function()
+	return cmd("noctalia msg plugin noctalia/screen_recorder:service all replay-start")
+end
+bind("SUPER + SHIFT + CTRL + R", function()
+	return save_replay()
+end, { description = "Start replay buffer / Save replay" })
 
 -- ============================================
 --  MOUSE / ZOOM

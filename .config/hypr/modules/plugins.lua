@@ -43,11 +43,25 @@ if hl.plugin.dynamic_cursors then
 	})
 end
 
+if hl.plugin.scrolloverview then
+	hl.config({
+		plugin = {
+			scrolloverview = {
+				gesture_distance = 100,
+				scale = 0.5,
+				workspace_gap = 0,
+				layout = "vertical",
+				wallpaper = 2,
+				blur = false,
+				shadow = { enabled = true, range = 10 },
+				input = { scroll_event_delay = 0 },
+			},
+		},
+	})
+end
+
 if hl.plugin.hyprglass then
 	local hg = hl.plugin.hyprglass
-	local function tint(c, alpha)
-		return tonumber(c:match("%x%x%x%x%x%x"), 16) * 256 + math.floor(alpha * 255 + 0.5)
-	end
 
 	hg.config({
 		enabled = false,
@@ -80,7 +94,7 @@ if hl.plugin.hyprglass then
 		chromatic_aberration = 0.6,
 		fresnel_strength = 0.8,
 		edge_thickness = 0.04,
-		int_color = tint(Noctalia.colors.primary, 0.12),
+		int_color = Utils.tint(Noctalia.colors.primary, 0.12),
 		lens_distortion = 0.9,
 		brightness = 1.0,
 		contrast = 1.7,
@@ -91,7 +105,7 @@ if hl.plugin.hyprglass then
 	})
 
 	hg.preset("apple", {
-		blur_strength = 2.2,
+		blur_strength = 2,
 		blur_iterations = 3,
 		refraction_strength = 0.55,
 		chromatic_aberration = 0.3,
