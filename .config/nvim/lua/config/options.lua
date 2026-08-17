@@ -17,3 +17,5 @@ opt.smartindent = false
 opt.cindent = false
 
 opt.scrolloff = 8
+
+vim.o.undofile = true
