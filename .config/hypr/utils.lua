@@ -1645,7 +1645,6 @@ function Utils.quick_settings()
 	for _, c in ipairs(tools) do
 		menu[#menu + 1] = c[1]
 	end
-	menu[#menu + 1] = "Choose Hyprland Animations"
 	menu[#menu + 1] = "Search for Keybinds"
 
 	Utils.pick(menu, msg, function(choice)
@@ -1668,9 +1667,7 @@ function Utils.quick_settings()
 				return
 			end
 		end
-		if choice == "Choose Hyprland Animations" then
-			Utils.animations()
-		elseif choice == "Search for Keybinds" then
+		if choice == "Search for Keybinds" then
 			Utils.keybinds()
 		end
 	end)

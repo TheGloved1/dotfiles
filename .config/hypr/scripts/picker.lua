@@ -33,16 +33,16 @@ function M.pick(items, prompt, cb, opts)
 		script_args[#script_args + 1] = prompt
 	end
 
-	-- Use hl.dsp.exec_cmd to run the picker with proper Wayland env
-	-- The script reads from stdin and writes selection to stdout
-	local cmd = string.format(
-		"sh -c 'printf %%s %s | %s %s < %s > %s'",
-		Utils.shell_quote(content),
-		script,
-		table.concat(script_args, " "),
-		Utils.shell_quote(input),
-		Utils.shell_quote(output)
-	)
+	-- Use hl.dsp.exec_cmd to run the picker with proper Wayland env.
+	-- The script reads items from stdin (the input file) and writes the
+	-- selection to stdout, redirected into the output file.
+	local parts = { script }
+	for _, arg in ipairs(script_args) do
+		parts[#parts + 1] = Utils.shell_quote(arg)
+	end
+	parts[#parts + 1] = "< " .. Utils.shell_quote(input)
+	parts[#parts + 1] = "> " .. Utils.shell_quote(output)
+	local cmd = table.concat(parts, " ")
 
 	hl.dispatch(hl.dsp.exec_cmd(cmd))
 
