@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: ocp [-n N] [-h]
+
+Fuzzy-pick an opencode session by title and resume it.
+
+Options:
+  -n N   limit to N most recent sessions
+  -h     show this help
+EOF
+}
+
+MAX_COUNT=""
+while getopts ":n:h" opt; do
+  case "$opt" in
+    n) MAX_COUNT="$OPTARG" ;;
+    h) usage; exit 0 ;;
+    \?) echo "ocp: unknown option -$OPTARG" >&2; usage; exit 1 ;;
+  esac
+done
+
+command -v opencode >/dev/null || { echo "ocp: opencode not found" >&2; exit 1; }
+command -v fzf >/dev/null || { echo "ocp: fzf not found" >&2; exit 1; }
+command -v python3 >/dev/null || { echo "ocp: python3 not found" >&2; exit 1; }
+
+list_args=()
+[ -n "$MAX_COUNT" ] && list_args+=(-n "$MAX_COUNT")
+
+json="$(opencode session list --format json "${list_args[@]}")" ||
+  { echo "ocp: failed to list sessions" >&2; exit 1; }
+[ -n "$json" ] || { echo "ocp: no sessions found" >&2; exit 1; }
+
+lines="$(python3 - "$json" <<'PY'
+import json, sys
+from datetime import datetime
+
+data = json.loads(sys.argv[1])
+now = datetime.now()
+for s in data:
+    title = s.get("title") or ""
+    title = title.replace("\t", " ").replace("\n", " ").strip()
+    t = datetime.fromtimestamp(s["updated"] / 1000)
+    delta = now - t
+    secs = delta.total_seconds()
+    if secs < 60:
+        rel = "just now"
+    elif secs < 3600:
+        rel = f"{int(secs // 60)}m ago"
+    elif secs < 86400:
+        rel = f"{int(secs // 3600)}h ago"
+    elif delta.days < 30:
+        rel = f"{delta.days}d ago"
+    else:
+        rel = t.strftime("%Y-%m-%d")
+    print(f"{s['id']}\t{title}\t{rel}\t{s.get('directory', '')}")
+PY
+)"
+
+[ -n "$lines" ] || { echo "ocp: no sessions found" >&2; exit 1; }
+
+sel="$(printf '%s\n' "$lines" | fzf \
+  --height 40% \
+  --delimiter=$'\t' \
+  --with-nth=2.. \
+  --header 'Enter: resume session | Esc: cancel' \
+  --preview 'printf "directory: %s\n" "{4}"' \
+  --preview-window=down:1:wrap \
+  || true)"
+
+[ -n "$sel" ] || exit 130
+
+id="$(printf '%s\n' "$sel" | cut -f1)"
+[ -n "$id" ] || { echo "ocp: could not parse selection" >&2; exit 1; }
+
+exec opencode -s "$id"
