@@ -8,7 +8,7 @@ hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
-hl.env("QT_QUICK_CONTROLS_STYLE", "Basic")
+hl.env("QT_QUICK_CONTROLS_STYLE", "Darkly")
 hl.env("GDK_SCALE", "1")
 hl.env("QT_SCALE_FACTOR", "1")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
@@ -16,9 +16,9 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("DISPLAY", ":0")
 
 -- Cursor theme
-hl.env("HYPRCURSOR_THEME", "Nordzy-hyprcursors")
+hl.env("HYPRCURSOR_THEME", "rose-pine-hyprcursor")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "Nordzy-cursors")
+hl.env("XCURSOR_THEME", "BreezeX-RosePine-Linux")
 hl.env("XCURSOR_SIZE", "24")
 
 -- DEFAULTS is populated by lua/defaults.lua (loaded before this).

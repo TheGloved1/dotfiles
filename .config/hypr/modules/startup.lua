@@ -2,7 +2,7 @@
 Utils.once("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 Utils.once("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 Utils.once("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'")
-Utils.once("gsettings set org.gnome.desktop.interface cursor-theme 'Nordzy-cursors'")
+Utils.once("gsettings set org.gnome.desktop.interface cursor-theme 'BreezeX-RosePine-Linux'")
 Utils.once("gsettings set org.gnome.desktop.interface cursor-size 24")
 
 -- Core services
@@ -14,7 +14,9 @@ Utils.once("nm-applet")
 Utils.once("$HOME/.config/hypr/scripts/PortalHyprland.sh")
 
 -- Cursor refresh
-Utils.once('sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-Nordzy-hyprcursors}" "${HYPRCURSOR_SIZE:-24}"\'')
+Utils.once(
+	'sh -c \'sleep 0.3; hyprctl setcursor "${HYPRCURSOR_THEME:-rose-pine-hyprcursor}" "${HYPRCURSOR_SIZE:-24}"\''
+)
 
 -- Noctalia shell
 Utils.once("noctalia --daemon")
@@ -30,9 +32,6 @@ Utils.once("vicinae server")
 
 -- Hyprsunset
 Utils.hyprsunset("init")
-
--- Drop terminal
--- Utils.dropterminal("--startup", "kitty")
 
 -- Clipboard manager
 Utils.once("wl-paste --type text --watch cliphist store")

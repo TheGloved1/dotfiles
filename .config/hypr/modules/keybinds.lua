@@ -229,39 +229,63 @@ bind("SUPER + G", group.toggle(), { description = "toggle group" })
 -- ============================================
 --  SCREENSHOTS / RECORD
 -- ============================================
-bind("SUPER + Print", cmd("noctalia msg screenshot-fullscreen"), { description = "screenshot now" })
-bind("SUPER + SHIFT + Print", cmd("noctalia msg screenshot-region"), { description = "screenshot (area)" })
-bind("SUPER + CTRL + Print", function()
-	Utils.screenshot("--in5")
-end, { description = "screenshot in 5s" })
-bind("SUPER + CTRL + SHIFT + Print", function()
-	Utils.screenshot("--in10")
-end, { description = "screenshot in 10s" })
-bind("ALT + Print", function()
-	Utils.screenshot("--active")
-end, { description = "screenshot active window" })
-bind("SUPER + SHIFT + S", function()
-	Utils.screenshot("--swappy")
-end, { description = "screenshot (region)" })
+bind("SUPER + Print", cmd("noctalia msg screenshot-fullscreen"), { description = "screenshot fullscreen" })
+bind("SUPER + SHIFT + Print", cmd("noctalia msg screenshot-region"), { description = "screenshot region" })
+bind(
+	"SUPER + CTRL + Print",
+	cmd("noctalia msg screenshot-fullscreen pick"),
+	{ description = "screenshot pick monitor" }
+)
+bind(
+	"SUPER + CTRL + SHIFT + Print",
+	cmd("noctalia msg screenshot-fullscreen all"),
+	{ description = "screenshot all monitors" }
+)
+bind("ALT + Print", cmd("noctalia msg screenshot-fullscreen monitor"), { description = "screenshot active monitor" })
+bind(
+	"SUPER + SHIFT + S",
+	cmd("noctalia msg plugin gloves/screenshot-actions:service all capture"),
+	{ description = "screenshot region → menu (Swappy/OCR)" }
+)
+bind(
+	"SUPER + S",
+	cmd("noctalia msg panel-toggle gloves/screenshot-actions:history"),
+	{ description = "Screenshot history" }
+)
+bind(
+	"SUPER + ALT + S",
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all toggle"),
+	{ description = "screen toolkit panel" }
+)
+bind(
+	"SUPER + SHIFT + O",
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all ocr"),
+	{ description = "screenshot region → OCR" }
+)
+bind(
+	"SUPER + SHIFT + C",
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all colorPicker"),
+	{ description = "pick color from screen" }
+)
 bind(
 	"ALT + SHIFT + S",
-	cmd("noctalia msg screenshot-region"),
-	{ description = "screenshot (freeze) [fallback to region]" }
+	cmd("noctalia msg panel-toggle alexander/screen-toolkit:panel-legacy"),
+	{ description = "screen toolkit panel (legacy)" }
 )
 bind(
 	"CTRL + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
-	{ description = "record screen" }
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all start"),
+	{ description = "record screen (region)" }
 )
 bind(
 	"SUPER + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all start"),
-	{ description = "record screen with sound" }
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all start-fullscreen"),
+	{ description = "record screen (fullscreen)" }
 )
 bind(
 	"SUPER + SHIFT + ALT + R",
-	cmd("noctalia msg plugin noctalia/screen_recorder:service all replay-stop"),
-	{ description = "Stop replay buffer" }
+	cmd("noctalia msg plugin alexander/screen-toolkit:service all stop"),
+	{ description = "stop screen recording" }
 )
 bind(
 	"SUPER + SHIFT + CTRL + R",
