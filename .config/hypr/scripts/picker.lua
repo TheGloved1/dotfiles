@@ -21,7 +21,9 @@ function M.pick(items, prompt, cb, opts)
 		or (type(items) == "table" and (table.concat(items, "\n") .. "\n") or tostring(items))
 
 	if not Utils.write_file(input, content) then
-		if cb then cb(nil) end
+		if cb then
+			cb(nil)
+		end
 		return
 	end
 
@@ -48,7 +50,9 @@ function M.pick(items, prompt, cb, opts)
 	local tries = 0
 	local timer
 	local function finish()
-		if timer then timer:set_enabled(false) end
+		if timer then
+			timer:set_enabled(false)
+		end
 		os.remove(input)
 		os.remove(output)
 	end
@@ -57,13 +61,17 @@ function M.pick(items, prompt, cb, opts)
 		tries = tries + 1
 		if tries > 600 then -- 60 second timeout
 			finish()
-			if cb then cb(nil) end
+			if cb then
+				cb(nil)
+			end
 			return
 		end
 		local sel = Utils.trim(Utils.read_file(output) or "")
 		if sel ~= "" then
 			finish()
-			if cb then cb(sel) end
+			if cb then
+				cb(sel)
+			end
 			return
 		end
 	end, { timeout = 100, type = "repeat" })

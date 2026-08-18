@@ -1,7 +1,3 @@
--- Vertical variant of amitpadhan
--- Inspired by amitpadhan525
--- https://github.com/amitpadhan525
-
 hl.config({
 	animations = {
 		enabled = true,

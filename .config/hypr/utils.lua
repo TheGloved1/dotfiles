@@ -13,7 +13,6 @@ local HOME = os.getenv("HOME") or ""
 local CONFIG_HOME = os.getenv("XDG_CONFIG_HOME") or (HOME .. "/.config")
 local HYPR_DIR = CONFIG_HOME .. "/hypr"
 local IMAGES_DIR = CONFIG_HOME .. "/noctalia/images"
-local ICONS_DIR = CONFIG_HOME .. "/noctalia/icons"
 
 -- ============================================
 --  BASIC HELPERS
@@ -164,14 +163,6 @@ function Utils.vec(v, i)
 	end
 	return tonumber(v) or 0
 end
-
----Interactive picker (noctalia dmenu by default). Non-blocking; the
----selection is delivered to `cb` (nil when the picker was cancelled).
----Implementation lives in scripts/picker.lua, loaded below.
----@param items table|string list of choices, or raw input when opts.raw
----@param prompt string
----@param cb function
----@param opts table|nil {command, args, raw, prompt_arg}
 
 ---Minimal JSON decoder (used for `hyprctl binds -j`).
 do
@@ -1507,51 +1498,6 @@ function Utils.change_layout(input)
 	end
 	print("Usage: change_layout [--quiet|--no-notify] [toggle|next|init|current|master|dwindle|scrolling|monocle]")
 	return false
-end
-
----Pick an animation preset and install it into modules/animations.lua (Animations.sh).
----Note: writes to modules/ (was the stale configs/ path).
-function Utils.animations()
-	local animations_dir = HYPR_DIR .. "/animations"
-	local target = HYPR_DIR .. "/modules/animations.lua"
-	local ext = "lua"
-	local msg = "NOTE: This will overwrite modules/animations.lua"
-
-	local output = Utils.capture(
-		"find -L " .. Utils.shell_quote(animations_dir) .. " -maxdepth 1 -type f -name '*." .. ext .. "' 2>/dev/null"
-	)
-	local list = {}
-	for line in output:gmatch("[^\n]+") do
-		local name = line:match("([^/]+)$") or line
-		name = name:gsub("%." .. ext .. "$", "")
-		if name ~= "" then
-			list[#list + 1] = name
-		end
-	end
-	table.sort(list)
-
-	if #list == 0 then
-		Utils.notify(
-			"No animation presets found",
-			"Expected *." .. ext .. " in " .. animations_dir,
-			{ urgency = "normal", icon = IMAGES_DIR .. "/ja.png" }
-		)
-		return
-	end
-
-	Utils.pick(list, msg, function(chosen)
-		if not chosen then
-			return
-		end
-		os.execute(
-			"cp "
-				.. Utils.shell_quote(animations_dir .. "/" .. chosen .. "." .. ext)
-				.. " "
-				.. Utils.shell_quote(target)
-		)
-		Utils.notify(chosen, "Hyprland Animation Loaded", { urgency = "low", icon = IMAGES_DIR .. "/ja.png" })
-		Utils.delayed(1000, Utils.refresh)
-	end)
 end
 
 ---Interactive searchable keybind display (KeyBinds.sh).
