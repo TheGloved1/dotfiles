@@ -228,7 +228,8 @@ enabled = [
     "kenn/keybind-cheatsheet",
     "alexander/screen-toolkit",
     "noctalia/timer",
-    "weinguyen/shell-command"
+    "weinguyen/shell-command",
+    "gloves/screenshot-actions"
 ]
 
 [shell]
