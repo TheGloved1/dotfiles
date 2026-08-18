@@ -47,7 +47,7 @@
       "key": "{#separator}│  {icon}  CPU",
       "showPeCoreCount": true,
     },
-    { "type": "gpu", "key": "{#separator}│  {icon}  GPU" },
+    { "type": "gpu", "key": "{#separator}│  {icon}  GPU", "format": "NVIDIA GeForce RTX 3060" },
     {
       "type": "memory",
       "key": "{#separator}│  {icon}  RAM",
