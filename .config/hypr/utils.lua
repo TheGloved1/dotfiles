@@ -14,6 +14,8 @@ local CONFIG_HOME = os.getenv("XDG_CONFIG_HOME") or (HOME .. "/.config")
 local HYPR_DIR = CONFIG_HOME .. "/hypr"
 local IMAGES_DIR = CONFIG_HOME .. "/noctalia/images"
 
+local cmd = hl.exec_cmd
+
 -- ============================================
 --  BASIC HELPERS
 -- ============================================

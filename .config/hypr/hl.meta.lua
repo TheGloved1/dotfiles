@@ -17,6 +17,7 @@
 ---| "monitor.removed"
 ---| "screenshare.state"
 ---| "window.active"
+---| "window.bell"
 ---| "window.class"
 ---| "window.close"
 ---| "window.destroy"
@@ -41,6 +42,7 @@
 ---| "binds.allow_pin_fullscreen"
 ---| "binds.allow_workspace_cycles"
 ---| "binds.disable_keybind_grabbing"
+---| "binds.drag_center_window"
 ---| "binds.drag_threshold"
 ---| "binds.focus_preferred_method"
 ---| "binds.hide_special_on_workspace_change"
@@ -69,6 +71,7 @@
 ---| "cursor.use_cpu_buffer"
 ---| "cursor.warp_back_after_non_mouse_input"
 ---| "cursor.warp_on_change_workspace"
+---| "cursor.warp_on_monitor_change"
 ---| "cursor.warp_on_toggle_special"
 ---| "cursor.zoom_detached_camera"
 ---| "cursor.zoom_disable_aa"
@@ -85,9 +88,9 @@
 ---| "debug.enable_stdout_logs"
 ---| "debug.error_limit"
 ---| "debug.error_position"
----| "debug.fifo_pending_workaround"
 ---| "debug.full_cm_proto"
 ---| "debug.gl_debugging"
+---| "debug.invalidate_buffers"
 ---| "debug.invalidate_fp16"
 ---| "debug.log_damage"
 ---| "debug.manual_crash"
@@ -139,6 +142,14 @@
 ---| "decoration.shadow.render_power"
 ---| "decoration.shadow.scale"
 ---| "decoration.shadow.sharp"
+---| "decoration.wobble.damping"
+---| "decoration.wobble.enabled"
+---| "decoration.wobble.intensity"
+---| "decoration.wobble.mass"
+---| "decoration.wobble.mesh"
+---| "decoration.wobble.stiffness"
+---| "decoration.wobble.value_epsilon"
+---| "decoration.wobble.velocity_epsilon"
 ---| "dwindle.default_split_ratio"
 ---| "dwindle.force_split"
 ---| "dwindle.permanent_direction_override"
@@ -322,6 +333,7 @@
 ---| "misc.animate_mouse_windowdragging"
 ---| "misc.anr_missed_pings"
 ---| "misc.background_color"
+---| "misc.bell_sound"
 ---| "misc.close_special_on_empty"
 ---| "misc.col.splash"
 ---| "misc.disable_autoreload"
@@ -334,6 +346,7 @@
 ---| "misc.enable_anr_dialog"
 ---| "misc.enable_swallow"
 ---| "misc.exit_window_retains_fullscreen"
+---| "misc.float_force_onscreen"
 ---| "misc.focus_on_activate"
 ---| "misc.font_family"
 ---| "misc.force_default_wallpaper"
@@ -346,6 +359,7 @@
 ---| "misc.mouse_move_enables_dpms"
 ---| "misc.mouse_move_focuses_monitor"
 ---| "misc.name_vk_after_proc"
+---| "misc.new_float_force_onscreen"
 ---| "misc.on_focus_under_fullscreen"
 ---| "misc.render_unfocused_fps"
 ---| "misc.screencopy_force_8b"
@@ -372,6 +386,7 @@
 ---| "render.new_render_scheduling"
 ---| "render.non_shader_cm"
 ---| "render.non_shader_cm_interop"
+---| "render.not_shown_fifo_lock"
 ---| "render.send_content_type"
 ---| "render.use_fp16"
 ---| "render.use_shader_blur_blend"
@@ -616,6 +631,7 @@ local __HL_WindowRuleSpec = {}
 ---@field no_border? boolean
 ---@field no_rounding? boolean
 ---@field no_shadow? boolean
+---@field no_wobble? boolean
 ---@field on_created_empty? string
 ---@field persistent? boolean
 ---@field workspace string
@@ -657,7 +673,7 @@ local __HL_Group = {}
 ---@field handler string
 ---@field has_description boolean
 ---@field ignore_mods boolean
----@field key string
+---@field key any
 ---@field keycode integer
 ---@field locked boolean
 ---@field long_press boolean
@@ -773,7 +789,7 @@ local __HL_Timer = {}
 ---@field pin_fullscreened boolean
 ---@field pinned boolean
 ---@field size integer|table
----@field stable_id integer
+---@field stable_id string
 ---@field swallowing HL.Window|nil
 ---@field tags string|table
 ---@field tearing_hint boolean|nil
@@ -961,6 +977,7 @@ hl = {}
 ---@field ['binds.allow_pin_fullscreen'] boolean
 ---@field ['binds.allow_workspace_cycles'] boolean
 ---@field ['binds.disable_keybind_grabbing'] boolean
+---@field ['binds.drag_center_window'] boolean
 ---@field ['binds.drag_threshold'] integer|boolean
 ---@field ['binds.focus_preferred_method'] integer|boolean
 ---@field ['binds.hide_special_on_workspace_change'] boolean
@@ -989,6 +1006,7 @@ hl = {}
 ---@field ['cursor.use_cpu_buffer'] integer|boolean
 ---@field ['cursor.warp_back_after_non_mouse_input'] boolean
 ---@field ['cursor.warp_on_change_workspace'] integer|boolean
+---@field ['cursor.warp_on_monitor_change'] integer|boolean
 ---@field ['cursor.warp_on_toggle_special'] integer|boolean
 ---@field ['cursor.zoom_detached_camera'] boolean
 ---@field ['cursor.zoom_disable_aa'] boolean
@@ -1005,9 +1023,9 @@ hl = {}
 ---@field ['debug.enable_stdout_logs'] boolean
 ---@field ['debug.error_limit'] integer|boolean
 ---@field ['debug.error_position'] integer|boolean
----@field ['debug.fifo_pending_workaround'] boolean
 ---@field ['debug.full_cm_proto'] boolean
 ---@field ['debug.gl_debugging'] boolean
+---@field ['debug.invalidate_buffers'] integer|boolean
 ---@field ['debug.invalidate_fp16'] integer|boolean
 ---@field ['debug.log_damage'] boolean
 ---@field ['debug.manual_crash'] integer|boolean
@@ -1059,6 +1077,14 @@ hl = {}
 ---@field ['decoration.shadow.render_power'] integer|boolean
 ---@field ['decoration.shadow.scale'] number|boolean
 ---@field ['decoration.shadow.sharp'] boolean
+---@field ['decoration.wobble.damping'] number|boolean
+---@field ['decoration.wobble.enabled'] boolean
+---@field ['decoration.wobble.intensity'] number|boolean
+---@field ['decoration.wobble.mass'] number|boolean
+---@field ['decoration.wobble.mesh'] integer|boolean
+---@field ['decoration.wobble.stiffness'] number|boolean
+---@field ['decoration.wobble.value_epsilon'] number|boolean
+---@field ['decoration.wobble.velocity_epsilon'] number|boolean
 ---@field ['dwindle.default_split_ratio'] number|boolean
 ---@field ['dwindle.force_split'] integer|boolean
 ---@field ['dwindle.permanent_direction_override'] boolean
@@ -1242,6 +1268,7 @@ hl = {}
 ---@field ['misc.animate_mouse_windowdragging'] boolean
 ---@field ['misc.anr_missed_pings'] integer|boolean
 ---@field ['misc.background_color'] string
+---@field ['misc.bell_sound'] string
 ---@field ['misc.close_special_on_empty'] boolean
 ---@field ['misc.col.splash'] string
 ---@field ['misc.disable_autoreload'] boolean
@@ -1253,7 +1280,8 @@ hl = {}
 ---@field ['misc.disable_xdg_env_checks'] boolean
 ---@field ['misc.enable_anr_dialog'] boolean
 ---@field ['misc.enable_swallow'] boolean
----@field ['misc.exit_window_retains_fullscreen'] boolean
+---@field ['misc.exit_window_retains_fullscreen'] integer|boolean
+---@field ['misc.float_force_onscreen'] integer|boolean
 ---@field ['misc.focus_on_activate'] boolean
 ---@field ['misc.font_family'] string
 ---@field ['misc.force_default_wallpaper'] integer|boolean
@@ -1266,6 +1294,7 @@ hl = {}
 ---@field ['misc.mouse_move_enables_dpms'] boolean
 ---@field ['misc.mouse_move_focuses_monitor'] boolean
 ---@field ['misc.name_vk_after_proc'] boolean
+---@field ['misc.new_float_force_onscreen'] integer|boolean
 ---@field ['misc.on_focus_under_fullscreen'] integer|boolean
 ---@field ['misc.render_unfocused_fps'] integer|boolean
 ---@field ['misc.screencopy_force_8b'] boolean
@@ -1292,6 +1321,7 @@ hl = {}
 ---@field ['render.new_render_scheduling'] boolean
 ---@field ['render.non_shader_cm'] integer|boolean
 ---@field ['render.non_shader_cm_interop'] integer|boolean
+---@field ['render.not_shown_fifo_lock'] integer|boolean
 ---@field ['render.send_content_type'] boolean
 ---@field ['render.use_fp16'] integer|boolean
 ---@field ['render.use_shader_blur_blend'] boolean
@@ -1382,6 +1412,7 @@ local __HL_ConfigValueTypes = {}
 ---@field border_part_of_window? boolean
 ---@field blur? HL.ConfigOpt.Decoration.Blur
 ---@field motion_blur? HL.ConfigOpt.Decoration.MotionBlur
+---@field wobble? HL.ConfigOpt.Decoration.Wobble
 
 ---@class HL.ConfigOpt.Decoration.Shadow
 ---@field enabled? boolean
@@ -1421,6 +1452,16 @@ local __HL_ConfigValueTypes = {}
 ---@class HL.ConfigOpt.Decoration.MotionBlur
 ---@field enabled? boolean
 ---@field samples? integer|boolean
+
+---@class HL.ConfigOpt.Decoration.Wobble
+---@field enabled? boolean
+---@field mesh? integer|boolean
+---@field stiffness? number|boolean
+---@field damping? number|boolean
+---@field mass? number|boolean
+---@field intensity? number|boolean
+---@field value_epsilon? number|boolean
+---@field velocity_epsilon? number|boolean
 
 ---@class HL.ConfigOpt.Animations
 ---@field enabled? boolean
@@ -1607,7 +1648,7 @@ local __HL_ConfigValueTypes = {}
 ---@field background_color? string
 ---@field close_special_on_empty? boolean
 ---@field on_focus_under_fullscreen? integer|boolean
----@field exit_window_retains_fullscreen? boolean
+---@field exit_window_retains_fullscreen? integer|boolean
 ---@field initial_workspace_tracking? integer|boolean
 ---@field initial_workspace_token_timeout? integer|boolean
 ---@field middle_click_paste? boolean
@@ -1621,6 +1662,9 @@ local __HL_ConfigValueTypes = {}
 ---@field screencopy_force_8b? boolean
 ---@field disable_scale_notification? boolean
 ---@field size_limits_tiled? boolean
+---@field bell_sound? string
+---@field new_float_force_onscreen? integer|boolean
+---@field float_force_onscreen? integer|boolean
 
 ---@class HL.ConfigOpt.Misc.Col
 ---@field splash? string
@@ -1640,6 +1684,7 @@ local __HL_ConfigValueTypes = {}
 ---@field window_direction_monitor_fallback? boolean
 ---@field allow_pin_fullscreen? boolean
 ---@field drag_threshold? integer|boolean
+---@field drag_center_window? boolean
 
 ---@class HL.ConfigOpt.Xwayland
 ---@field enabled? boolean
@@ -1668,6 +1713,7 @@ local __HL_ConfigValueTypes = {}
 ---@field keep_unmodified_copy? integer|boolean
 ---@field non_shader_cm_interop? integer|boolean
 ---@field fp16_sdr_tf? integer|boolean
+---@field not_shown_fifo_lock? integer|boolean
 
 ---@class HL.ConfigOpt.Cursor
 ---@field invisible? boolean
@@ -1679,6 +1725,7 @@ local __HL_ConfigValueTypes = {}
 ---@field no_warps? boolean
 ---@field persistent_warps? boolean
 ---@field warp_on_change_workspace? integer|boolean
+---@field warp_on_monitor_change? integer|boolean
 ---@field warp_on_toggle_special? integer|boolean
 ---@field default_monitor? string
 ---@field zoom_factor? number|boolean
@@ -1717,9 +1764,9 @@ local __HL_ConfigValueTypes = {}
 ---@field full_cm_proto? boolean
 ---@field ds_handle_same_buffer? boolean
 ---@field ds_handle_same_buffer_fifo? boolean
----@field fifo_pending_workaround? boolean
 ---@field render_solitary_wo_damage? boolean
 ---@field vfr? boolean
+---@field invalidate_buffers? integer|boolean
 ---@field invalidate_fp16? integer|boolean
 
 ---@class HL.ConfigOpt.Layout

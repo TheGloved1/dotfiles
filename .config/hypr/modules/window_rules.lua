@@ -76,6 +76,14 @@ apply_window_rule({
 })
 
 apply_window_rule({
+	name = "no-screen-share-tagged",
+	match = {
+		tag = "screenshare-block",
+	},
+	no_screen_share = true,
+})
+
+apply_window_rule({
 	name = "tag-kool-cheat-sheet",
 	match = {
 		title = "^(KooL Quick Cheat Sheet)$",

@@ -126,10 +126,10 @@ end, { description = "Cycle previous (layout-aware)" })
 -- ============================================
 --  MOVE / SWAP / RESIZE
 -- ============================================
-bind("SUPER + CTRL + H", window.move({ direction = "left" }), { description = "move window left" })
-bind("SUPER + CTRL + L", window.move({ direction = "right" }), { description = "move window right" })
-bind("SUPER + CTRL + K", window.move({ direction = "up" }), { description = "move window up" })
-bind("SUPER + CTRL + J", window.move({ direction = "down" }), { description = "move window down" })
+bind("SUPER + ALT + H", window.move({ direction = "left" }), { description = "move window left" })
+bind("SUPER + ALT + L", window.move({ direction = "right" }), { description = "move window right" })
+bind("SUPER + ALT + K", window.move({ direction = "up" }), { description = "move window up" })
+bind("SUPER + ALT + J", window.move({ direction = "down" }), { description = "move window down" })
 bind("SUPER + ALT + left", window.swap({ direction = "left" }), { description = "swap window left" })
 bind("SUPER + ALT + right", window.swap({ direction = "right" }), { description = "swap window right" })
 bind("SUPER + ALT + up", window.swap({ direction = "up" }), { description = "swap window up" })
@@ -147,22 +147,22 @@ bind("SUPER + SHIFT + J", function()
 	Utils.move_wrap("d")
 end, { description = "Move window down / next workspace", repeating = true })
 bind(
-	"SUPER + ALT + H",
+	"SUPER + CTRL + H",
 	window.resize({ x = -50, y = 0, relative = true }),
 	{ description = "resize left (-50)", repeating = true }
 )
 bind(
-	"SUPER + ALT + L",
+	"SUPER + CTRL + L",
 	window.resize({ x = 50, y = 0, relative = true }),
 	{ description = "resize right (+50)", repeating = true }
 )
 bind(
-	"SUPER + ALT + K",
+	"SUPER + CTRL + K",
 	window.resize({ x = 0, y = -50, relative = true }),
 	{ description = "resize up (-50)", repeating = true }
 )
 bind(
-	"SUPER + ALT + J",
+	"SUPER + CTRL + J",
 	window.resize({ x = 0, y = 50, relative = true }),
 	{ description = "resize down (+50)", repeating = true }
 )
@@ -229,6 +229,10 @@ bind("SUPER + G", group.toggle(), { description = "toggle group" })
 -- ============================================
 --  SCREENSHOTS / RECORD
 -- ============================================
+bind("SUPER + CTRL + SHIFT + S", window.tag({ tag = "screenshare-block" }), {
+	description = "toggle screen share for active window",
+})
+
 bind("SUPER + Print", cmd("noctalia msg screenshot-fullscreen"), { description = "screenshot fullscreen" })
 bind("SUPER + SHIFT + Print", cmd("noctalia msg screenshot-region"), { description = "screenshot region" })
 bind(
