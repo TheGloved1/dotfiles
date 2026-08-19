@@ -9,7 +9,7 @@ border = "outline"
 capsule = true
 capsule_thickness = 0.71999998763203621
 center = [ "active_window" ]
-end = [ "recorder", "group:g2", "brightness", "battery", "weather", "clock", "control-center", "session" ]
+end = [ "recorder", "group:g2", "weather", "clock", "group:g4" ]
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 margin_ends = 0
@@ -41,7 +41,7 @@ start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
     enabled = true
     fill = "surface_variant"
     id = "g2"
-    members = [ "notifications", "network", "bluetooth", "volume" ]
+    members = [ "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
     opacity = 1.0
     padding = 6.0
 
@@ -55,6 +55,16 @@ start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
     opacity = 1.0
     padding = 6.0
 
+    [[bar.default.capsule_group]]
+    accordion = true
+    accordion_direction = "start"
+    enabled = true
+    fill = "surface_variant"
+    id = "g4"
+    members = [ "session", "settings" ]
+    opacity = 1.0
+    padding = 6.0
+
 [brightness]
 enable_ddcutil = true
 minimum_brightness = 0.39999999105930328
@@ -62,6 +72,9 @@ sync_all_monitors = true
 
 [control_center]
 width = 800
+
+    [control_center.calendar]
+    show_events_card = false
 
 [desktop_widgets]
 enabled = false
@@ -87,7 +100,7 @@ active_monitor_only = true
 background_opacity = 0.7799999825656414
 enabled = true
 launcher_position = "start"
-margin_edge = 8
+margin_edge = 0
 pinned = [ "steam", "equibop", "zen", "kitty" ]
 radius = 24
 reserve_space = false
@@ -145,8 +158,9 @@ blurred_desktop = true
 fingerprint = false
 
 [lockscreen_widgets]
+enabled = false
 schema_version = 2
-widget_order = [ "lockscreen-login-box@HDMI-A-1" ]
+widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
@@ -178,6 +192,31 @@ widget_order = [ "lockscreen-login-box@HDMI-A-1" ]
         show_unlock_hint = true
         show_weather = true
 
+    [lockscreen_widgets.widget."lockscreen-login-box@winit"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 898.0
+    output = "winit"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@winit".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
 [nightlight]
 enabled = true
 force = true
@@ -193,11 +232,17 @@ offset_y = 4
 [osd]
 background_opacity = 0.89999997988343239
 offset_x = 4
-offset_y = 4
+offset_y = 0
 
 [plugin_settings."alexander/screen-toolkit"]
 search-engine-url = "https://duckduckgo.com/?q="
 x02-expiry = "1h"
+
+[plugin_settings."gloves/screenshot-actions"]
+actions_placement = "attached"
+history_placement = "attached"
+ocr-result_placement = "attached"
+panel-placement = "attached"
 
 [plugin_settings."kenn/keybind-cheatsheet"]
 cheatsheet_open_near_click = false
@@ -231,6 +276,21 @@ enabled = [
     "weinguyen/shell-command",
     "gloves/screenshot-actions"
 ]
+
+    [[plugins.source]]
+    kind = "git"
+    location = "https://github.com/noctalia-dev/official-plugins"
+    name = "official"
+
+    [[plugins.source]]
+    kind = "git"
+    location = "https://github.com/noctalia-dev/community-plugins"
+    name = "community"
+
+    [[plugins.source]]
+    kind = "path"
+    location = "/home/gloves/git/noctalia-screenshot-actions"
+    name = "local"
 
 [shell]
 app_icon_color = "primary"
@@ -321,7 +381,7 @@ source = "community"
 wallpaper_scheme = "soft"
 
     [theme.templates]
-    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "qt", "starship" ]
+    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
     community_ids = [
         "opencode",
         "zen-browser",
@@ -398,7 +458,7 @@ format = "%-I:%M:%S %p  %A, %B %d"
     right = "panel-toggle noctalia/timer:panel"
 
 [widget.control-center]
-enabled = false
+enabled = true
 glyph = "hyprland"
 
 [widget.launcher]
