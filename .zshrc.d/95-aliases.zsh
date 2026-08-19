@@ -42,6 +42,7 @@ alias grhh='git reset HEAD --hard'
 
 # Reload shell
 alias reload='clear && exec zsh'
+alias relaod='reload'
 
 # Set-up icons for files/directories in terminal using lsd
 # alias ls='lsd'
