@@ -11,8 +11,8 @@ hl.config({
 		},
 	},
 	decoration = {
-		rounding = 6,
-		rounding_power = 20,
+		rounding = 4,
+		rounding_power = 32,
 		active_opacity = 0.95,
 		inactive_opacity = 0.95,
 		fullscreen_opacity = 1.0,
@@ -21,9 +21,8 @@ hl.config({
 		dim_special = 0.8,
 		shadow = {
 			enabled = true,
-			range = 30,
-			render_power = 5,
-			offset = { 0, 5 },
+			range = 4,
+			render_power = 3,
 			color = "rgba(00000070)",
 		},
 		blur = {
@@ -50,13 +49,13 @@ hl.config({
 			border_locked_inactive = colors.surface,
 		},
 		groupbar = {
-			font_family = "JetBrainsMono Nerd Font",
+			font_family = "CaskaydiaCove Nerd Font",
 			font_size = 12,
 			gradients = true,
 			gradient_rounding = 8,
-			height = 20,
+			height = 16,
 			indicator_height = 0,
-			gaps_in = 2,
+			-- gaps_in = 80,
 			gaps_out = 2,
 			text_color = colors.surface,
 			col = {

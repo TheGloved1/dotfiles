@@ -40,7 +40,7 @@ hl.bind("SUPER + A", hl.dsp.exec_cmd("noctalia msg window-switcher"), { descript
 if hl.plugin.scrolloverview then
 	hl.bind("SUPER + tab", function()
 		hl.plugin.scrolloverview.overview("toggle all")
-	end, { description = "niri-style overview" })
+	end, { description = "overview" })
 end
 
 -- ============================================

@@ -1267,6 +1267,37 @@ function Utils.launch_command_string(cmd)
 	return true
 end
 
+---Launch a command in a floating kitty window, holding the terminal open after
+---the command exits until a key is pressed.
+---Works from a keybind (config runtime) or via `hyprctl eval`.
+---@param cmd string shell command to run inside kitty
+---@param opts? table options:
+---  title?   string  kitty window title (no --title flag when omitted)
+---  size?    string  window size as "WxH" or "W H" (default "1100 700")
+---  prompt?  string  hold-open message (default "Press any key to close...")
+---@return boolean true when the window was dispatched
+function Utils.eval_float_hold(cmd, opts)
+	opts = opts or {}
+	cmd = Utils.trim(cmd or "")
+	if cmd == "" then
+		return false
+	end
+	local size = opts.size or "1100 700"
+	local prompt = opts.prompt or "Press any key to close..."
+	local inner = cmd .. "; echo; read -n 1 -s -r -p " .. Utils.shell_quote(prompt)
+	local kitty = "kitty"
+	if opts.title and Utils.trim(opts.title) ~= "" then
+		kitty = kitty .. " --title " .. Utils.trim(opts.title)
+	end
+	local exec = kitty .. " -e sh -c " .. Utils.shell_quote(inner)
+	if hl then
+		hl.exec_cmd(exec, { float = true, size = size })
+		return true
+	end
+	Utils.detach("hyprctl dispatch exec " .. Utils.shell_quote("[float size " .. size .. "] " .. exec))
+	return true
+end
+
 ---Launch a file manager with fallback chain (LaunchFileManager.sh).
 ---@param fm string|nil preferred file manager (defaults to $FILE_MANAGER)
 ---@param term string|nil terminal for TUI file managers (defaults to $TERMINAL or kitty)
