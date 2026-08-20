@@ -1,8 +1,6 @@
 # Custom Aliases
-alias wbreload="$HOME/.config/hypr/scripts/WaybarReload.sh"
 alias hyprconf="nvim $HOME/.config/hypr"
-alias chmodx='chmod +x'
-alias exemake='chmod +x'
+alias exe='chmod +x'
 alias neoconf="nvim $HOME/.config/nvim"
 alias ff="fastfetch"
 alias oc="opencode"
