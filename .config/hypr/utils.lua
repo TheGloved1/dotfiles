@@ -9,28 +9,67 @@
 Utils = {}
 local Utils = Utils
 
+---XDG environment variables.
+---@type string
 local HOME = os.getenv("HOME") or ""
+---@type string
 local CONFIG_HOME = os.getenv("XDG_CONFIG_HOME") or (HOME .. "/.config")
+---@type string
 local HYPR_DIR = CONFIG_HOME .. "/hypr"
+---@type string
 local IMAGES_DIR = CONFIG_HOME .. "/noctalia/images"
 
-local cmd = hl.exec_cmd
+---Supported workspace layouts.
+---@alias Utils.Layout "master"|"dwindle"|"scrolling"|"monocle"
+
+---Directional hints used by layout-aware navigation helpers.
+---@alias Utils.Direction "l"|"r"|"u"|"d"|"left"|"right"|"up"|"down"
+
+---Sound categories playable via Utils.sounds.
+---@alias Utils.SoundKind "screenshot"|"volume"|"error"
+
+---Options for Utils.notify.
+---@class Utils.NotifyOpts
+---@field urgency? string notify-send urgency level (low/normal/critical)
+---@field expire? integer timeout in milliseconds
+---@field icon? string path to an icon image
+---@field replace? string synchronous replace id to dedupe notifications
+
+---Options for Utils.once.
+---@class Utils.OnceOpts
+---@field session? string Hypr session id (defaults to the instance signature)
+---@field marker_prefix? string directory prefix for run-once marker files
+---@field log_prefix? string directory prefix for startup log files
+
+---Options for Utils.persist_workspace_layout.
+---@class Utils.PersistOpts
+---@field quiet? boolean suppress the "Saved workspace layout" print
+---@field file? string workspaces config path (defaults to workspaces.conf)
+---@field workspace? string workspace selector to persist
+---@field monitor? string monitor name to persist
+---@field layout? Utils.Layout layout to persist
 
 -- ============================================
 --  BASIC HELPERS
 -- ============================================
 
 ---Trim surrounding whitespace.
+---@param value any value to stringify and trim
+---@return string the trimmed string
 function Utils.trim(value)
 	return (tostring(value or ""):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 ---Shell single-quote a value safely.
+---@param value any value to stringify and quote
+---@return string the single-quoted shell-safe string
 function Utils.shell_quote(value)
 	return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
 ---Check whether a command is on PATH.
+---@param cmd string command name to look up
+---@return boolean true when the command resolves on PATH
 function Utils.is_exec(cmd)
 	local pipe = io.popen("command -v " .. cmd .. " 2>/dev/null", "r")
 	if not pipe then
@@ -42,19 +81,35 @@ function Utils.is_exec(cmd)
 end
 
 ---Check if path is a file.
----Note: Lua 5.4 returns true/nil from os.execute (not raw status), so the
----legacy `== 0` comparison always evaluated to false and broke every file
----check in the config. Trust the boolean directly.
+---Uses io.open directly: the os.execute("test -f") variant returned a false
+---boolean inside the Hyprland Lua runtime, silently breaking every file check.
+---@param path string filesystem path to test
+---@return boolean true when the path exists and is a regular file
 function Utils.is_file(path)
-	return os.execute("test -f " .. Utils.shell_quote(path) .. " 2>/dev/null") and true or false
+	local f = io.open(path, "r")
+	if f then
+		f:close()
+		return true
+	end
+	return false
 end
 
 ---Check if path is a directory.
+---@param path string filesystem path to test
+---@return boolean true when the path exists and is a directory
 function Utils.is_dir(path)
-	return os.execute("test -d " .. Utils.shell_quote(path) .. " 2>/dev/null") and true or false
+	local pipe = io.popen("test -d " .. Utils.shell_quote(path) .. " 2>/dev/null", "r")
+	if not pipe then
+		return false
+	end
+	local _ = pipe:read("*a")
+	local ok = pipe:close()
+	return ok == true
 end
 
 ---Capture stdout (and stderr) of a command.
+---@param cmd string shell command to run
+---@return string captured output ("" when the pipe could not be opened)
 function Utils.capture(cmd)
 	local pipe = io.popen(cmd .. " 2>&1", "r")
 	if not pipe then
@@ -66,16 +121,20 @@ function Utils.capture(cmd)
 end
 
 ---Run a command fully detached, discarding its output.
+---@param cmd string shell command to background
 function Utils.detach(cmd)
 	os.execute(cmd .. " >/dev/null 2>&1 &")
 end
 
 ---Blocking sleep.
+---@param sec number seconds to sleep
 function Utils.sleep(sec)
 	os.execute("sleep " .. tostring(sec))
 end
 
 ---Run fn once after a delay (non-blocking).
+---@param ms integer delay in milliseconds
+---@param fn fun() callback to invoke after the delay
 function Utils.delayed(ms, fn)
 	if hl and hl.timer then
 		hl.timer(fn, { timeout = ms, type = "oneshot" })
@@ -84,15 +143,23 @@ function Utils.delayed(ms, fn)
 	end
 end
 
----notify-send wrapper.
----@param title string
----@param body string
----@param opts table|nil {urgency, expire, icon, replace}
+---notify-send wrapper with optional on-screen clear.
+---@param title string notification title
+---@param body string notification body (empty means no body)
+---@param opts Utils.NotifyOpts|nil optional display options
 function Utils.notify(title, body, opts)
 	opts = opts or {}
 	if not Utils.is_exec("notify-send") then
 		return
 	end
+
+	-- Clear on-screen notifications first if replace is requested
+	if opts.replace then
+		hl.dispatch(hl.dsp.exec_cmd("noctalia msg notification-clear-active"))
+	end
+
+	Utils.sleep(0.02)
+
 	local cmd = "notify-send"
 	if opts.urgency then
 		cmd = cmd .. " -u " .. opts.urgency
@@ -114,6 +181,8 @@ function Utils.notify(title, body, opts)
 end
 
 ---Check for a process by exact name.
+---@param name string process name to match exactly
+---@return boolean true when at least one matching process is running
 function Utils.process_running(name)
 	local pipe = io.popen("pgrep -x " .. name .. " 2>/dev/null", "r")
 	if not pipe then
@@ -125,6 +194,8 @@ function Utils.process_running(name)
 end
 
 ---Read a whole file, nil when missing.
+---@param path string filesystem path to read
+---@return string|nil file contents, or nil when the file cannot be opened
 function Utils.read_file(path)
 	local f = io.open(path, "r")
 	if not f then
@@ -136,6 +207,9 @@ function Utils.read_file(path)
 end
 
 ---Write a whole file.
+---@param path string filesystem path to write
+---@param content string data to write
+---@return boolean true on success, false when the file could not be opened
 function Utils.write_file(path, content)
 	local f = io.open(path, "w")
 	if not f then
@@ -147,6 +221,9 @@ function Utils.write_file(path, content)
 end
 
 ---Extract an x/y component from a Vec2-like or 1-indexed array.
+---@param v number|HL.Vec2Like|{width:number,height:number} value to extract from
+---@param i integer 1 for x/width, 2 for y/height
+---@return number the requested component (0 when missing)
 function Utils.vec(v, i)
 	if type(v) == "table" then
 		if v.x ~= nil or v.y ~= nil then
@@ -289,12 +366,54 @@ do
 	end
 
 	Utils.json = {}
+	---Decode a JSON string.
+	---@param text string raw JSON input
+	---@return any decoded value (table/number/string/boolean), or nil on failure
 	function Utils.json.decode(text)
 		local ok, result = pcall(parse, tostring(text or ""), 1)
 		if not ok then
 			return nil
 		end
 		return result
+	end
+
+	---Encode a Lua value to JSON string.
+	---@param value any value to encode
+	---@return string JSON string
+	function Utils.json.encode(value)
+		local function encode(val)
+			if val == nil then
+				return "null"
+			elseif type(val) == "boolean" then
+				return val and "true" or "false"
+			elseif type(val) == "number" then
+				return tostring(val)
+			elseif type(val) == "string" then
+				return '"'
+					.. val:gsub('["\\]', { ['"'] = '\\"', ["\\"] = "\\\\" })
+						:gsub("\n", "\\n")
+						:gsub("\r", "\\r")
+						:gsub("\t", "\\t")
+					.. '"'
+			elseif type(val) == "table" then
+				local is_array = #val > 0 and next(val, #val) == nil
+				local parts = {}
+				if is_array then
+					for _, v in ipairs(val) do
+						parts[#parts + 1] = encode(v)
+					end
+					return "[" .. table.concat(parts, ",") .. "]"
+				else
+					for k, v in pairs(val) do
+						parts[#parts + 1] = '"' .. tostring(k) .. '":' .. encode(v)
+					end
+					return "{" .. table.concat(parts, ",") .. "}"
+				end
+			else
+				return "null"
+			end
+		end
+		return encode(value)
 	end
 end
 
@@ -303,8 +422,8 @@ end
 -- ============================================
 
 ---Once-per-Hypr-session detached startup runner (from startup.lua).
----@param cmd string
----@param opts table|nil
+---@param cmd string shell command to run once per session
+---@param opts Utils.OnceOpts|nil optional session/marker/log settings
 function Utils.once(cmd, opts)
 	opts = opts or {}
 	local session = opts.session or os.getenv("HYPRLAND_INSTANCE_SIGNATURE") or "default"
@@ -330,11 +449,16 @@ function Utils.once(cmd, opts)
 end
 
 ---Hyprglass tint color helper (from plugins.lua).
+---@param c string 6-digit hex color string (e.g. "RRGGBB")
+---@param alpha number opacity in [0,1]
+---@return integer the packed RGBA color value
 function Utils.tint(c, alpha)
 	return tonumber(c:match("%x%x%x%x%x%x"), 16) * 256 + math.floor(alpha * 255 + 0.5)
 end
 
 ---Dedup XDG_DATA_DIRS keeping canonical + flatpak dirs first (from env.lua).
+---@param current string|nil existing XDG_DATA_DIRS value (defaults to the env var)
+---@return string deduplicated data dirs list
 function Utils.xdg_data_dirs(current)
 	current = current or os.getenv("XDG_DATA_DIRS") or ""
 	local user_home = os.getenv("HOME") or ""
@@ -364,6 +488,9 @@ end
 
 local LAYOUTS = { "master", "dwindle", "scrolling", "monocle" }
 
+---Normalize a layout name to a known layout, or nil.
+---@param l string|nil raw layout name from hyprland
+---@return Utils.Layout|nil the canonical layout name, or nil when unknown
 function Utils.normalize_layout(l)
 	l = l or ""
 	for _, name in ipairs(LAYOUTS) do
@@ -374,6 +501,8 @@ function Utils.normalize_layout(l)
 	return nil
 end
 
+---Resolve the effective layout of the active workspace.
+---@return Utils.Layout the active layout, falling back to the global default
 function Utils.get_active_layout()
 	local ws = hl.get_active_workspace()
 	if ws then
@@ -390,6 +519,8 @@ function Utils.get_active_layout()
 end
 
 ---Visible windows on a workspace (same id/name), matching hyprctl clients.
+---@param ws HL.Workspace|nil workspace to inspect (empty list when nil)
+---@return HL.Window[] visible windows on the workspace
 function Utils.windows_on_workspace(ws)
 	local wins = {}
 	if not ws then
@@ -403,11 +534,17 @@ function Utils.windows_on_workspace(ws)
 	return wins
 end
 
+---Center coordinates of a window.
+---@param w HL.Window window to measure
+---@return number center X coordinate
+---@return number center Y coordinate
 function Utils.window_center(w)
 	return Utils.vec(w.at, 1) + Utils.vec(w.size, 1) / 2, Utils.vec(w.at, 2) + Utils.vec(w.size, 2) / 2
 end
 
 ---Extract the first token of a command string (shell word splitting).
+---@param cmd string|nil command string to parse
+---@return string|nil the first token with surrounding quotes stripped, or nil when empty
 function Utils.command_bin(cmd)
 	cmd = Utils.trim(cmd or "")
 	local bin = cmd:match("^%s*([^%s]+)")
@@ -454,7 +591,8 @@ function Utils.float_all_windows()
 	end
 end
 
----Play system sounds (Sounds.sh). kind: screenshot | volume | error.
+---Play system sounds (Sounds.sh).
+---@param kind Utils.SoundKind which sound category to play
 function Utils.sounds(kind)
 	local directSoundDir = HYPR_DIR .. "/sounds"
 
@@ -533,6 +671,7 @@ function Utils.sounds(kind)
 end
 
 ---Cycle focus among visible windows on the active workspace (LuaCycleWindow.sh).
+---@param mode string "next" or any of "previous"/"prev"/"back"/"b" for the prior window
 function Utils.lua_cycle_window(mode)
 	if mode == "previous" or mode == "prev" or mode == "back" or mode == "b" then
 		mode = "previous"
@@ -548,8 +687,9 @@ function Utils.lua_cycle_window(mode)
 	local wins = {}
 	for _, w in ipairs(hl.get_windows()) do
 		if
-			w.workspace
+			w.workspace ~= nil
 			and w.workspace.id ~= nil
+			and ws ~= nil
 			and ws.id ~= nil
 			and w.workspace.id == ws.id
 			and w.mapped
@@ -602,6 +742,7 @@ function Utils.lua_cycle_window(mode)
 end
 
 ---Move window with edge wrap to adjacent workspace (MoveWrap.sh).
+---@param direction Utils.Direction movement direction
 function Utils.move_wrap(direction)
 	local MAX_WORKSPACE = 10
 
@@ -665,6 +806,7 @@ function Utils.move_wrap(direction)
 end
 
 ---Layout-aware focus navigation with horizontal wrap (FocusWrap.sh).
+---@param direction Utils.Direction focus direction
 function Utils.focus_wrap(direction)
 	local dir, ws_dir
 	if direction == "l" or direction == "left" then
@@ -762,6 +904,8 @@ function Utils.focus_wrap(direction)
 end
 
 ---Dispatch layout-sensitive navigation per active workspace (LayoutKeybindDispatch.sh).
+---@param arg string action: cycle-next/prev, focus-left/right/up/down, or layout/current-layout/status
+---@return Utils.Layout the effective layout that was navigated under
 function Utils.layout_keybind_dispatch(arg)
 	local function direction_word(d)
 		if d == "l" or d == "left" then
@@ -933,6 +1077,8 @@ end
 
 ---Toggle/init hyprsunset night-light (Hyprsunset.sh).
 ---Waybar status output is intentionally not ported.
+---@param mode string "toggle"|"status"|"init"
+---@return string|nil current state ("on"/"off") for "status", nil otherwise
 function Utils.hyprsunset(mode)
 	local state_file = HOME .. "/.cache/.hyprsunset_state"
 	local target_temp = os.getenv("HYPRSUNSET_TEMP") or "4500"
@@ -943,28 +1089,22 @@ function Utils.hyprsunset(mode)
 		end
 	end
 
+	-- Kill every hyprsunset. SIGTERM alone can deadlock hyprsunset's teardown
+	-- (its poll thread never re-checks the terminate flag while blocked), so go
+	-- straight to SIGKILL to avoid a multi-second compositor freeze.
 	local function stop_all()
-		os.execute("pkill -x hyprsunset 2>/dev/null")
+		hl.dispatch(hl.dsp.exec_cmd("pkill -9 -x hyprsunset 2>/dev/null"))
 		for _ = 1, 30 do
 			if not Utils.process_running("hyprsunset") then
 				return true
 			end
-			Utils.sleep(0.1)
-		end
-		os.execute("pkill -9 -x hyprsunset 2>/dev/null")
-		for _ = 1, 30 do
-			if not Utils.process_running("hyprsunset") then
-				return true
-			end
-			Utils.sleep(0.1)
 		end
 		return false
 	end
 
 	local function start()
 		if Utils.is_exec("hyprsunset") then
-			Utils.detach("hyprsunset -t " .. tostring(target_temp))
-			Utils.sleep(0.5)
+			hl.dispatch(hl.dsp.exec_cmd("hyprsunset -t " .. tostring(target_temp) .. " >/dev/null 2>&1"))
 		end
 	end
 
@@ -1021,8 +1161,9 @@ function Utils.hyprsunset(mode)
 end
 
 ---Launch a terminal with fallback chain (LaunchTerminal.sh).
----@param term string
----@param payload string|nil
+---@param term string|nil preferred terminal command (defaults to $TERMINAL)
+---@param payload string|nil command to run inside the terminal
+---@return boolean true when a terminal was launched
 function Utils.launch_terminal(term, payload)
 	term = Utils.trim(term or os.getenv("TERMINAL") or "")
 	payload = Utils.trim(payload or "")
@@ -1088,6 +1229,9 @@ function Utils.launch_terminal(term, payload)
 end
 
 ---Build a terminal command string with a payload argument.
+---@param term_cmd string terminal command to run
+---@param payload string|nil command to execute inside the terminal
+---@return string the combined command string (term_cmd unchanged when payload is empty)
 function Utils.build_terminal_command(term_cmd, payload)
 	term_cmd = Utils.trim(term_cmd or "")
 	payload = Utils.trim(payload or "")
@@ -1108,6 +1252,8 @@ function Utils.build_terminal_command(term_cmd, payload)
 end
 
 ---Spawn a command string; returns true immediately (process backgrounded via &).
+---@param cmd string command to spawn
+---@return boolean true when the binary exists and was backgrounded
 function Utils.launch_command_string(cmd)
 	cmd = Utils.trim(cmd or "")
 	if cmd == "" then
@@ -1122,10 +1268,11 @@ function Utils.launch_command_string(cmd)
 end
 
 ---Launch a file manager with fallback chain (LaunchFileManager.sh).
----@param fm string|nil
----@param term string|nil
+---@param fm string|nil preferred file manager (defaults to $FILE_MANAGER)
+---@param term string|nil terminal for TUI file managers (defaults to $TERMINAL or kitty)
+---@return boolean true when a file manager was launched
 function Utils.launch_file_manager(fm, term)
-	fm = Utils.trim(fm or os.getenv("FILE_MANAGER") or "")
+	fm = Utils.trim(fm or os.getenv("FILE_MANAGER") or "thunar")
 	term = Utils.trim(term or os.getenv("TERMINAL") or "kitty")
 
 	local terminal_fms = { "yazi", "lf", "ranger", "broot" }
@@ -1153,7 +1300,7 @@ function Utils.launch_file_manager(fm, term)
 		local bin = Utils.command_bin(fm) or ""
 		if not Utils.is_exec(bin) then
 			Utils.notify(
-				"KooL Launchers",
+				"Launchers",
 				"Preferred file manager '" .. fm .. "' is not installed. Falling back.",
 				{ urgency = "normal" }
 			)
@@ -1161,7 +1308,7 @@ function Utils.launch_file_manager(fm, term)
 			return true
 		else
 			Utils.notify(
-				"KooL Launchers",
+				"Launchers",
 				"Preferred file manager '" .. fm .. "' failed to launch. Falling back.",
 				{ urgency = "normal" }
 			)
@@ -1194,7 +1341,7 @@ function Utils.launch_file_manager(fm, term)
 			local bin = Utils.command_bin(fm) or ""
 			if not Utils.is_exec(bin) then
 				Utils.notify(
-					"KooL Launchers",
+					"Launchers",
 					"Preferred file manager '" .. fm .. "' is not installed. Falling back.",
 					{ urgency = "normal" }
 				)
@@ -1215,14 +1362,14 @@ function Utils.launch_file_manager(fm, term)
 		end
 	else
 		Utils.notify(
-			"KooL Launchers",
+			"Launchers",
 			"No GUI file manager was launched and 'yazi' is not installed.",
 			{ urgency = "normal" }
 		)
 	end
 
 	Utils.notify(
-		"KooL Launchers",
+		"Launchers",
 		"Unable to launch file manager. Tried preferred app, thunar, dolphin, nautilus, then terminal + yazi.",
 		{ urgency = "critical" }
 	)
@@ -1230,6 +1377,8 @@ function Utils.launch_file_manager(fm, term)
 end
 
 ---Persist active workspace layout into workspaces.conf (PersistWorkspaceLayout.sh).
+---@param opts Utils.PersistOpts|nil optional overrides and output settings
+---@return boolean true when the layout was written to disk
 function Utils.persist_workspace_layout(opts)
 	opts = opts or {}
 	local quiet = opts.quiet
@@ -1355,6 +1504,8 @@ end
 ---Switch the active workspace layout (ChangeLayout.sh).
 ---Accepts "dwindle"/"master"/"scrolling"/"monocle"/"toggle"/"next"/"current",
 ---optionally prefixed with --quiet/--no-notify.
+---@param input string layout name or action, optionally with --quiet/--no-notify flags
+---@return string|boolean the current layout for "current"/"status"/"get", true on success, false otherwise
 function Utils.change_layout(input)
 	input = tostring(input or "toggle")
 	local quiet = false
@@ -1555,6 +1706,8 @@ function Utils.keybinds()
 end
 
 ---Determine whether an editor command is terminal-based (TUI).
+---@param cmd string editor command line to inspect
+---@return boolean true when the editor runs in the terminal
 function Utils.is_tui_editor(cmd)
 	local parts = {}
 	for tok in tostring(cmd or ""):gmatch("%S+") do
@@ -1590,6 +1743,10 @@ function Utils.is_tui_editor(cmd)
 end
 
 ---Open a file in the configured editor (GUI or terminal-based).
+---@param file string file path to open
+---@param term string terminal command for TUI editors
+---@param edit string fallback editor command (defaults to nano)
+---@param visual string preferred visual editor command (may be empty)
 function Utils.open_in_editor(file, term, edit, visual)
 	local selected = (visual and visual ~= "") and visual or (edit or "nano")
 	if Utils.is_tui_editor(selected) then
