@@ -100,6 +100,70 @@ _dot_commit_and_push() {
   fi
 }
 
+# persistent saved-path list — paths recorded by `dot <path>` get reused by bare `dot`
+_dot_paths_file() {
+  local base="${XDG_STATE_HOME:-$HOME/.local/state}"
+  mkdir -p "$base/yadm"
+  print -r -- "$base/yadm/dot-paths"
+}
+
+_dot_load_paths() {
+  local file=$(_dot_paths_file)
+  [[ -f "$file" ]] && print -r -- "${(f)"$(< "$file")"}"
+}
+
+_dot_save_paths() {
+  local file=$(_dot_paths_file)
+  local -a existing=($(_dot_load_paths))
+  local -a new
+  local p norm
+  for p in "$@"; do
+    norm=${~p:a}
+    if (( ! ${existing[(Ie)$norm]} )) && (( ! ${new[(Ie)$norm]} )); then
+      new+=("$norm")
+    fi
+  done
+  if (( ${#new} )); then
+    printf '%s\n' "${new[@]}" >> "$file"
+  fi
+}
+
+_dot_forget_paths() {
+  local file=$(_dot_paths_file)
+  [[ -f "$file" ]] || return 0
+  local -a keep
+  local p norm drop arg
+  for p in $(_dot_load_paths); do
+    norm=${~p:a}
+    drop=0
+    for arg in "$@"; do
+      arg=${~arg:a}
+      if [[ "$norm" == "$arg" ]]; then
+        drop=1
+        break
+      fi
+    done
+    (( drop )) || keep+=("$p")
+  done
+  : > "$file"
+  if (( ${#keep} )); then
+    printf '%s\n' "${keep[@]}" >> "$file"
+  fi
+}
+
+_dot_clear_paths() {
+  : > "$(_dot_paths_file)"
+}
+
+_dot_list_paths() {
+  local -a saved=($(_dot_load_paths))
+  if (( ${#saved} )); then
+    printf '%s\n' "${saved[@]}"
+  else
+    echo "No saved paths"
+  fi
+}
+
 # yadm wrapper — selective add, commit, optional push
 dot() {
   local subcmd="${1:-}"
@@ -174,6 +238,20 @@ dot() {
     last)
       yadm log -1 --stat
       ;;
+    lp|list-paths|--list)
+      _dot_list_paths
+      ;;
+    --forget)
+      if (( $# == 0 )); then
+        echo "Usage: dot --forget <path>..."
+      else
+        _dot_forget_paths "$@"
+      fi
+      ;;
+    --clear)
+      _dot_clear_paths
+      echo "Saved-path list cleared"
+      ;;
     unstage)
       yadm reset HEAD -- "$@"
       ;;
@@ -192,11 +270,25 @@ dot() {
       _dot_commit_and_push
       ;;
     "")
-      yadm status -s
+      local -a saved
+      saved=($(_dot_load_paths))
+      if (( ${#saved} )); then
+        yadm add -- "${saved[@]}"
+        _dot_commit_and_push
+      else
+        yadm status -s
+      fi
       ;;
     *)
       # No recognized subcommand — treat args as paths to add, commit, maybe push
-      if [[ -e "$subcmd" ]] || [[ "$subcmd" == "." ]] || [[ "$subcmd" == -* ]]; then
+      if [[ -e ${~subcmd} ]] || [[ "$subcmd" == "." ]] || [[ "$subcmd" == -* ]]; then
+        local p
+        for p in "$subcmd" "$@"; do
+          if [[ "$p" != -* ]] && [[ -e ${~p} ]] && [[ "$p" != "." ]]; then
+            _dot_save_paths "$p"
+          fi
+        done
+
         yadm add "$subcmd" "$@"
 
         _dot_commit_and_push
