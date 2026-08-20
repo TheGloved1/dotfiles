@@ -55,7 +55,7 @@ prepend_keymap = [
     "yank",
   ], desc = "yank files and copy to clipboard" },
   { on = "A", run = "create --dir", desc = "Create a dir" },
-  { on = "<A-e>", run = '''shell 'nvim "%h"' --block''', desc = "Open hovered folder in neovim" },
+  { on = "<A-e>", run = '''shell 'if [ -d "%h" ]; then cd "%h" && nvim; else nvim "%h"; fi' --block''', desc = "Open hovered item in neovim (cd into folders)" },
 ]
 
 append_keymap = [
