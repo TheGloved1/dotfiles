@@ -18,6 +18,7 @@ env() {
       [[ "${(P)var}" == "" ]] && export "$var=$val"
     done < "$env_file"
   fi
+  return 0
 }
 
 _env_auto_load() {
@@ -31,5 +32,6 @@ _env_auto_load() {
   env "$HOME/.env"
 }
 
-chpwd_functions+=(_env_auto_load)
+(( ${chpwd_functions[(Ie)_env_auto_load]} )) || chpwd_functions+=(_env_auto_load)
 _env_auto_load
+return 0
