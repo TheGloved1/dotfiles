@@ -1,0 +1,78 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+  "logo": {
+    "height": 5,
+    "width": 10,
+    "padding": {
+      "top": 1,
+    },
+  },
+
+  "display": {
+    "separator": "  ",
+    "color": {
+      "keys": "white",
+    },
+    "brightColor": true,
+  },
+
+  "modules": [
+    {
+      "type": "title",
+      "format": "{#1}╭────── User : {#}{user-name-colored}@{host-name-colored}",
+    },
+    // ── SYSTEM ────────────────────────────────
+    { "type": "custom", "format": "{#1}│ {#}SYSTEM" },
+    { "type": "os", "key": "{#separator}│  {icon}  OS" },
+    { "type": "kernel", "key": "{#separator}│  {icon}  Kernel" },
+    {
+      "type": "command",
+      "key": "{#separator}│  {icon}  Hostname",
+      "text": "printf '%s@%s' \"$USER\" \"$HOSTNAME\"",
+    },
+    { "type": "uptime", "key": "{#separator}│  {icon}  Uptime" },
+    { "type": "packages", "key": "{#separator}│  {icon}  Packages" },
+    {
+      "type": "disk",
+      "key": "{#separator}│  {icon}  OS Age",
+      "folders": "/",
+      "format": "installed {create-time:10}  ({days} days ago)",
+    },
+    { "type": "custom", "format": "{#1}│" },
+    // ── HARDWARE ──────────────────────────────
+    { "type": "custom", "format": "{#1}│ {#}HARDWARE" },
+    {
+      "type": "host",
+      "key": "{#separator}│  {icon}  Machine",
+      "format": "{name}",
+    },
+    {
+      "type": "cpu",
+      "key": "{#separator}│  {icon}  CPU",
+      "showPeCoreCount": true,
+    },
+    { "type": "gpu", "key": "{#separator}│  {icon}  GPU" },
+    {
+      "type": "memory",
+      "key": "{#separator}│  {icon}  RAM",
+      "percent": { "type": 3, "green": 40, "yellow": 75 },
+    },
+    {
+      "type": "disk",
+      "key": "{#separator}│  {icon}  Disk",
+      "format": "{size-used} / {size-total} ({size-percentage})",
+    },
+    { "type": "custom", "format": "{#1}│" },
+    // ── DESKTOP ───────────────────────────────
+    { "type": "custom", "format": "{#1}│ {#}DESKTOP" },
+    { "type": "wm", "key": "{#separator}│  {icon}  WM" },
+    { "type": "shell", "key": "{#separator}│  {icon}  Shell" },
+    { "type": "terminal", "key": "{#separator}│  {icon}  Terminal" },
+    { "type": "editor", "key": "{#separator}│  {icon}  Editor" },
+    { "type": "custom", "format": "{#1}│" },
+    // ── Colors + footer ───────────────────────
+    { "type": "colors", "key": "{#separator}│", "symbol": "circle" },
+    { "type": "custom", "format": "{#1}╰───────────────────────────────╯" },
+  ],
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+  "logo": {
+    "height": 5,
+    "width": 10,
+    "padding": {
+      "top": 1,
+    },
+  },
+
+  "display": {
+    "separator": "   ",
+    "color": {
+      "keys": "white",
+    },
+    "key": {
+      "width": 18,
+    },
+    "brightColor": false,
+  },
+
+  "modules": [
+    // ── Identity header ────────────────────────────────────────────
+    // {
+    //     "type": "custom",
+    //     "format": "\u001b[1m\u001b[38;2;138;173;244m   <---- KoolDots ---->\u001b[0m"
+    // },
+    // "break",
+
+    "break",
+    // ── System ─────────────────────────────────────────────────────
+    {
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smSYSTEM\\033[0m \\033[38;2;%sm──────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
+    },
+    {
+      "type": "os",
+      "key": "  {icon}  OS",
+    },
+    {
+      "type": "kernel",
+      "key": "  {icon}  Kernel",
+    },
+    {
+      "type": "command",
+      "key": "  {icon}  Hostname",
+      "text": "printf '%s@%s' \"$USER\" \"$HOSTNAME\"",
+    },
+    {
+      "type": "uptime",
+      "key": "  {icon}  Uptime",
+    },
+    {
+      "type": "packages",
+      "key": "  {icon}  Packages",
+    },
+    {
+      "type": "disk",
+      "key": "  {icon}  OS Age",
+      "folders": "/",
+      "format": "installed {create-time:10}  ({days} days ago)",
+    },
+    "break",
+
+    // ── Hardware ───────────────────────────────────────────────────
+    {
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smHARDWARE\\033[0m \\033[38;2;%sm────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
+    },
+    {
+      "type": "host",
+      "key": "  {icon}  Machine",
+      "format": "{name}",
+    },
+    {
+      "type": "cpu",
+      "key": "  {icon}  CPU",
+      "showPeCoreCount": true,
+    },
+    {
+      "type": "gpu",
+      "key": "  {icon}  GPU",
+    },
+    {
+      "type": "memory",
+      "key": "  {icon}  RAM",
+      "percent": {
+        "type": 3,
+        "green": 40,
+        "yellow": 75,
+      },
+    },
+    {
+      "type": "disk",
+      "key": "  {icon}  Disk",
+      "format": "{size-used} / {size-total} ({size-percentage})",
+    },
+    "break",
+
+    // ── Desktop ────────────────────────────────────────────────────
+    {
+      "type": "command",
+      "key": " ",
+      "text": "[ -f \"$HOME/.cache/wallust/fastfetch.conf\" ] && . \"$HOME/.cache/wallust/fastfetch.conf\"; printf '\\033[38;2;%sm── \\033[1m\\033[38;2;%smDESKTOP\\033[0m \\033[38;2;%sm─────────────────────────\\033[0m' \"${ff_header_line:-138;173;244}\" \"${ff_header_title:-166;218;149}\" \"${ff_header_line:-138;173;244}\""
+    },
+    {
+      "type": "wm",
+      "key": "  {icon}  WM",
+    },
+    {
+      "type": "shell",
+      "key": "  {icon}  Shell",
+    },
+    {
+      "type": "terminal",
+      "key": "  {icon}  Terminal",
+    },
+    {
+      "type": "editor",
+      "key": "  {icon}  Editor",
+    },
+    "break",
+
+    // ── Footer ─────────────────────────────────────────────────────
+    // {
+    // black → dark pink → hot pink → light pink → white
+    //     "type": "custom",
+    //     "format": " \u001b[48;5;232m  \u001b[48;5;53m  \u001b[48;5;89m  \u001b[48;5;125m  \u001b[48;5;161m  \u001b[48;5;197m  \u001b[48;5;198m  \u001b[48;5;199m  \u001b[48;5;205m  \u001b[48;5;211m  \u001b[48;5;224m  \u001b[48;5;231m  \u001b[0m"
+    // },
+    "break",
+  ],
+}
