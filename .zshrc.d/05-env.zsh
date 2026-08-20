@@ -4,7 +4,8 @@ env() {
   if [[ -f "$env_file" ]]; then
     while IFS= read -r line || [[ -n "$line" ]]; do
       line="${line%%#*}"
-      line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+      line="${line#"${line%%[![:space:]]*}"}"
+      line="${line%"${line##*[![:space:]]}"}"
       [[ -z "$line" ]] && continue
       [[ "$line" != *"="* ]] && continue
 
@@ -19,8 +20,16 @@ env() {
   fi
 }
 
-if [[ -f "$HOME/.env" ]]; then
+_env_auto_load() {
+  local dir="$PWD"
+  while [[ "$dir" != "$HOME" && -n "$dir" ]]; do
+    if [[ -f "$dir/.env" ]]; then
+      env "$dir/.env"
+    fi
+    dir="${dir%/*}"
+  done
   env "$HOME/.env"
-fi
+}
 
-eval "$(direnv hook zsh)"
+chpwd_functions+=(_env_auto_load)
+_env_auto_load
