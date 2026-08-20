@@ -9,7 +9,7 @@ alias pacreps='pacman -Ss'
 alias pacloc='pacman -Qi'
 alias paclocs='pacman -Qs'
 alias paclsorphans='sudo pacman -Qdt'
-alias pacrmorphans='sudo pacman -Rs $(pacman -Qtdq)'
+alias pacrmorphans='sudo pacman -Rn $(pacman -Qtdq)'
 alias pacdebug='pacman -Qtdq | grep -i debug'
 alias pacmir='sudo pacman -Syy'
 alias pacown='pacman -Qo'
@@ -78,7 +78,7 @@ pac() {
       pacman -Qdt
       ;;
     autoremove)
-      sudo pacman -Rns $(pacman -Qtdq)
+      sudo pacman -Rn $(pacman -Qtdq)
       ;;
     clean)
       sudo pacman -Sc
@@ -194,7 +194,7 @@ aur() {
       fi
       local selected=(${(f)"$(printf '%s\n' $orphans | fzf --multi --prompt="Select AUR packages to remove > " --header="Orphaned AUR packages (Ctrl-A to select all)")"})
       if [[ $#selected -gt 0 ]]; then
-        sudo pacman -Rns $selected
+        sudo pacman -Rn $selected
       else
         echo "Nothing selected"
       fi
