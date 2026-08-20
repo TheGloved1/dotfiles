@@ -6,7 +6,7 @@ DST="$HOME/.local/bin"
 
 mkdir -p "$DST"
 
-for script in "$SRC"/*.sh; do
+for script in "$SRC"/*; do
   [ -f "$script" ] || continue
   name="$(basename "$script")"
   link="$DST/$name"
