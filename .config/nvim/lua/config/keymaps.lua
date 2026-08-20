@@ -13,13 +13,7 @@ end, { desc = "Toggle terminal below" })
 map("n", "<F2>", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "<F3>", vim.lsp.buf.code_action, { desc = "Code actions" })
 
--- Jump
-map({ "n", "x", "o" }, "s", "<Plug>leap")
-map("n", "S", "<Plug>(leap-from-window)")
-
--- Visit (remote operations)
-map({ "n", "o" }, "gs", "<Plug>(leap-visit)")
-map({ "n", "o" }, "gS", "<Plug>(leap-visit-linewise)")
-map({ "x", "o" }, "ar", "<Plug>(leap-visit-text-object)")
-map({ "x", "o" }, "ir", "<Plug>(leap-visit-inner-text-object)")
-map({ "o" }, "rr", "<Plug>(leap-visit-line)")
+-- Quit all with Ctrl+C (normal, visual, operator-pending, terminal modes)
+map({ "n", "v", "o", "t" }, "<C-c>", function()
+  vim.cmd(string.format("qa%s", vim.fn.confirm("Quit Neovim?", "&Yes\n&No", 1) == 1 and "!" or ""))
+end, { desc = "Quit all" })
