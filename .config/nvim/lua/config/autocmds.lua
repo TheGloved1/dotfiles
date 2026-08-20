@@ -7,75 +7,70 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
-local group = vim.api.nvim_create_augroup("autoindent_format", { clear = true })
+-- local group = vim.api.nvim_create_augroup("autoindent_format", { clear = true })
+--
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   group = group,
+--   pattern = { "*.conf" },
+--   callback = function()
+--     if vim.bo.filetype ~= "hyprlang" then
+--       return
+--     end
+--     local save_cindent = vim.bo.cindent
+--     vim.bo.cindent = true
+--     vim.cmd("silent! retab")
+--     vim.cmd("silent! normal! mzgg=G`z")
+--     vim.bo.cindent = save_cindent
+--   end,
+-- })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = group,
-  pattern = { "*.conf" },
-  callback = function()
-    if vim.bo.filetype ~= "hyprlang" then
-      return
-    end
-    local save_cindent = vim.bo.cindent
-    vim.bo.cindent = true
-    vim.cmd("silent! retab")
-    vim.cmd("silent! normal! mzgg=G`z")
-    vim.bo.cindent = save_cindent
-  end,
-})
+-- local persistence = require("persistence")
+--
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "PersistenceSavePre",
+--   callback = function()
+--     vim.cmd("Neotree close")
+--   end,
+-- })
+--
+-- if vim.fn.argc(-1) ~= 0 then
+--   local arg = vim.fn.fnamemodify(vim.fn.argv(0), ":p")
+--   local stat = vim.uv.fs_stat(arg)
+--   if stat and stat.type == "directory" then
+--     vim.fn.chdir(arg)
+--   end
+-- end
 
-local persistence = require("persistence")
-
-vim.api.nvim_create_autocmd("User", {
-  pattern = "PersistenceSavePre",
-  callback = function()
-    vim.cmd("Neotree close")
-  end,
-})
-
-if vim.fn.argc(-1) ~= 0 then
-  local arg = vim.fn.fnamemodify(vim.fn.argv(0), ":p")
-  local stat = vim.uv.fs_stat(arg)
-  if stat and stat.type == "directory" then
-    vim.fn.chdir(arg)
-  end
-end
-
-local has_file_arg = vim.fn.argc(-1) ~= 0
-  and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p"))
-  and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p")).type ~= "directory"
-
-vim.defer_fn(function()
-  if vim.fn.argc(-1) == 0 or has_file_arg then
-    return
-  end
-  local file = persistence.current()
-  if vim.fn.filereadable(file) ~= 1 then
-    file = persistence.current({ branch = false })
-  end
-  local load_session = false
-  if file and vim.fn.filereadable(file) == 1 then
-    local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
-    local choice = vim.fn.confirm(
-      "Session found for " .. dir .. ":",
-      "&Load session\n&q Skip",
-      1,
-      "Question"
-    )
-    load_session = choice == 1
-  end
-  if load_session then
-    vim.cmd("Neotree close")
-    persistence.load()
-    return
-  end
-  vim.cmd("Neotree close")
-  vim.schedule(function()
-    local buf = vim.api.nvim_get_current_buf()
-    if vim.api.nvim_buf_get_name(buf) == "" and vim.bo[buf].buftype == "" and not vim.bo[buf].modified then
-      pcall(function()
-        require("snacks").dashboard.open({ buf = buf, win = vim.api.nvim_get_current_win() })
-      end)
-    end
-  end)
-end, 100)
+-- local has_file_arg = vim.fn.argc(-1) ~= 0
+--   and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p"))
+--   and vim.uv.fs_stat(vim.fn.fnamemodify(vim.fn.argv(0), ":p")).type ~= "directory"
+--
+-- vim.defer_fn(function()
+--   if vim.fn.argc(-1) == 0 or has_file_arg then
+--     return
+--   end
+--   local file = persistence.current()
+--   if vim.fn.filereadable(file) ~= 1 then
+--     file = persistence.current({ branch = false })
+--   end
+--   local load_session = false
+--   if file and vim.fn.filereadable(file) == 1 then
+--     local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+--     local choice = vim.fn.confirm("Session found for " .. dir .. ":", "&Load session\n&q Skip", 1, "Question")
+--     load_session = choice == 1
+--   end
+--   if load_session then
+--     vim.cmd("Neotree close")
+--     persistence.load()
+--     return
+--   end
+--   vim.cmd("Neotree close")
+--   vim.schedule(function()
+--     local buf = vim.api.nvim_get_current_buf()
+--     if vim.api.nvim_buf_get_name(buf) == "" and vim.bo[buf].buftype == "" and not vim.bo[buf].modified then
+--       pcall(function()
+--         require("snacks").dashboard.open({ buf = buf, win = vim.api.nvim_get_current_win() })
+--       end)
+--     end
+--   end)
+-- end, 100)
