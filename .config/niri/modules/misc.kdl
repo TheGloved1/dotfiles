@@ -1,0 +1,9 @@
+blur {
+    passes 2
+    offset 4.0
+    noise 0.02
+    saturation 1.5
+}
+overview {
+    backdrop-color "#191724"
+}
