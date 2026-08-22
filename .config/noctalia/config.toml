@@ -3,6 +3,10 @@ enable_overdrive = true
 enable_sounds = true
 sound_volume = 0.29999999329447746
 
+[backdrop]
+blur_intensity = 0.17999999597668648
+tint_intensity = 0.17999999597668648
+
 [bar.default]
 background_opacity = 0.89999997988343239
 border = "outline"
@@ -13,12 +17,13 @@ end = [ "recorder", "group:g2", "weather", "clock", "group:g4" ]
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 margin_ends = 0
-margin_opposite_edge = 2
-padding = 6
+margin_opposite_edge = 0
+padding = 8
 panel_overlap = 0
 radius = 32
-shadow = false
-start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
+shadow = true
+start = [ "launcher", "group:g1", "group:g5", "group:g3", "cat" ]
+thickness = 32
 
     [bar.default.dead_zone.actions]
     left = "panel-toggle control-center home"
@@ -41,7 +46,7 @@ start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
     enabled = true
     fill = "surface_variant"
     id = "g2"
-    members = [ "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
+    members = [ "privacy", "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
     opacity = 1.0
     padding = 6.0
 
@@ -62,6 +67,16 @@ start = [ "launcher", "group:g1", "tray", "group:g3", "cat" ]
     fill = "surface_variant"
     id = "g4"
     members = [ "session", "settings" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    accordion = true
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    id = "g5"
+    members = [ "tray" ]
     opacity = 1.0
     padding = 6.0
 
@@ -92,13 +107,15 @@ widget_order = [ "desktop-widget-0000000000000001" ]
     cx = 1752.0
     cy = 124.0
     output = "HDMI-A-1"
+    placement_height = 1080.0
+    placement_width = 1920.0
     rotation = 0.0
     type = "clock"
 
 [dock]
 active_monitor_only = true
 background_opacity = 0.7799999825656414
-enabled = true
+enabled = false
 launcher_position = "start"
 margin_edge = 0
 pinned = [ "steam", "equibop", "zen", "kitty" ]
@@ -148,6 +165,8 @@ pre_action_fade_seconds = 30
 down = [ "Down", "Ctrl+j" ]
 left = [ "Left", "Ctrl+h" ]
 right = [ "Right", "Ctrl+l" ]
+tab_next = [ "Tab", "Ctrl+Shift+l", "Ctrl+Shift+j" ]
+tab_previous = [ "Shift+ISO_Left_Tab", "Ctrl+Shift+k", "Ctrl+Shift+h" ]
 up = [ "Up", "Ctrl+k" ]
 
 [location]
@@ -173,6 +192,8 @@ widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1" ]
     cx = 960.0
     cy = 898.0
     output = "HDMI-A-1"
+    placement_height = 1080.0
+    placement_width = 1920.0
     rotation = 0.0
     type = "login_box"
 
@@ -198,6 +219,8 @@ widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1" ]
     cx = 960.0
     cy = 898.0
     output = "winit"
+    placement_height = 0.0
+    placement_width = 0.0
     rotation = 0.0
     type = "login_box"
 
@@ -220,8 +243,8 @@ widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1" ]
 [nightlight]
 enabled = true
 force = true
-temperature_day = 5100
-temperature_night = 4600
+temperature_day = 7200
+temperature_night = 6000
 
 [notification]
 background_opacity = 0.89999997988343239
@@ -250,6 +273,7 @@ cheatsheet_placement = "attached"
 columns = 2
 hyprland_parser = "lua"
 show_actions = true
+show_undescribed = false
 
 [plugin_settings."noctalia/screen_recorder"]
 replay_duration = 60
@@ -265,6 +289,7 @@ panel_placement = "attached"
 snippets = [ "notify-send \"Test\"" ]
 
 [plugins]
+auto_update = "all"
 enabled = [
     "tadomika_ari/config-swap",
     "noctalia/bongocat",
@@ -288,8 +313,8 @@ enabled = [
     name = "community"
 
     [[plugins.source]]
-    kind = "path"
-    location = "/home/gloves/git/noctalia-screenshot-actions"
+    kind = "git"
+    location = "https://github.com/TheGloved1/noctalia-screenshot-actions"
     name = "local"
 
 [shell]
@@ -299,11 +324,13 @@ clipboard_history_max_entries = 500
 external_ip_enabled = true
 font_family = "CaskaydiaCove Nerd Font"
 launch_apps_custom_command = "~/.config/noctalia/wrap/noctalia-wrap $CMD"
+niri_overview_type_to_launch_enabled = true
 panel_anchor_bar = "default"
 polkit_agent = true
 
     [shell.greeter_sync]
     auto_sync = false
+    privilege_command = "pkexec"
 
     [shell.launcher]
     categories = true
@@ -323,7 +350,7 @@ polkit_agent = true
 
     [shell.screen_corners]
     enabled = true
-    size = 24
+    size = 32
 
     [shell.screenshot]
     confirm_region = true
@@ -369,15 +396,15 @@ polkit_agent = true
         variant = "destructive"
 
     [shell.shadow]
-    alpha = 0.59999998658895493
-    direction = "down_right"
+    alpha = 0.26999999396502972
+    direction = "center"
 
 [theme]
-builtin = "Dracula"
-community_palette = "Tokyo Night Moon"
+builtin = "Rosé Pine"
+community_palette = "Rose Pine Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
-source = "community"
+source = "builtin"
 wallpaper_scheme = "soft"
 
     [theme.templates]
@@ -404,13 +431,13 @@ transition_duration = 2000
 transition_on_startup = true
 
     [wallpaper.default]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/os/arch.jpg"
 
     [wallpaper.last]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/os/arch.jpg"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/gloves/Pictures/Wallpapers/TokyoNight/night/os/arch_00_3840x2160.png"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/os/arch.jpg"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
@@ -422,7 +449,9 @@ transition_on_startup = true
 unit = "imperial"
 
 [widget.active_window]
+capsule = true
 capsule_opacity = 0.90000000000000002
+capsule_padding = 8
 capsule_radius = "auto"
 icon_size = 16
 min_length = 45
@@ -471,6 +500,9 @@ scale = 1.6000000000000001
 [widget.network]
 show_label = false
 
+[widget.privacy]
+hide_inactive = true
+
 [widget.ram]
 stat = "ram_pct"
 
@@ -492,9 +524,14 @@ hidden = [ "Network", "Blueman" ]
 show_label = false
 
 [widget.weather]
-show_condition = false
+show_condition = true
+
+    [widget.weather.actions]
+    right = "exec fz --title 'Wheather' -- curl wttr.in"
 
 [widget.workspaces]
 active_pill_size = 2.25
 hide_when_empty = true
 inactive_pill_size = 1.25
+label_source = "name"
+labels_only_when_occupied = true
