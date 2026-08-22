@@ -188,6 +188,8 @@ hl.bind("SUPER + SHIFT + period", hl.dsp.layout("move +col"), { description = "m
 hl.bind("SUPER + SHIFT + comma", hl.dsp.layout("move -col"), { description = "move to left column" })
 hl.bind("SUPER + ALT + comma", hl.dsp.layout("swapcol l"), { description = "swap columns left" })
 hl.bind("SUPER + ALT + period", hl.dsp.layout("swapcol r"), { description = "swap columns right" })
+hl.bind("SUPER + comma", hl.dsp.layout("move +100"), { description = "scroll left", repeating = true })
+hl.bind("SUPER + period", hl.dsp.layout("move -100"), { description = "scroll right", repeating = true })
 
 -- ============================================
 --  WORKSPACES
@@ -445,3 +447,8 @@ hl.bind("SUPER + ALT + mouse_down", function()
 	current = math.max(1, current / 2)
 	hl.config({ cursor = { zoom_factor = current } })
 end, { description = "zoom out", mouse = true })
+
+-- ============================================
+--  GLOBAL BINDS
+-- ============================================
+hl.bind("CTRL + SHIFT + M", hl.dsp.pass({ window = "class:^(discord)$" }))
