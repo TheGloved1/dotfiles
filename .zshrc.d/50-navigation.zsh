@@ -12,3 +12,7 @@ function y() {
     fi
     rm -f -- "$tmp"
 }
+
+# Ctrl+E: run y (yazi file manager)
+bindkey -s '^E' 'y
+'
