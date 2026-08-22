@@ -1,0 +1,20 @@
+// ────────────── Output Configuration ──────────────
+// Ported from hypr/modules/monitors.lua - HDMI-A-1 only per user choice
+// (Hypr had HDMI-A-1 1920x1080@60 0x0 + HEADLESS-1 2080x1080@60 1920x0; HEADLESS dropped)
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
+output "HDMI-A-1" {
+    // Uncomment this line to disable this output.
+    // off
+
+    // Resolution and, optionally, refresh rate of the output.
+    // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
+    // If the refresh rate is omitted, niri will pick the highest refresh rate for the resolution.
+    mode "1920x1080@60"
+    position x=0 y=0
+    scale 1
+    // Transform allows to rotate the output counter-clockwise, valid values are:
+    // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
+    // transform "normal"
+    // Hypr: vrr 1, render.direct_scanout 0 - niri variable-refresh-rate auto if supported
+    // Uncomment to force VRR: variable-refresh-rate true
+}

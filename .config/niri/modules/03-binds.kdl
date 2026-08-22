@@ -1,0 +1,222 @@
+hotkey-overlay {
+    skip-at-startup
+}
+// ────────────── Keybindings ──────────────
+binds {
+    MOD+F1                     hotkey-overlay-title="Niri hotkey overlay" { show-hotkey-overlay; }
+
+    // ─── Launchers (Hypr: SUPER+Return term, SUPER+E files, SUPER+B browser) ───
+    // Hypr: SUPER+SUPER_L (tap Super) -> launcher, SUPER+SPACE -> control-center home
+    // Niri: Super_L alone IS valid (tested: Super_L { spawn-sh ... } validates) but triggers on PRESS not RELEASE, so it conflicts with MOD+* combos (hold Super + another key).
+    // Hypr's SUPER+SUPER_L is release-only (tap vs hold), niri has no release vs hold distinction, so we follow your fallback: SUPER+SPACE = launcher
+    Super_L                             hotkey-overlay-title="App launcher (Hypr SUPER tap → niri Super_L press, may conflict with MOD+* hold)" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    MOD+SPACE                           hotkey-overlay-title="App launcher (Hypr SUPER+SUPER_L fallback → SUPER+SPACE)" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    MOD+SHIFT+SPACE                     hotkey-overlay-title="Control Center (Hypr SUPER+SPACE moved → MOD+SHIFT+SPACE)" { spawn-sh "noctalia msg panel-toggle control-center home"; }
+    MOD+RETURN                          hotkey-overlay-title="Open Terminal (Hypr SUPER+Return → niri IPC fallback)" { spawn-sh "/home/gloves/.config/niri/scripts/launch-terminal.sh"; }
+    // Hypr: SUPER+SUPER_L also launcher; niri MOD same
+    MOD+B                               hotkey-overlay-title="Open Browser (Hypr SUPER+B)" { spawn-sh "xdg-open https://"; }
+    // Hypr: files=yazi -> launch_file_manager falls back to thunar/dolphin; niri IPC script mirrors Hypr fallback
+    MOD+E                               hotkey-overlay-title="File Manager (Hypr SUPER+E yazi/thunar → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/launch-file-manager.sh"; }
+    MOD+M                               hotkey-overlay-title="Messaging: Signal" { spawn-sh "signal-desktop"; }
+    MOD+C                               hotkey-overlay-title="Calendar" { spawn-sh "qs -c noctalia-shell ipc call calendar toggle"; }
+    MOD+slash                           hotkey-overlay-title="Keybind cheatsheet (Hypr SUPER+slash)" { spawn-sh "noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet"; }
+    MOD+SHIFT+slash                     hotkey-overlay-title="Noctalia Screen Toolkit (Hypr SUPER+SHIFT+slash)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all toggle"; }
+    MOD+P                               hotkey-overlay-title="Color picker (Hypr SUPER+P hyprpicker)" { spawn-sh "hyprpicker -a -f hex --lowercase-hex"; }
+    ALT+SPACE                           hotkey-overlay-title="Toggle vicinae (Hypr ALT+SPACE)" { spawn-sh "vicinae toggle"; }
+
+    // ─── Desktop / Overview ───
+    MOD+A                               hotkey-overlay-title="Window switcher (Hypr SUPER+A)" { spawn-sh "noctalia msg window-switcher"; }
+    MOD+O                               hotkey-overlay-title="Overview" repeat=false { toggle-overview; }
+    // Hypr: SUPER+tab scrolloverview toggle -> niri overview is MOD+O; keep both
+    MOD+TAB                             hotkey-overlay-title="Overview (Hypr SUPER+tab)" { toggle-overview; }
+
+    // ─── Window Management (Hypr: SUPER+Q close, SUPER+SHIFT+Q kill, SUPER+F maximize, SUPER+D float) ───
+    MOD+Q                               hotkey-overlay-title="Close window (Hypr SUPER+Q)" { close-window; }
+    MOD+F                               hotkey-overlay-title="Maximize column (Hypr SUPER+F → niri maximize-column)" { maximize-column; }
+    MOD+SHIFT+F                         hotkey-overlay-title="Fullscreen window (Hypr SUPER+SHIFT+F → niri fullscreen-window)" { fullscreen-window; }
+    MOD+D                               hotkey-overlay-title="Toggle floating window (Hypr SUPER+D)" { toggle-window-floating; }
+    MOD+ALT+SPACE                       hotkey-overlay-title="Float all windows (Hypr SUPER+ALT+SPACE)" { spawn-sh "/home/gloves/.config/niri/scripts/float-all.sh"; }
+    MOD+SHIFT+D                         hotkey-overlay-title="Toggle Dark Mode" { spawn-sh "qs -c noctalia-shell ipc call darkMode toggle"; }
+    MOD+SHIFT+Q                         hotkey-overlay-title="Session menu (Hypr had kill-process here)" { spawn-sh "noctalia msg panel-toggle session"; }
+    MOD+CTRL+Q                          hotkey-overlay-title="Kill active process (Hypr SUPER+SHIFT+Q)" { spawn-sh "/home/gloves/.config/niri/scripts/kill-active.sh"; }
+    MOD+CTRL+O                          hotkey-overlay-title="Toggle opaque (Hypr SUPER+CTRL+O)" { spawn-sh "/home/gloves/.config/niri/scripts/toggle-opaque.sh"; }
+    MOD+ALT+O                           hotkey-overlay-title="Toggle blur (disabled for noctalia)" { spawn-sh "notify-send 'Blur disabled' 'Removed for noctalia xray fix — enable via toggle-blur.sh if needed' -u low"; }
+
+    // ─── Focus / Navigation (Hypr: layout_keybind_dispatch / focus_wrap) ───
+    MOD+LEFT                            hotkey-overlay-title="Focus column left (Hypr SUPER+H/LEFT)" { focus-column-left; }
+    MOD+H                               { focus-column-left; }
+    MOD+RIGHT                           { focus-column-right; }
+    MOD+L                               { focus-column-right; }
+    MOD+UP                              { focus-window-up; }
+    MOD+K                               hotkey-overlay-title="Focus window/workspace up" { focus-window-or-workspace-up; }
+    MOD+DOWN                            { focus-window-down; }
+    MOD+J                               hotkey-overlay-title="Focus window/workspace down" { focus-window-or-workspace-down; }
+    ALT+TAB                             hotkey-overlay-title="Previous workspace (Hypr ALT+Tab cycle)" { focus-workspace-previous; }
+    MOD+bracketleft                     hotkey-overlay-title="Cycle next (Hypr SUPER+[ → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/cycle-window.sh next"; }
+    MOD+bracketright                    hotkey-overlay-title="Cycle prev (Hypr SUPER+] → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/cycle-window.sh prev"; }
+
+    // ─── Move / Swap / Resize ───
+    // Hypr parity: SUPER+ALT+H/J/K/L move window, SUPER+CTRL+H/J/K/L resize
+    MOD+ALT+H                           hotkey-overlay-title="Move window left (Hypr SUPER+ALT+H)" { move-column-left; }
+    MOD+ALT+L                           { move-column-right; }
+    MOD+ALT+K                           hotkey-overlay-title="Move window up (Hypr SUPER+ALT+K)" { move-window-up; }
+    MOD+ALT+J                           { move-window-down; }
+    MOD+CTRL+H                          hotkey-overlay-title="Resize left -50 (Hypr SUPER+CTRL+H)" { set-column-width "-10%"; }
+    MOD+CTRL+L                          hotkey-overlay-title="Resize right +50 (Hypr SUPER+CTRL+L)" { set-column-width "+10%"; }
+    MOD+CTRL+K                          hotkey-overlay-title="Resize up -50 (Hypr SUPER+CTRL+K)" { set-window-height "-10%"; }
+    MOD+CTRL+J                          hotkey-overlay-title="Resize down +50 (Hypr SUPER+CTRL+J)" { set-window-height "+10%"; }
+    // Hypr SUPER+ALT+left/right/up/down swap -> Niri swap left/right valid, up/down map to move-window
+    MOD+ALT+LEFT                        hotkey-overlay-title="Swap window left (Hypr SUPER+ALT+left)" { swap-window-left; }
+    MOD+ALT+RIGHT                       { swap-window-right; }
+    MOD+ALT+UP                          { move-window-up; }
+    MOD+ALT+DOWN                        { move-window-down; }
+    MOD+SHIFT+H                         hotkey-overlay-title="Move window left wrap (Hypr SUPER+SHIFT+H move_wrap l → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/move-wrap.sh l"; }
+    MOD+SHIFT+L                         { spawn-sh "/home/gloves/.config/niri/scripts/move-wrap.sh r"; }
+    MOD+SHIFT+J                         hotkey-overlay-title="Move window to workspace down (Hypr SUPER+SHIFT+J → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/move-wrap.sh d"; }
+    MOD+SHIFT+K                         hotkey-overlay-title="Move window to workspace up (Hypr SUPER+SHIFT+K → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/move-wrap.sh u"; }
+
+    // ─── Layout / Columns (Hypr scrolling-specific) ───
+    MOD+SHIFT+comma                     hotkey-overlay-title="Move column left (Hypr SUPER+SHIFT+,)" { move-column-left; }
+    MOD+SHIFT+period                    { move-column-right; }
+    MOD+ALT+comma                       hotkey-overlay-title="Swap window left (Hypr SUPER+ALT+, swapcol l)" { swap-window-left; }
+    MOD+ALT+period                      { swap-window-right; }
+    MOD+G                               hotkey-overlay-title="Toggle column tabs (Hypr SUPER+G group toggle)" { toggle-column-tabbed-display; }
+    MOD+Z                               hotkey-overlay-title="Expand to full width" { expand-column-to-available-width; }
+    MOD+R                               hotkey-overlay-title="Switch preset column width (Hypr SUPER+comma/period scroll)" { switch-preset-column-width; }
+    MOD+SHIFT+R                         hotkey-overlay-title="Refresh (Hypr SUPER+SHIFT+R)" { spawn-sh "/home/gloves/.config/niri/scripts/refresh.sh"; }
+    MOD+CTRL+R                          hotkey-overlay-title="Switch preset window height (Hypr SUPER+CTRL+R alias)" { switch-preset-window-height; }
+    MOD+MINUS                           hotkey-overlay-title="Shrink column (Hypr SUPER+CTRL+H alt)" { set-column-width "-10%"; }
+    MOD+EQUAL                           hotkey-overlay-title="Expand column (Hypr SUPER+CTRL+L alt)" { set-column-width "+10%"; }
+    MOD+SHIFT+MINUS                     { set-window-height "-10%"; }
+    MOD+SHIFT+EQUAL                     { set-window-height "+10%"; }
+    // Hypr SUPER+comma/period scroll 100px -> niri focus column
+    MOD+comma                           hotkey-overlay-title="Scroll left 100px (Hypr SUPER+comma)" { focus-column-left; }
+    MOD+period                          hotkey-overlay-title="Scroll right 100px (Hypr SUPER+period)" { focus-column-right; }
+    MOD+SHIFT+I                         hotkey-overlay-title="Toggle split (Hypr SUPER+SHIFT+I dwindle)" { toggle-column-tabbed-display; }
+    MOD+CTRL+F                          hotkey-overlay-title="Reset column width to 50% (Hypr SUPER+CTRL+F)" { set-column-width "50%"; }
+
+    MOD+HOME                            { focus-column-first; }
+    MOD+END                             { focus-column-last; }
+    MOD+CTRL+HOME                       { move-column-to-first; }
+    MOD+CTRL+END                        { move-column-to-last; }
+
+    // ─── Monitor Focus / Move ───
+    MOD+SHIFT+LEFT                      hotkey-overlay-title="Focus monitor left" { focus-monitor-left; }
+    MOD+SHIFT+RIGHT                     { focus-monitor-right; }
+    MOD+SHIFT+UP                        { focus-monitor-up; }
+    MOD+SHIFT+DOWN                      { focus-monitor-down; }
+    MOD+SHIFT+CTRL+LEFT                 hotkey-overlay-title="Move column to monitor left" { move-column-to-monitor-left; }
+    MOD+SHIFT+CTRL+RIGHT                { move-column-to-monitor-right; }
+    MOD+SHIFT+CTRL+UP                   { move-column-to-monitor-up; }
+    MOD+SHIFT+CTRL+DOWN                 { move-column-to-monitor-down; }
+
+    // ─── Workspace Switching ───
+    MOD+WHEELSCROLLDOWN                 cooldown-ms=150 { focus-workspace-down; }
+    MOD+WHEELSCROLLUP                   cooldown-ms=150 { focus-workspace-up; }
+    MOD+CTRL+WHEELSCROLLDOWN            cooldown-ms=150 { move-column-to-workspace-down; }
+    MOD+CTRL+WHEELSCROLLUP              cooldown-ms=150 { move-column-to-workspace-up; }
+
+    MOD+WHEELSCROLLRIGHT                { focus-column-right; }
+    MOD+WHEELSCROLLLEFT                 { focus-column-left; }
+    MOD+CTRL+WHEELSCROLLRIGHT           { move-column-right; }
+    MOD+CTRL+WHEELSCROLLLEFT            { move-column-left; }
+
+    MOD+SHIFT+WHEELSCROLLDOWN           { focus-column-right; }
+    MOD+SHIFT+WHEELSCROLLUP             { focus-column-left; }
+    MOD+CTRL+SHIFT+WHEELSCROLLDOWN      { move-column-right; }
+    MOD+CTRL+SHIFT+WHEELSCROLLUP        { move-column-left; }
+
+    // Hypr: SUPER+mouse_down/up -> workspace e+1/e-1 already covered via wheel; keep wheel binds
+    MOD+1                               hotkey-overlay-title="Focus workspace 1 (Hypr SUPER+1)" { focus-workspace 1; }
+    MOD+2                               { focus-workspace 2; }
+    MOD+3                               { focus-workspace 3; }
+    MOD+4                               { focus-workspace 4; }
+    MOD+5                               { focus-workspace 5; }
+    MOD+6                               { focus-workspace 6; }
+    MOD+7                               { focus-workspace 7; }
+    MOD+8                               { focus-workspace 8; }
+    MOD+9                               { focus-workspace 9; }
+    MOD+0                               { focus-workspace 10; }
+
+    MOD+SHIFT+1                         hotkey-overlay-title="Move column to workspace 1 (Hypr SUPER+SHIFT+1)" { move-column-to-workspace 1; }
+    MOD+SHIFT+2                         { move-column-to-workspace 2; }
+    MOD+SHIFT+3                         { move-column-to-workspace 3; }
+    MOD+SHIFT+4                         { move-column-to-workspace 4; }
+    MOD+SHIFT+5                         { move-column-to-workspace 5; }
+    MOD+SHIFT+6                         { move-column-to-workspace 6; }
+    MOD+SHIFT+7                         { move-column-to-workspace 7; }
+    MOD+SHIFT+8                         { move-column-to-workspace 8; }
+    MOD+SHIFT+9                         { move-column-to-workspace 9; }
+    MOD+SHIFT+0                         { move-column-to-workspace 10; }
+
+    MOD+CTRL+SHIFT+J                     hotkey-overlay-title="Move workspace down (SUPER+CTRL+SHIFT+J)" { move-workspace-down; }
+    MOD+CTRL+SHIFT+K                     hotkey-overlay-title="Move workspace up (SUPER+CTRL+SHIFT+K)" { move-workspace-up; }
+
+    // ─── Screenshots (Hypr: noctalia msg screenshot-* vs niri built-in) ───
+    // Unify on noctalia where possible to match Hypr
+    PRINT                               hotkey-overlay-title="Screenshot selection (Hypr SUPER+Print fullscreen)" { spawn-sh "noctalia msg screenshot-fullscreen"; }
+    SHIFT+PRINT                         hotkey-overlay-title="Screenshot window" { screenshot-window; }
+    CTRL+SHIFT+PRINT                    hotkey-overlay-title="Screenshot screen (Hypr CTRL+Print)" { screenshot-screen; }
+    MOD+PRINT                           hotkey-overlay-title="Screenshot screen (Hypr SUPER+ALT+Print monitor)" { spawn-sh "noctalia msg screenshot-fullscreen monitor"; }
+    MOD+SHIFT+PRINT                     hotkey-overlay-title="Screenshot region (Hypr SUPER+SHIFT+Print)" { spawn-sh "noctalia msg screenshot-region"; }
+    ALT+PRINT                           hotkey-overlay-title="Screenshot window" { screenshot-window; }
+    ALT+SHIFT+S                         hotkey-overlay-title="Screenshot region freeze (Hypr SUPER+SHIFT+S plugin)" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
+    MOD+SHIFT+S                         hotkey-overlay-title="Screenshot region → menu (Hypr SUPER+SHIFT+S)" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
+    MOD+S                               hotkey-overlay-title="Screenshot history (Hypr SUPER+S)" { spawn-sh "noctalia msg panel-toggle gloves/screenshot-actions:history"; }
+    MOD+SHIFT+O                         hotkey-overlay-title="OCR (Hypr SUPER+SHIFT+O)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all ocr"; }
+    MOD+SHIFT+C                         hotkey-overlay-title="Color picker (Hypr SUPER+SHIFT+C)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all colorPicker"; }
+
+    // ─── Audio Controls (Hypr: wpctl + noctalia media) ───
+    XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"; }
+    XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
+    ALT+XF86AudioRaiseVolume            allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 1%+"; }
+    ALT+XF86AudioLowerVolume            allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
+    XF86AudioMicMute                    allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioMute                       allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioPlay                       allow-when-locked=true { spawn-sh "noctalia msg media toggle"; }
+    XF86AudioPause                      allow-when-locked=true { spawn-sh "noctalia msg media toggle"; }
+    XF86AudioNext                       allow-when-locked=true { spawn-sh "noctalia msg media next"; }
+    XF86AudioPrev                       allow-when-locked=true { spawn-sh "noctalia msg media previous"; }
+    XF86AudioStop                       allow-when-locked=true { spawn-sh "noctalia msg media stop"; }
+
+    // ─── Brightness ───
+    XF86MonBrightnessUp                 allow-when-locked=true { spawn-sh "noctalia msg brightness-up"; }
+    XF86MonBrightnessDown               allow-when-locked=true { spawn-sh "noctalia msg brightness-down"; }
+
+    // ─── System / Power ───
+    CTRL+ALT+DELETE                     hotkey-overlay-title="Session menu (Hypr CTRL+ALT+Delete)" { spawn-sh "noctalia msg panel-toggle session"; }
+    CTRL+ALT+L                          hotkey-overlay-title="Lock screen (Hypr CTRL+ALT+L)" { spawn-sh "noctalia msg session lock"; }
+    MOD+SHIFT+N                         hotkey-overlay-title="Notifications" { spawn-sh "noctalia msg panel-toggle control-center notifications"; }
+    XF86Sleep                           allow-when-locked=true { spawn-sh "systemctl suspend"; }
+
+    // ─── Appearance / Theme (Hypr via niri IPC scripts) ───
+    MOD+T                               hotkey-overlay-title="Theme settings (Hypr SUPER+T)" { spawn-sh "noctalia msg settings-open theme"; }
+    MOD+N                               hotkey-overlay-title="Toggle night light (Hypr SUPER+N hyprsunset → wlsunset)" { spawn-sh "/home/gloves/.config/niri/scripts/hyprsunset.sh toggle"; }
+
+    // ─── Wallpaper ───
+    MOD+W                               hotkey-overlay-title="Select wallpaper (Hypr SUPER+W)" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    MOD+SHIFT+W                         hotkey-overlay-title="Download wallpapers (Hypr SUPER+SHIFT+W)" { spawn-sh "noctalia msg panel-toggle noctalia/wallhaven:browser"; }
+
+    // ─── Utilities (Hypr via niri IPC scripts) ───
+    MOD+ALT+E                           hotkey-overlay-title="Emoji menu (Hypr SUPER+ALT+E)" { spawn-sh "noctalia msg panel-toggle launcher /emo "; }
+    MOD+V                               hotkey-overlay-title="Clipboard manager (Hypr SUPER+V)" { spawn-sh "noctalia msg panel-toggle clipboard"; }
+    MOD+SHIFT+E                         hotkey-overlay-title="Quick settings (Hypr SUPER+SHIFT+E → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/quick-settings.sh"; }
+    MOD+CTRL+S                          hotkey-overlay-title="Screenshare block toggle (Hypr SUPER+CTRL+S → niri IPC)" { spawn-sh "/home/gloves/.config/niri/scripts/screenshare-toggle.sh"; }
+
+    // ─── Screen Recording (Hypr noctalia plugins) ───
+    CTRL+ALT+R                          hotkey-overlay-title="Record screen (Hypr CTRL+ALT+R)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all start"; }
+    MOD+ALT+R                           hotkey-overlay-title="Record fullscreen (Hypr SUPER+ALT+R)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all start-fullscreen"; }
+    MOD+SHIFT+ALT+R                     hotkey-overlay-title="Stop recording (Hypr SUPER+SHIFT+ALT+R)" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all stop"; }
+    MOD+SHIFT+CTRL+R                    hotkey-overlay-title="Replay buffer (Hypr SUPER+SHIFT+CTRL+R)" { spawn-sh "noctalia msg plugin noctalia/screen_recorder:service all replay-start"; }
+
+    // ─── Zoom (Hypr SUPER+ALT+mouse_up/down) -> niri no mouse binds; expose via keys ───
+    MOD+ALT+equal                       hotkey-overlay-title="Zoom in (Hypr SUPER+ALT+mouse_up)" { spawn-sh "notify-send 'Niri: zoom via compositor scale (output scale)' -u low"; }
+    MOD+ALT+minus                       hotkey-overlay-title="Zoom out (Hypr SUPER+ALT+mouse_down)" { spawn-sh "notify-send 'Niri: zoom via compositor scale' -u low"; }
+
+    // ─── Emergency Escape ───
+    MOD+ESCAPE                          allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    // ─── Exit / Power (Hypr has no quit on SUPER+SHIFT+E, moved to CTRL+SHIFT+E for parity) ───
+    MOD+CTRL+SHIFT+E                    hotkey-overlay-title="Quit niri (Hypr session via CTRL+ALT+DELETE, Niri quit moved)" { quit; }
+    CTRL+SHIFT+M                        hotkey-overlay-title="Pass to Discord (Hypr CTRL+SHIFT+M)" { spawn-sh "notify-send 'Niri: pass-through not needed (no group lock)' -u low"; }
+}
