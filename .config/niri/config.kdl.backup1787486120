@@ -13,9 +13,5 @@ include "modules/keybinds-dms.kdl"
 include "modules/autostart-core.kdl"
 // include "modules/autostart-niri.kdl"
 include "modules/autostart-dms.kdl"
-include "dms/colors.kdl"
 
 include "dms-theme-sync.kdl"
-
-// DMS Include Configs
-include "dms/cursor.kdl"
