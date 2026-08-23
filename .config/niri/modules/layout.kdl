@@ -1,14 +1,12 @@
 // ────────────── Layout Settings ──────────────
 layout {
     gaps 8
-    center-focused-column "never"
+    // center-focused-column "on-overflow"
 
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
-        // Fixed sets the width in logical pixels exactly.
-        // fixed 1920
     }
 
     default-column-width { proportion 0.5; }
@@ -22,24 +20,18 @@ layout {
     }
 
     focus-ring {
-        off
         width 0
+        active-color "#f66151"
     }
 
     shadow {
-        // off
-        softness 30
-        spread 20
+        on
+        softness 12
+        spread 4
         offset x=0 y=5
-        draw-behind-window true
-        color "#00000064"
+        color "#000000d1"
         inactive-color "#00000064"
+        draw-behind-window true
     }
 
-    // struts {
-    //     // left 64
-    //     // right 64
-    //     // top 64
-    //     // bottom 64
-    // }
 }
