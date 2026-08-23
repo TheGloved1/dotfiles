@@ -66,7 +66,7 @@ touch "$CACHE_FILE"
 if [[ "$RULE_TYPE" == "window" ]]; then
   if [[ -n "$APP_ID_OVERRIDE" ]]; then
     app_id="$APP_ID_OVERRIDE"
-    title="\n$app_id"
+    title="$app_id"
   else
     json=$(niri_json focused-window)
     app_id=$(printf '%s' "$json" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('app_id',''))" 2>/dev/null || echo "")
@@ -78,7 +78,7 @@ if [[ "$RULE_TYPE" == "window" ]]; then
   fi
   # Use app-id only; titles for terminals change constantly
   target="$app_id"
-  action_label="\n$app_id"
+  action_label="$app_id"
 elif [[ "$RULE_TYPE" == "layer" ]]; then
   # For layer rules we need a namespace. Use a simple default or first layer.
   # Pick first layer surface namespace as target for demo; user can edit cache directly.
@@ -90,7 +90,7 @@ elif [[ "$RULE_TYPE" == "layer" ]]; then
   fi
   target="$ns"
   match_line="match namespace=\"$target\""
-  action_label="\nlayer $target"
+  action_label="layer $target"
 else
   notify "Dynamic Rule" "Unsupported rule type" "low"
   exit 1

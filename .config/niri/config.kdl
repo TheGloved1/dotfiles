@@ -1,4 +1,4 @@
-include "noctalia.kdl" optional=true
+// include "noctalia.kdl" optional=true
 include "modules/env.kdl"
 include "modules/input.kdl"
 include "modules/display.kdl"
@@ -8,10 +8,10 @@ include "modules/misc.kdl"
 include "modules/dynamic.kdl" optional=true
 include "modules/animation.kdl"
 include "modules/keybinds-core.kdl"
-// include "modules/keybinds-niri.kdl"
+// include "modules/keybinds-noctalia.kdl"
 include "modules/keybinds-dms.kdl"
 include "modules/autostart-core.kdl"
-// include "modules/autostart-niri.kdl"
+// include "modules/autostart-noctalia.kdl"
 include "modules/autostart-dms.kdl"
 include "dms/colors.kdl"
 

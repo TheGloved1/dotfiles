@@ -12,6 +12,7 @@ output "HDMI-A-1" {
     mode "1920x1080@60"
     position x=0 y=0
     scale 1
+    hot-corners { off; }
     // Transform allows to rotate the output counter-clockwise, valid values are:
     // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
     // transform "normal"

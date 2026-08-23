@@ -3,9 +3,14 @@ binds {
     // Launchers
     MOD+SPACE hotkey-overlay-title="App launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
     MOD+SHIFT+SPACE hotkey-overlay-title="Control Center" { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+    MOD+X hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    MOD+Z hotkey-overlay-title="DMS Settings" { spawn "dms" "ipc" "call" "settings" "focusOrToggle"; }
     MOD+C hotkey-overlay-title="Calendar" { spawn-sh "notify-send 'Calendar' 'Feature not implemented yet'"; }
-    MOD+SHIFT+slash hotkey-overlay-title="Noctalia Screen Toolkit" { spawn-sh "notify-send 'Noctalia Screen Toolkit' 'Feature not implemented yet'"; }
+    MOD+SHIFT+slash hotkey-overlay-title="Dank Menu" { spawn "dms" "ipc" "call" "dankMenu" "toggle" "root"; }
     MOD+P hotkey-overlay-title="Color picker" { spawn "dms" "ipc" "call" "color-picker" "toggle"; }
+    Alt+Space hotkey-overlay-title="Spotlight Bar" {
+        spawn "dms" "ipc" "call" "spotlight-bar" "toggle";
+    }
 
     // Desktop / Overview
     MOD+A hotkey-overlay-title="Window switcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
