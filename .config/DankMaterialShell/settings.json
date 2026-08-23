@@ -219,10 +219,10 @@
   "trayAutoOverflow": true,
   "trayPopupSingleLine": true,
   "trayMaxVisibleItems": 0,
-  "appsDockHideIndicators": false,
-  "appsDockColorizeActive": false,
+  "appsDockHideIndicators": true,
+  "appsDockColorizeActive": true,
   "appsDockActiveColorMode": "primary",
-  "appsDockEnlargeOnHover": false,
+  "appsDockEnlargeOnHover": true,
   "appsDockEnlargePercentage": 125,
   "appsDockIconSizePercentage": 100,
   "keyboardLayoutNameCompactMode": false,
@@ -554,7 +554,11 @@
   "displayNameMode": "system",
   "screenPreferences": {},
   "showOnLastDisplay": {},
-  "niriOutputSettings": {},
+  "niriOutputSettings": {
+    "HDMI-A-1": {
+      "vrrOnDemand": true
+    }
+  },
   "hyprlandOutputSettings": {},
   "displayProfiles": {},
   "activeDisplayProfile": {},
@@ -591,6 +595,12 @@
           "runningAppsCurrentMonitor": true
         },
         {
+          "id": "appsDock",
+          "enabled": false,
+          "barMaxVisibleApps": 0,
+          "barMaxVisibleRunningApps": 0
+        },
+        {
           "id": "systemTray",
           "enabled": true,
           "trayUseInlineExpansion": true,
@@ -605,9 +615,9 @@
         {
           "id": "memUsage",
           "enabled": true,
+          "minimumWidth": false,
           "showSwap": false,
-          "showInGb": false,
-          "minimumWidth": false
+          "showInGb": false
         },
         {
           "id": "bongoCat",
@@ -618,8 +628,8 @@
         {
           "id": "focusedWindow",
           "enabled": true,
-          "focusedWindowCompactMode": true,
-          "focusedWindowSize": 3
+          "focusedWindowSize": 2,
+          "focusedWindowCompactMode": false
         }
       ],
       "rightWidgets": [
@@ -758,9 +768,88 @@
   ],
   "systemMonitorVariants": [],
   "desktopWidgetPositions": {},
-  "desktopWidgetGridSettings": {},
-  "desktopWidgetInstances": [],
-  "desktopWidgetGroups": [],
+  "desktopWidgetGridSettings": {
+    "HDMI-A-1": {
+      "enabled": false,
+      "size": 40
+    }
+  },
+  "desktopWidgetInstances": [
+    {
+      "id": "dw_1787490267837_w99w5fqvy",
+      "widgetType": "activateLinux",
+      "name": "Activate Linux Watermark",
+      "enabled": true,
+      "config": {
+        "displayPreferences": [
+          "all"
+        ],
+        "showOnOverlay": true,
+        "syncPositionAcrossScreens": true,
+        "clickThrough": true,
+        "showOnOverviewOnly": true,
+        "showOnOverview": true,
+        "customizeText": true,
+        "firstLineSize": 15,
+        "secondLineSize": 12
+      },
+      "positions": {
+        "HDMI-A-1": {
+          "width": 400,
+          "height": 200,
+          "x": 1520,
+          "y": 880
+        },
+        "_synced": {
+          "x": 0.7916666666666666,
+          "y": 0.8148148148148148,
+          "width": 400,
+          "height": 200
+        }
+      },
+      "group": "dwg_1787490652471_uh9alclsr"
+    },
+    {
+      "id": "dw_1787490347396_9u3exbfh8",
+      "widgetType": "pokeDash",
+      "name": "PokeDash",
+      "enabled": true,
+      "config": {
+        "displayPreferences": [
+          "all"
+        ],
+        "showOnOverviewOnly": true,
+        "showOnOverview": true,
+        "selectedCritter": "Eevee",
+        "spriteStyle": "normal",
+        "showOnOverlay": true,
+        "clickThrough": false,
+        "syncPositionAcrossScreens": true
+      },
+      "positions": {
+        "HDMI-A-1": {
+          "width": 200,
+          "height": 200,
+          "x": 1672,
+          "y": 880
+        },
+        "_synced": {
+          "x": 0.8739583333333333,
+          "y": 0.8148148148148148,
+          "width": 200,
+          "height": 200
+        }
+      },
+      "group": "dwg_1787490652471_uh9alclsr"
+    }
+  ],
+  "desktopWidgetGroups": [
+    {
+      "id": "dwg_1787490652471_uh9alclsr",
+      "name": "Activate",
+      "collapsed": false
+    }
+  ],
   "builtInPluginSettings": {
     "dms_settings_search": {
       "trigger": "?"
@@ -783,7 +872,7 @@
   "launcherPluginOrder": [],
   "frameEnabled": true,
   "frameThickness": 2,
-  "frameRounding": 24,
+  "frameRounding": 14,
   "frameColor": "",
   "frameOpacity": 0.7,
   "frameScreenPreferences": [
