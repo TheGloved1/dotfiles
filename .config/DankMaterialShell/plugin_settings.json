@@ -1,0 +1,80 @@
+{
+  "quickCapture": {
+    "enabled": true
+  },
+  "wallpaperCarousel": {
+    "enabled": true
+  },
+  "calculator": {
+    "enabled": true,
+    "trigger": "",
+    "calcEngine": "qalc",
+    "noTrigger": true,
+    "persistHistoryOnFile": true
+  },
+  "emojiLauncher": {
+    "enabled": true
+  },
+  "bongoCat": {
+    "enabled": true,
+    "catColorMode": "primary",
+    "catSizePercent": 70
+  },
+  "discordVoice": {
+    "enabled": true
+  },
+  "dmsThemeSync": {
+    "enabled": true
+  },
+  "powerOptions": {
+    "enabled": true
+  },
+  "dankActions": {
+    "enabled": true
+  },
+  "wallpaperDiscovery": {
+    "enabled": true
+  },
+  "widgetGroup": {
+    "enabled": true,
+    "variants": [
+      {
+        "icon": "widgets",
+        "label": "",
+        "display": "icon",
+        "targets": [
+          "workspaceSwitcher",
+          "runningApps"
+        ],
+        "collapsedTargets": [],
+        "unifiedClick": true,
+        "expandIndicatorPosition": "right",
+        "showArrow": false,
+        "showArrowOnlyOnHover": false,
+        "collapseOthers": false,
+        "overlayExpand": false,
+        "showExpandedBorder": true,
+        "leftClickAction": "widget",
+        "leftClickCommand": "",
+        "leftClickWidget": "workspaceSwitcher",
+        "rightClickAction": "widget",
+        "rightClickCommand": "",
+        "rightClickWidget": "runningApps",
+        "middleClickAction": "none",
+        "middleClickCommand": "",
+        "middleClickWidget": "",
+        "id": "variant_1787489282136",
+        "name": "WorkspaceTasks",
+        "autoCollapse": false,
+        "autoCollapseSeconds": 5,
+        "autoCollapseOnLeave": false
+      }
+    ]
+  },
+  "ocrScanner": {
+    "enabled": true
+  },
+  "converter": {
+    "enabled": true
+  }
+}
