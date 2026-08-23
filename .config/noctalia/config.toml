@@ -56,7 +56,7 @@ thickness = 32
     enabled = true
     fill = "surface_variant"
     id = "g3"
-    members = [ "ram", "cpu" ]
+    members = [ "ram", "cpu", "sysmon" ]
     opacity = 1.0
     padding = 6.0
 
@@ -258,8 +258,16 @@ offset_x = 4
 offset_y = 0
 
 [plugin_settings."alexander/screen-toolkit"]
+panel-legacy_placement = "attached"
+panel_placement = "attached"
+record-audio-out = true
+result_placement = "attached"
 search-engine-url = "https://duckduckgo.com/?q="
 x02-expiry = "1h"
+
+[plugin_settings."blackbartblues/keymap"]
+niri_config = "~/.config/niri/modules/30-binds.kdl"
+panel_placement = "attached"
 
 [plugin_settings."gloves/screenshot-actions"]
 actions_placement = "attached"
@@ -282,6 +290,9 @@ resolution = "1280x720"
 restore_portal = true
 video_source = "focused"
 
+[plugin_settings."raycursive/discord-voice"]
+panel_open_near_click = false
+
 [plugin_settings."tadomika_ari/config-swap"]
 panel_placement = "attached"
 
@@ -299,7 +310,9 @@ enabled = [
     "alexander/screen-toolkit",
     "noctalia/timer",
     "weinguyen/shell-command",
-    "gloves/screenshot-actions"
+    "gloves/screenshot-actions",
+    "blackbartblues/keymap",
+    "raycursive/discord-voice"
 ]
 
     [[plugins.source]]
@@ -329,8 +342,8 @@ panel_anchor_bar = "default"
 polkit_agent = true
 
     [shell.greeter_sync]
-    auto_sync = false
-    privilege_command = "pkexec"
+    auto_sync = true
+    privilege_command = "kitty -e pkexec"
 
     [shell.launcher]
     categories = true
@@ -495,7 +508,7 @@ capsule_radius = "auto"
 custom_image = "/home/gloves/Pictures/Assets/arch-linux.svg"
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
-scale = 1.6000000000000001
+scale = 1.5
 
 [widget.network]
 show_label = false
@@ -509,6 +522,10 @@ stat = "ram_pct"
 [widget.recorder]
 enabled = false
 type = "noctalia/screen_recorder:recorder"
+
+[widget.sysmon]
+glyph = "tool"
+stat = "gpu_usage"
 
 [widget.taskbar]
 hide_empty_workspaces = true
