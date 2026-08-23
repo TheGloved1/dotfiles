@@ -1,6 +1,6 @@
 // ────────────── Layout Settings ──────────────
 layout {
-    gaps 12
+    gaps 8
     center-focused-column "never"
 
     preset-column-widths {
@@ -11,51 +11,31 @@ layout {
         // fixed 1920
     }
 
-    // You can also customize the heights that "switch-preset-window-height" (Mod+Ctrl+Shift+R) toggles between.
-    // preset-window-heights { }
-
     default-column-width { proportion 0.5; }
-    // If you leave the brackets empty, the windows themselves will decide their initial width.
-    // default-column-width {}
-
-    focus-ring {
-        off
-        // on
-        // width 1
-        // How many logical pixels the ring extends out from the windows.
-        // Color of the ring on the active monitor.
-        // active-color "#7fc8ff"
-        // Color of the ring on inactive monitors.
-        // inactive-color "#505050"
-        // active-gradient from="#80c8ff" to="#c7ff7f" angle=45
-        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
-    }
 
     border {
         on
         width 2
-        // active-color "#ffc87f"
-        // inactive-color "#505050"
-        // urgent-color "#9b0000"
-        // active-gradient from="#e5989b" to="#ffb4a2" angle=45 relative-to="workspace-view" in="oklch longer hue"
-        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+        active-color "#f8c6c4"
+        inactive-color "#4a4a4a"
+        urgent-color "#eb6f92"
+    }
+
+    focus-ring {
+        off
+        width 0
     }
 
     shadow {
-        off
-        // on
-        // By default, the shadow draws only around its window, and not behind it.
-        // draw-behind-window true
+        // off
         softness 30
-        spread 5
+        spread 20
         offset x=0 y=5
         draw-behind-window true
-        color "#00000070"
-        // You can also change the shadow color and opacity.
-        // color "#0007"
+        color "#00000064"
+        inactive-color "#00000064"
     }
 
-    // Struts shrink the area occupied by windows, similarly to layer-shell panels.
     // struts {
     //     // left 64
     //     // right 64

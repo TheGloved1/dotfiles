@@ -11,15 +11,13 @@ spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CUR
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'"
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface cursor-theme 'BreezeX-RosePine-Linux'"
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface cursor-size 24"
-spawn-sh-at-startup "/usr/lib/polkit-kde-authentication-agent-1 &"
-spawn-sh-at-startup "systemctl --user enable --now hyprpolkitagent.service 2>/dev/null || true"
-spawn-sh-at-startup "nm-applet 2>/dev/null &"
 spawn-sh-at-startup "vicinae server 2>/dev/null &"
 spawn-sh-at-startup "wl-paste --type text --watch cliphist store 2>/dev/null &"
 spawn-sh-at-startup "wl-paste --type image --watch cliphist store 2>/dev/null &"
-spawn-sh-at-startup "blueman-applet 2>/dev/null &"
 spawn-sh-at-startup "pm2 resurrect 2>/dev/null &"
 spawn-sh-at-startup "mkdir -p ~/.config/xdg-desktop-portal && cp /usr/share/xdg-desktop-portal/niri-portals.conf ~/.config/xdg-desktop-portal/niri-portals.conf"
+spawn-at-startup "nm-applet"
+spawn-at-startup "blueman-applet"
 spawn-at-startup "noctalia" "--daemon"
 prefer-no-csd
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
@@ -28,15 +26,15 @@ prefer-no-csd
 // This option will also fix border/focus ring drawing behind some semitransparent windows.
 // After enabling or disabling this, you need to restart the apps for this to take effect.
 
-// hotkey-overlay {
-//     // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
-//     // skip-at-startup
-// }
+hotkey-overlay {
+    // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
+    skip-at-startup
+}
 
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.
 // The path is formatted with strftime(3) to give you the screenshot date and time.
-// screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+screenshot-path "~/Pictures/Screenshots/%Y-%m-%d-%H-%M-%S.png"
 // You can also set this to null to disable saving screenshots to disk.
 // screenshot-path null
 

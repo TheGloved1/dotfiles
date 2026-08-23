@@ -17,7 +17,7 @@ input {
         }
 
         repeat-delay 350
-        repeat-rate 45
+        repeat-rate 50
         // Enable numlock on startup, omitting this setting disables it.
         // Niri inherits repeat from libinput/xkb; numlock enabled to match niri default
         // numlock
