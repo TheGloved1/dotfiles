@@ -236,7 +236,7 @@
   "lockDateFormat": "dddd, MMMM d",
   "greeterRememberLastSession": true,
   "greeterRememberLastUser": true,
-  "greeterAutoLogin": false,
+  "greeterAutoLogin": true,
   "greeterEnableFprint": false,
   "greeterEnableU2f": false,
   "greeterWallpaperPath": "",
@@ -244,7 +244,7 @@
   "greeterFontFamily": "CaskaydiaCove Nerd Font",
   "greeterWallpaperFillMode": "",
   "greeterPamExternallyManaged": false,
-  "greeterSyncPending": false,
+  "greeterSyncPending": true,
   "greeterSyncBaseline": {},
   "mediaSize": 1,
   "appLauncherViewMode": "list",
@@ -308,10 +308,10 @@
     }
   ],
   "networkPreference": "auto",
-  "iconThemeDark": "Flat-Remix-Blue-Dark",
+  "iconThemeDark": "Papirus-Dark-DankFolders",
   "iconThemeLight": "System Default",
   "iconThemePerMode": false,
-  "lastAppliedIconTheme": "Flat-Remix-Blue-Dark",
+  "lastAppliedIconTheme": "Papirus-Dark-DankFolders",
   "cursorSettings": {
     "theme": "BreezeX-RosePine-Linux",
     "size": 24,
@@ -814,11 +814,13 @@
         ],
         "showOnOverviewOnly": true,
         "showOnOverview": true,
-        "selectedCritter": "Eevee",
+        "selectedCritter": "Ditto",
         "spriteStyle": "normal",
         "showOnOverlay": true,
         "clickThrough": false,
-        "syncPositionAcrossScreens": true
+        "syncPositionAcrossScreens": true,
+        "backgroundStyle": "transparent",
+        "spriteScale": 87
       },
       "positions": {
         "HDMI-A-1": {

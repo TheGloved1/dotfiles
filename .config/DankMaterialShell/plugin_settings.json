@@ -18,13 +18,24 @@
   "bongoCat": {
     "enabled": true,
     "catColorMode": "primary",
-    "catSizePercent": 70
+    "catSizePercent": 70,
+    "soundEnabled": false,
+    "showMetrics": false
   },
   "discordVoice": {
     "enabled": true
   },
   "dmsThemeSync": {
-    "enabled": true
+    "enabled": true,
+    "qtSyncMode": "auto",
+    "qtPlatformTheme": "qtct",
+    "qtStyle": "Darkly",
+    "syncKvantum": true,
+    "syncTerminalFonts": true,
+    "syncFlatpak": true,
+    "syncFolderColor": true,
+    "syncCursorColor": false,
+    "folderColorBaseTheme": "Papirus-Dark"
   },
   "powerOptions": {
     "enabled": true
