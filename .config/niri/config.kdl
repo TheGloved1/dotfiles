@@ -1,4 +1,3 @@
-// include "noctalia.kdl" optional=true
 include "modules/env.kdl"
 include "modules/input.kdl"
 include "modules/display.kdl"

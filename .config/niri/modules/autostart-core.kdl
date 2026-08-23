@@ -4,7 +4,6 @@ spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CUR
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'"
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface cursor-theme 'BreezeX-RosePine-Linux'"
 spawn-sh-at-startup "gsettings set org.gnome.desktop.interface cursor-size 24"
-spawn-sh-at-startup "vicinae server 2>/dev/null &"
 spawn-sh-at-startup "wl-paste --type text --watch cliphist store 2>/dev/null &"
 spawn-sh-at-startup "wl-paste --type image --watch cliphist store 2>/dev/null &"
 spawn-sh-at-startup "pm2 resurrect 2>/dev/null &"
