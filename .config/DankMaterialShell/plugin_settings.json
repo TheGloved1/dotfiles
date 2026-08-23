@@ -76,5 +76,8 @@
   },
   "converter": {
     "enabled": true
+  },
+  "dankMenu": {
+    "enabled": true
   }
 }
