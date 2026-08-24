@@ -18,7 +18,6 @@ spawn-sh-at-startup "pm2 resurrect 2>/dev/null &"
 spawn-sh-at-startup "mkdir -p ~/.config/xdg-desktop-portal && cp /usr/share/xdg-desktop-portal/niri-portals.conf ~/.config/xdg-desktop-portal/niri-portals.conf"
 spawn-at-startup "nm-applet"
 spawn-at-startup "blueman-applet"
-// spawn-at-startup "noctalia" "--daemon"
 prefer-no-csd
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.

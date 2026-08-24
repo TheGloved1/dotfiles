@@ -86,7 +86,8 @@ window-rule {
     open-floating false
 }
 window-rule {
-    match app-id=r"^steam$" 
+    match app-id=r"^steam$"
+    exclude title=r"^Steam$"
     open-floating true
 }
 window-rule {

@@ -30,8 +30,8 @@ binds {
     ALT+Print hotkey-overlay-title="Screenshot window no clipboard" { spawn "dms" "screenshot" "window" "--no-clipboard"; }
     ALT+SHIFT+S hotkey-overlay-title="Screenshot region freeze" { spawn-sh "notify-send 'Screenshot region freeze' 'Feature not implemented yet'"; }
     MOD+SHIFT+S hotkey-overlay-title="Screenshot region" { spawn "dms" "screenshot"; }
-    MOD+S hotkey-overlay-title="Screenshot history" { spawn-sh "notify-send 'Screenshot history' 'Feature not implemented yet'"; }
-    MOD+SHIFT+O hotkey-overlay-title="OCR" { spawn-sh "notify-send 'OCR' 'Feature not implemented yet'"; }
+    MOD+S hotkey-overlay-title="Screenshot history" { spawn-sh "dms ipc call quickCapture screenshot region edit"; }
+    MOD+SHIFT+O hotkey-overlay-title="OCR" { spawn-sh "dms ipc call quickCapture screenshot region edit"; }
     MOD+SHIFT+C hotkey-overlay-title="Color picker" { spawn "dms" "ipc" "call" "color-picker" "toggle"; }
 
     // Audio Controls - DMS IPC
