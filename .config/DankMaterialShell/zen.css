@@ -6,7 +6,7 @@
   --tab-selected-textcolor: #c4a7e7 !important;
   --toolbar-color: #e0def4 !important;
   --arrowpanel-color: #e0def4 !important;
-  --arrowpanel-background: #1f1d2e !important;
+  --arrowpanel-background: #26233a !important;
   --sidebar-text-color: #e0def4 !important;
   --zen-main-browser-background: #191724 !important;
   --zen-main-browser-background-toolbar: #191724 !important;
@@ -23,11 +23,11 @@
 }
 
 .sidebar-placesTree {
-  background-color: #1f1d2e !important;
+  background-color: #26233a !important;
 }
 
 #zen-workspaces-button {
-  background-color: #1f1d2e !important;
+  background-color: #26233a !important;
 }
 
 #TabsToolbar {
@@ -35,7 +35,7 @@
 }
 
 .urlbar-background {
-  background-color: #1f1d2e !important;
+  background-color: #26233a !important;
 }
 
 .urlbar-input::selection {

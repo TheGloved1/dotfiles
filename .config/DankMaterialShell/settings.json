@@ -3,7 +3,7 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/gloves/.config/DankMaterialShell/themes/rosePine/theme.json",
   "registryThemeVariants": {
-    "rosePine": "rosePine"
+    "rosePine": "dawn"
   },
   "matugenScheme": "scheme-tonal-spot",
   "matugenContrast": 0,
@@ -18,7 +18,7 @@
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
   "cornerRadius": 12,
-  "niriLayoutGapsOverride": -1,
+  "niriLayoutGapsOverride": 8,
   "niriLayoutRadiusOverride": -1,
   "niriLayoutBorderSize": -1,
   "hyprlandLayoutGapsOverride": -1,
@@ -54,7 +54,7 @@
   "m3ElevationIntensity": 12,
   "m3ElevationOpacity": 30,
   "m3ElevationColorMode": "default",
-  "m3ElevationLightDirection": "top",
+  "m3ElevationLightDirection": "autoBar",
   "m3ElevationCustomColor": "#000000",
   "modalElevationEnabled": true,
   "popoutElevationEnabled": true,
@@ -62,8 +62,8 @@
   "blurEnabled": true,
   "blurForegroundLayers": true,
   "blurLayerOutlineOpacity": 0.4,
-  "blurBorderEnabled": false,
-  "blurBorderColor": "outline",
+  "blurBorderEnabled": true,
+  "blurBorderColor": "primary",
   "blurBorderCustomColor": "#ffffff",
   "blurBorderOpacity": 1,
   "wallpaperFillMode": "Fill",
@@ -162,7 +162,7 @@
   "showWorkspaceName": false,
   "showWorkspacePadding": false,
   "workspaceScrolling": false,
-  "showWorkspaceApps": true,
+  "showWorkspaceApps": false,
   "workspaceDragReorder": true,
   "maxWorkspaceIcons": 3,
   "workspaceAppIconSizeOffset": 0,
@@ -244,10 +244,8 @@
   "greeterFontFamily": "CaskaydiaCove Nerd Font",
   "greeterWallpaperFillMode": "",
   "greeterPamExternallyManaged": false,
-  "greeterSyncPending": true,
-  "greeterSyncBaseline": {
-    "clockFormat": "auto"
-  },
+  "greeterSyncPending": false,
+  "greeterSyncBaseline": {},
   "mediaSize": 1,
   "appLauncherViewMode": "list",
   "spotlightModalViewMode": "list",
@@ -318,7 +316,7 @@
     "theme": "BreezeX-RosePine-Linux",
     "size": 24,
     "niri": {
-      "hideWhenTyping": false,
+      "hideWhenTyping": true,
       "hideAfterInactiveMs": 0
     },
     "hyprland": {
@@ -452,7 +450,7 @@
   "dockBorderColor": "surfaceText",
   "dockBorderOpacity": 1,
   "dockBorderThickness": 1,
-  "dockIsolateDisplays": false,
+  "dockIsolateDisplays": true,
   "dockLauncherEnabled": true,
   "dockLauncherLogoMode": "apps",
   "dockLauncherLogoCustomPath": "",
@@ -519,7 +517,7 @@
   "osdPosition": 4,
   "osdVolumeEnabled": true,
   "osdMediaVolumeEnabled": true,
-  "osdMediaPlaybackEnabled": true,
+  "osdMediaPlaybackEnabled": false,
   "osdBrightnessEnabled": true,
   "osdIdleInhibitorEnabled": true,
   "osdMicMuteEnabled": true,
@@ -551,7 +549,7 @@
   "updaterTerminalAdditionalParams": "",
   "updaterIntervalSeconds": 1800,
   "updaterIncludeFlatpak": true,
-  "updaterAllowAUR": true,
+  "updaterAllowAUR": false,
   "updaterIgnoredPackages": [],
   "displayNameMode": "system",
   "screenPreferences": {},
@@ -560,14 +558,26 @@
     "HDMI-A-1": {
       "vrrOnDemand": true,
       "hotCorners": {
+        "corners": [
+          "bottom-left"
+        ]
+      },
+      "disabled": false,
+      "focusAtStartup": false
+    },
+    "VIZIO, Inc E400i-C2E 0x01010101": {
+      "vrrOnDemand": true,
+      "hotCorners": {
         "off": true
       },
-      "disabled": true
+      "disabled": null
     }
   },
   "hyprlandOutputSettings": {},
   "displayProfiles": {},
-  "activeDisplayProfile": {},
+  "activeDisplayProfile": {
+    "niri": ""
+  },
   "displayProfileAutoSelect": false,
   "displayShowDisconnected": false,
   "displaySnapToEdge": true,
@@ -880,17 +890,17 @@
   "frameThickness": 2,
   "frameRounding": 16,
   "frameColor": "",
-  "frameOpacity": 0.7,
+  "frameOpacity": 0.8,
   "frameScreenPreferences": [
     "all"
   ],
   "frameBarSize": 40,
   "frameShowOnOverview": true,
-  "frameBlurEnabled": true,
+  "frameBlurEnabled": false,
   "frameCloseGaps": false,
   "frameLauncherEmergeSide": "top",
-  "frameLauncherArcExtender": true,
-  "frameLauncherEdgeHover": true,
+  "frameLauncherArcExtender": false,
+  "frameLauncherEdgeHover": false,
   "frameMode": "connected",
   "barInsetPaddingShared": -1,
   "barInsetPaddingSyncAll": true,
