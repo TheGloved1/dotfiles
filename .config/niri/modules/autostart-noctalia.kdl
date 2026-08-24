@@ -1,2 +1,0 @@
-// ────────────── Noctalia Startup ──────────────
-spawn-at-startup "noctalia" "--daemon"
