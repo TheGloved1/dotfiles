@@ -601,10 +601,13 @@
       "showOnLastDisplay": true,
       "leftWidgets": [
         "launcherButton",
-        "workspaceSwitcher",
+        {
+          "id": "workspaceSwitcher",
+          "enabled": true
+        },
         {
           "id": "runningApps",
-          "enabled": false,
+          "enabled": true,
           "runningAppsCompactMode": true,
           "runningAppsGroupByApp": false,
           "runningAppsCurrentWorkspace": true,

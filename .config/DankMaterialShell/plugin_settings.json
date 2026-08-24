@@ -44,7 +44,8 @@
     "enabled": true
   },
   "wallpaperDiscovery": {
-    "enabled": true
+    "enabled": true,
+    "lastWallpaperUsed": "wallhaven.cc"
   },
   "widgetGroup": {
     "enabled": true,
@@ -79,6 +80,40 @@
         "autoCollapse": false,
         "autoCollapseSeconds": 5,
         "autoCollapseOnLeave": false
+      },
+      {
+        "icon": "widgets",
+        "label": "‎",
+        "display": "none",
+        "targets": [
+          "workspaceSwitcher",
+          "runningApps"
+        ],
+        "collapsedTargets": [
+          "workspaceSwitcher",
+          "runningApps"
+        ],
+        "unifiedClick": false,
+        "expandIndicatorPosition": "top",
+        "showArrow": true,
+        "showArrowOnlyOnHover": true,
+        "collapseOthers": false,
+        "overlayExpand": false,
+        "showExpandedBorder": false,
+        "leftClickAction": "none",
+        "leftClickCommand": "",
+        "leftClickWidget": "",
+        "rightClickAction": "none",
+        "rightClickCommand": "",
+        "rightClickWidget": "",
+        "middleClickAction": "none",
+        "middleClickCommand": "",
+        "middleClickWidget": "",
+        "id": "variant_1787585660798",
+        "name": "WorkspaceRunningApps",
+        "autoCollapse": false,
+        "autoCollapseSeconds": 2,
+        "autoCollapseOnLeave": false
       }
     ]
   },
@@ -108,5 +143,20 @@
   },
   "mytestplugin": {
     "enabled": true
+  },
+  "screenCaptureToolbar": {
+    "enabled": true,
+    "videoFormat": "mp4",
+    "videoFPS": "30",
+    "captureMode": "interactive",
+    "copyVideoFile": true,
+    "stdout": true,
+    "pillOpacity": "0.40"
+  },
+  "hiddenBar": {
+    "enabled": true,
+    "usePopout": false,
+    "hideCount": 0,
+    "showRegionPreview": false
   }
 }
