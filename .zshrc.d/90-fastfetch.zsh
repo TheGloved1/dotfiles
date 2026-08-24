@@ -5,7 +5,7 @@ pokefetch() {
   local subcmd="${1:-}"
   shift 2>/dev/null || true
 
-  local theme="$HOME/.config/fastfetch/themes/noctalia.jsonc"
+  local theme="$HOME/.config/fastfetch/themes/matugen.jsonc"
   local args=()
   if [ -f "$theme" ]; then
     local keys="$(jq -r '.display.color.keys // empty' "$theme")"
@@ -39,8 +39,8 @@ nocfetch() {
   shift 2>/dev/null || true
 
   local args=()
-  if [ -f "$HOME/.config/fastfetch/themes/noctalia.jsonc" ]; then
-    local theme="$HOME/.config/fastfetch/themes/noctalia.jsonc"
+  if [ -f "$HOME/.config/fastfetch/themes/matugen.jsonc" ]; then
+    local theme="$HOME/.config/fastfetch/themes/matugen.jsonc"
     local keys="$(jq -r '.display.color.keys // empty' "$theme")"
     local title="$(jq -r '.display.color.title // empty' "$theme")"
     local pgreen="$(jq -r '.display.percent.color.green // empty' "$theme")"
@@ -59,10 +59,10 @@ nocfetch() {
 
   case "$subcmd" in
     -c)
-      fastfetch -c $HOME/.config/fastfetch/themes/noctalia.jsonc | fastfetch -c $@ "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      fastfetch -c $HOME/.config/fastfetch/themes/matugen.jsonc | fastfetch -c $@ "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
       ;;
     *)
-      fastfetch -c $HOME/.config/fastfetch/themes/noctalia.jsonc | fastfetch -c $HOME/.config/fastfetch/config.jsonc "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      fastfetch -c $HOME/.config/fastfetch/themes/matugen.jsonc | fastfetch -c $HOME/.config/fastfetch/config.jsonc "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
       ;;
   esac
 }
