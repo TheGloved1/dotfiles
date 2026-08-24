@@ -6,7 +6,7 @@ output "HDMI-A-1" {
     position x=0 y=0
     variable-refresh-rate on-demand=true
     hot-corners {
-        off
+        bottom-left
     }
 }
 

@@ -1,0 +1,3 @@
+// ────────────── DankMaterialShell Startup ──────────────
+spawn-at-startup "dms" "run" "-d"
+spawn-sh-at-startup "wl-paste --watch cliphist store &"

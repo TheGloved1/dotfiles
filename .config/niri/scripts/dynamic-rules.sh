@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # dynamic-rules.sh — generic dynamic rule editor for niri
-# Generates window-rule or layer-rule entries in modules/75-dynamic.kdl
+# Generates window-rule or layer-rule entries in core/dynamic.kdl
 # Usage: dynamic-rules.sh [--window|--layer] [--screencast|--capture] [--add|--remove|--toggle]
 #        Default is --window --screencast --toggle
 set -euo pipefail
@@ -9,7 +9,7 @@ source "$DIR/helpers.sh"
 require_niri
 
 CONFIG_DIR="$HOME/.config/niri"
-DYNAMIC_FILE="$CONFIG_DIR/modules/dynamic.kdl"
+DYNAMIC_FILE="$CONFIG_DIR/core/dynamic.kdl"
 
 RULE_TYPE="window"
 BLOCK_TARGET="screencast"
