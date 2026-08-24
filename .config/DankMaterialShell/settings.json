@@ -40,8 +40,8 @@
   "useFahrenheit": true,
   "windSpeedUnit": "kmh",
   "nightModeEnabled": false,
-  "animationSpeed": 2,
-  "customAnimationDuration": 401,
+  "animationSpeed": 1,
+  "customAnimationDuration": 351,
   "syncComponentAnimationSpeeds": true,
   "popoutAnimationSpeed": 1,
   "popoutCustomAnimationDuration": 150,
@@ -162,17 +162,17 @@
   "showWorkspaceName": false,
   "showWorkspacePadding": false,
   "workspaceScrolling": false,
-  "showWorkspaceApps": false,
+  "showWorkspaceApps": true,
   "workspaceDragReorder": true,
   "maxWorkspaceIcons": 3,
   "workspaceAppIconSizeOffset": 0,
-  "groupWorkspaceApps": false,
-  "groupActiveWorkspaceApps": true,
+  "groupWorkspaceApps": true,
+  "groupActiveWorkspaceApps": false,
   "workspaceFollowFocus": true,
   "showOccupiedWorkspacesOnly": true,
   "reverseScrolling": false,
   "dwlShowAllTags": false,
-  "workspaceActiveAppHighlightEnabled": false,
+  "workspaceActiveAppHighlightEnabled": true,
   "workspaceColorMode": "default",
   "workspaceFocusedCustomColor": "#6750A4",
   "workspaceOccupiedColorMode": "none",
@@ -245,7 +245,9 @@
   "greeterWallpaperFillMode": "",
   "greeterPamExternallyManaged": false,
   "greeterSyncPending": true,
-  "greeterSyncBaseline": {},
+  "greeterSyncBaseline": {
+    "clockFormat": "auto"
+  },
   "mediaSize": 1,
   "appLauncherViewMode": "list",
   "spotlightModalViewMode": "list",
@@ -269,14 +271,14 @@
     "apps": "list"
   },
   "niriOverviewOverlayEnabled": true,
-  "niriOverviewLauncherStyle": "full",
+  "niriOverviewLauncherStyle": "spotlight",
   "dankLauncherV2Size": "compact",
   "dankLauncherV2ShowSourceBadges": true,
   "dankLauncherV2BorderEnabled": false,
   "dankLauncherV2BorderThickness": 2,
-  "dankLauncherV2BorderColor": "primary",
+  "dankLauncherV2BorderColor": "surfaceText",
   "dankLauncherV2ShowFooter": true,
-  "dankLauncherV2UnloadOnClose": false,
+  "dankLauncherV2UnloadOnClose": true,
   "dankLauncherV2IncludeFilesInAll": false,
   "dankLauncherV2IncludeFoldersInAll": false,
   "launcherUseOverlayLayer": true,
@@ -307,7 +309,7 @@
       "enabled": true
     }
   ],
-  "networkPreference": "auto",
+  "networkPreference": "ethernet",
   "iconThemeDark": "Papirus-Dark-DankFolders",
   "iconThemeLight": "System Default",
   "iconThemePerMode": false,
@@ -340,7 +342,7 @@
   "fontWeight": 400,
   "fontScale": 1,
   "textRenderType": 0,
-  "textRenderQuality": 3,
+  "textRenderQuality": 0,
   "notepadUseMonospace": true,
   "notepadFontFamily": "",
   "notepadFontSize": 14,
@@ -356,7 +358,7 @@
   "notepadEdgeGap": 0,
   "soundsEnabled": true,
   "useSystemSoundTheme": false,
-  "soundLogin": true,
+  "soundLogin": false,
   "soundNewNotification": true,
   "soundVolumeChanged": true,
   "soundPluggedIn": true,
@@ -452,7 +454,7 @@
   "dockBorderThickness": 1,
   "dockIsolateDisplays": false,
   "dockLauncherEnabled": true,
-  "dockLauncherLogoMode": "os",
+  "dockLauncherLogoMode": "apps",
   "dockLauncherLogoCustomPath": "",
   "dockLauncherLogoColorOverride": "",
   "dockLauncherLogoSizeOffset": 0,
@@ -556,7 +558,11 @@
   "showOnLastDisplay": {},
   "niriOutputSettings": {
     "HDMI-A-1": {
-      "vrrOnDemand": true
+      "vrrOnDemand": true,
+      "hotCorners": {
+        "off": true
+      },
+      "disabled": true
     }
   },
   "hyprlandOutputSettings": {},
@@ -588,7 +594,7 @@
         "workspaceSwitcher",
         {
           "id": "runningApps",
-          "enabled": true,
+          "enabled": false,
           "runningAppsCompactMode": true,
           "runningAppsGroupByApp": false,
           "runningAppsCurrentWorkspace": true,
@@ -597,9 +603,10 @@
         {
           "id": "systemTray",
           "enabled": true,
-          "trayUseInlineExpansion": true,
-          "trayAutoOverflow": false,
-          "trayMaxVisibleItems": 2
+          "trayUseInlineExpansion": false,
+          "trayPopupSingleLine": true,
+          "trayAutoOverflow": true,
+          "trayMaxVisibleItems": 0
         },
         {
           "id": "memUsage",

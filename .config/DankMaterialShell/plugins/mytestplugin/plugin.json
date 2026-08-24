@@ -1,0 +1,1 @@
+{"id":"mytestplugin","name":"Test","type":"composite","requires_dms":">=1.5.0","capabilities":["dankbar-widget","daemon"],"components":{"widget":"./Widget.qml","daemon":"./Daemon.qml"},"permissions":["settings_read","settings_write"]}

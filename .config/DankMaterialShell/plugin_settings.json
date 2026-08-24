@@ -90,5 +90,23 @@
   },
   "dankMenu": {
     "enabled": true
+  },
+  "gloves-screenshot-actions": {
+    "enabled": true
+  },
+  "glovesscreenshotactions": {
+    "enabled": true
+  },
+  "screenshotactions": {
+    "enabled": true
+  },
+  "mytestwidget": {
+    "enabled": true
+  },
+  "testipc": {
+    "enabled": true
+  },
+  "mytestplugin": {
+    "enabled": true
   }
 }
