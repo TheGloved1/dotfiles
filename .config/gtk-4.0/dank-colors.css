@@ -15,26 +15,26 @@
 @define-color accent_fg_color #191724;
 @define-color accent_bg_color #c4a7e7;
 /* Use surface instead of background */
-@define-color window_bg_color #1f1d2e;
+@define-color window_bg_color #26233a;
 @define-color window_fg_color #e0def4;
 /* Make it more similar to Adwaita */
-@define-color view_bg_color #1f1d2e;
+@define-color view_bg_color #26233a;
 @define-color view_fg_color #e0def4;
-@define-color headerbar_bg_color #1f1d2e;
+@define-color headerbar_bg_color #26233a;
 @define-color headerbar_fg_color #e0def4;
-@define-color sidebar_bg_color #1f1d2e;
+@define-color sidebar_bg_color #26233a;
 @define-color sidebar_fg_color #e0def4;
 /* There is only like one application I know that uses this, and there isn't a good way to get
 a color between surface and surface container so I think just giving this surface is a good enough fallback*/
-@define-color secondary_sidebar_bg_color #1f1d2e;
+@define-color secondary_sidebar_bg_color #26233a;
 @define-color secondary_sidebar_fg_color #e0def4;
-@define-color card_bg_color #1f1d2e;
+@define-color card_bg_color #26233a;
 @define-color card_fg_color #e0def4;
-@define-color overview_bg_color #1f1d2e;
+@define-color overview_bg_color #26233a;
 @define-color overview_fg_color #e0def4;
-@define-color popover_bg_color #1f1d2e;
+@define-color popover_bg_color #26233a;
 @define-color popover_fg_color #e0def4;
-@define-color dialog_bg_color #1f1d2e;
+@define-color dialog_bg_color #26233a;
 @define-color dialog_fg_color #e0def4;
 
 /* Backdrop/unfocused states - prevents white flash on window unfocus */
