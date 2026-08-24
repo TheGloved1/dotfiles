@@ -23,7 +23,7 @@
 	--corner-text: 'Midnight';
 
 	/* color of status indicators and window controls */
-  --online-indicator: #907aa9;     /* change to #23a55a for default green */
+  --online-indicator: #c4a7e7;     /* change to #23a55a for default green */
 	--dnd-indicator: #eb6f92;                  /* change to #f13f43 for default red */
 	--idle-indicator: #1f1d2e;    /* change to #f0b232 for default yellow */
 	--streaming-indicator: #191724;       /* change to #593695 for default purple */
