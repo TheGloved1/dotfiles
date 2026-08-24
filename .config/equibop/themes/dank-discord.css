@@ -23,9 +23,9 @@
 	--corner-text: 'Midnight';
 
 	/* color of status indicators and window controls */
-  --online-indicator: #c4a7e7;     /* change to #23a55a for default green */
+  --online-indicator: #907aa9;     /* change to #23a55a for default green */
 	--dnd-indicator: #eb6f92;                  /* change to #f13f43 for default red */
-	--idle-indicator: #26233a;    /* change to #f0b232 for default yellow */
+	--idle-indicator: #1f1d2e;    /* change to #f0b232 for default yellow */
 	--streaming-indicator: #191724;       /* change to #593695 for default purple */
 
 	/* accent colors */
@@ -34,11 +34,11 @@
 	--accent-3: #c4a7e7;             /* accent buttons */
 	--accent-4: #524f67;      /* accent buttons when hovered */
 	--accent-5: #c4a7e7;   /* accent buttons when clicked */
-	--mention:  #1f1d2e;             /* mentions & mention messages */
+	--mention:  #26233a;             /* mentions & mention messages */
 	--mention-hover: #524f67; /* mentions & mention messages when hovered */
 
 	/* text colors */
-	--text-0: #1f1d2e;               /* text on colored elements */
+	--text-0: #26233a;               /* text on colored elements */
 	--text-1: #e0def4;            /* other normally white text */
 	--text-2: #e0def4;            /* headings and important text */
 	--text-3: #e0def4;    /* normal text */
@@ -46,10 +46,10 @@
 	--text-5: #908caa;               /* muted channels/chats and timestamps */
 
 	/* background and dark colors */
-    --bg-1: #26233a;                             /* dark buttons when clicked */
-	--bg-2: #26233a;              /* dark buttons */
-	--bg-3: #1f1d2e;               /* spacing, secondary elements */
-	--bg-4: #1f1d2e;                             /* main background color */
+    --bg-1: #1f1d2e;                             /* dark buttons when clicked */
+	--bg-2: #1f1d2e;              /* dark buttons */
+	--bg-3: #26233a;               /* spacing, secondary elements */
+	--bg-4: #26233a;                             /* main background color */
 	--hover: #524f67;                     /* channels and buttons when hovered */
 	--active: #524f67;                    /* channels and buttons when clicked or selected */
 	--message-hover: #524f67;             /* messages when hovered */
