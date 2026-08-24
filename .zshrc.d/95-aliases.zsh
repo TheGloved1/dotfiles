@@ -1,9 +1,11 @@
 # Custom Aliases
-alias hyprconf="nvim $HOME/.config/hypr"
 alias exe='chmod +x'
-alias neoconf="nvim $HOME/.config/nvim"
 alias ff="fastfetch"
 alias oc="opencode"
+alias config="cd $HOME/.config/$1"
+alias niriconf="cd $HOME/.config/niri; nvim"
+alias hyprconf="cd $HOME/.config/hypr; nvim"
+alias neoconf="cd $HOME/.config/nvim; nvim"
 
 # Git aliases (ported from oh-my-zsh git plugin)
 alias g='git'
