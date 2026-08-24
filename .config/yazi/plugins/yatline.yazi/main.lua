@@ -625,7 +625,8 @@ function Yatline.string.get:hovered_file_extension(show_icon)
 		end
 
 		if show_icon then
-			local icon = hovered:icon().text
+			local icon_obj = th.icon:match(hovered)
+			local icon = icon_obj and icon_obj.text or ""
 			return icon .. " " .. name
 		else
 			return name
