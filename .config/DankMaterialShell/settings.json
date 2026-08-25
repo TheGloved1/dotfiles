@@ -3,7 +3,13 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/gloves/.config/DankMaterialShell/themes/rosePine/theme.json",
   "registryThemeVariants": {
-    "rosePine": "dawn"
+    "rosePine": "dawn",
+    "catppuccin": {
+      "dark": {
+        "flavor": "macchiato",
+        "accent": "mauve"
+      }
+    }
   },
   "matugenScheme": "scheme-tonal-spot",
   "matugenContrast": 0,
@@ -18,7 +24,7 @@
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
   "cornerRadius": 12,
-  "niriLayoutGapsOverride": 8,
+  "niriLayoutGapsOverride": 12,
   "niriLayoutRadiusOverride": -1,
   "niriLayoutBorderSize": -1,
   "hyprlandLayoutGapsOverride": -1,
@@ -40,11 +46,11 @@
   "useFahrenheit": true,
   "windSpeedUnit": "kmh",
   "nightModeEnabled": false,
-  "animationSpeed": 1,
-  "customAnimationDuration": 351,
+  "animationSpeed": 4,
+  "customAnimationDuration": 300,
   "syncComponentAnimationSpeeds": true,
-  "popoutAnimationSpeed": 1,
-  "popoutCustomAnimationDuration": 150,
+  "popoutAnimationSpeed": 4,
+  "popoutCustomAnimationDuration": 405,
   "modalAnimationSpeed": 1,
   "modalCustomAnimationDuration": 150,
   "enableRippleEffects": true,
@@ -182,10 +188,10 @@
   "workspaceUrgentColorMode": "default",
   "workspaceUrgentCustomColor": "#B3261E",
   "workspaceFocusedBorderEnabled": false,
-  "workspaceFocusedBorderColor": "primary",
+  "workspaceFocusedBorderColor": "secondary",
   "workspaceFocusedBorderCustomColor": "#6750A4",
   "workspaceFocusedBorderThickness": 2,
-  "workspaceUnfocusedMonitorSeparateAppearance": false,
+  "workspaceUnfocusedMonitorSeparateAppearance": true,
   "workspaceUnfocusedMonitorColorMode": "custom",
   "workspaceUnfocusedMonitorFocusedCustomColor": "#006750a4",
   "workspaceUnfocusedMonitorOccupiedColorMode": "custom",
@@ -230,7 +236,33 @@
   "runningAppsCurrentWorkspace": true,
   "runningAppsGroupByApp": false,
   "runningAppsCurrentMonitor": false,
-  "appIdSubstitutions": [],
+  "appIdSubstitutions": [
+    {
+      "pattern": "Spotify",
+      "replacement": "spotify",
+      "type": "exact"
+    },
+    {
+      "pattern": "beepertexts",
+      "replacement": "beeper",
+      "type": "exact"
+    },
+    {
+      "pattern": "home assistant desktop",
+      "replacement": "homeassistant-desktop",
+      "type": "exact"
+    },
+    {
+      "pattern": "com.transmissionbt.transmission",
+      "replacement": "transmission-gtk",
+      "type": "contains"
+    },
+    {
+      "pattern": "^steam_app_(\\d+)$",
+      "replacement": "steam_icon_$1",
+      "type": "regex"
+    }
+  ],
   "centeringMode": "geometric",
   "clockDateFormat": "dddd, MMMM d",
   "lockDateFormat": "dddd, MMMM d",
@@ -273,8 +305,8 @@
   "dankLauncherV2Size": "compact",
   "dankLauncherV2ShowSourceBadges": true,
   "dankLauncherV2BorderEnabled": false,
-  "dankLauncherV2BorderThickness": 2,
-  "dankLauncherV2BorderColor": "surfaceText",
+  "dankLauncherV2BorderThickness": 1,
+  "dankLauncherV2BorderColor": "primary",
   "dankLauncherV2ShowFooter": true,
   "dankLauncherV2UnloadOnClose": true,
   "dankLauncherV2IncludeFilesInAll": false,
@@ -361,11 +393,11 @@
   "soundVolumeChanged": true,
   "soundPluggedIn": true,
   "muteSoundsWhenMediaPlaying": true,
-  "acMonitorTimeout": 0,
-  "acLockTimeout": 0,
+  "acMonitorTimeout": 300,
+  "acLockTimeout": 1200,
   "acSuspendTimeout": 0,
   "acSuspendBehavior": 0,
-  "acProfileName": "",
+  "acProfileName": "1",
   "acPostLockMonitorTimeout": 0,
   "batteryMonitorTimeout": 0,
   "batteryLockTimeout": 0,
@@ -386,9 +418,9 @@
   "lockBeforeSuspend": false,
   "loginctlLockIntegration": true,
   "fadeToLockEnabled": true,
-  "fadeToLockGracePeriod": 5,
+  "fadeToLockGracePeriod": 30,
   "fadeToDpmsEnabled": true,
-  "fadeToDpmsGracePeriod": 5,
+  "fadeToDpmsGracePeriod": 30,
   "launchPrefix": "",
   "gtkThemingEnabled": false,
   "qtThemingEnabled": false,
@@ -415,7 +447,7 @@
   "matugenTemplateKitty": true,
   "matugenTemplateFoot": true,
   "matugenTemplateAlacritty": true,
-  "matugenTemplateNeovim": false,
+  "matugenTemplateNeovim": true,
   "matugenTemplateWezterm": true,
   "matugenTemplateDgop": true,
   "matugenTemplateKcolorscheme": true,
@@ -424,11 +456,11 @@
   "matugenTemplateZed": true,
   "matugenTemplateNeovimSettings": {
     "dark": {
-      "baseTheme": "github_dark",
+      "baseTheme": "rosepine-dawn",
       "harmony": 0.5
     },
     "light": {
-      "baseTheme": "github_light",
+      "baseTheme": "everforest_light",
       "harmony": 0.5
     }
   },
@@ -475,7 +507,7 @@
   "lockScreenShowDate": true,
   "lockScreenShowProfileImage": true,
   "lockScreenShowPasswordField": true,
-  "lockScreenShowMediaPlayer": true,
+  "lockScreenShowMediaPlayer": false,
   "lockScreenPowerOffMonitorsOnLock": false,
   "lockAtStartup": false,
   "enableFprint": false,
@@ -494,7 +526,7 @@
   "lockScreenVideoCycling": false,
   "lockScreenWallpaperPath": "",
   "lockScreenWallpaperFillMode": "",
-  "lockScreenFontFamily": "",
+  "lockScreenFontFamily": "CaskaydiaCove Nerd Font",
   "hideBrightnessSlider": false,
   "notificationTimeoutLow": 5000,
   "notificationTimeoutNormal": 5000,
@@ -606,14 +638,6 @@
           "enabled": true
         },
         {
-          "id": "runningApps",
-          "enabled": true,
-          "runningAppsCompactMode": true,
-          "runningAppsGroupByApp": false,
-          "runningAppsCurrentWorkspace": true,
-          "runningAppsCurrentMonitor": true
-        },
-        {
           "id": "systemTray",
           "enabled": true,
           "trayUseInlineExpansion": false,
@@ -644,9 +668,21 @@
           "enabled": true,
           "focusedWindowSize": 2,
           "focusedWindowCompactMode": false
+        },
+        {
+          "id": "runningApps",
+          "enabled": false,
+          "runningAppsCompactMode": false,
+          "runningAppsGroupByApp": false,
+          "runningAppsCurrentWorkspace": true,
+          "runningAppsCurrentMonitor": true
         }
       ],
       "rightWidgets": [
+        {
+          "id": "timer",
+          "enabled": true
+        },
         {
           "id": "discordVoice",
           "enabled": true
@@ -711,7 +747,7 @@
       "shadowCustomColor": "#000000",
       "clickThrough": false,
       "hoverPopouts": true,
-      "hoverPopoutDelay": 299
+      "hoverPopoutDelay": 150
     }
   ],
   "desktopClockEnabled": false,
@@ -886,12 +922,22 @@
   "launcherPluginVisibility": {
     "dms_settings_search": {
       "allowWithoutTrigger": true
+    },
+    "converter": {
+      "allowWithoutTrigger": false
     }
   },
-  "launcherPluginOrder": [],
+  "launcherPluginOrder": [
+    "calculator",
+    "converter",
+    "dms_settings_search",
+    "emojiLauncher",
+    "dms_clipboard_search",
+    "powerOptions"
+  ],
   "frameEnabled": true,
-  "frameThickness": 2,
-  "frameRounding": 16,
+  "frameThickness": 8,
+  "frameRounding": 12,
   "frameColor": "",
   "frameOpacity": 0.8,
   "frameScreenPreferences": [
@@ -899,7 +945,7 @@
   ],
   "frameBarSize": 40,
   "frameShowOnOverview": true,
-  "frameBlurEnabled": false,
+  "frameBlurEnabled": true,
   "frameCloseGaps": false,
   "frameLauncherEmergeSide": "top",
   "frameLauncherArcExtender": false,
@@ -907,6 +953,6 @@
   "frameMode": "connected",
   "barInsetPaddingShared": -1,
   "barInsetPaddingSyncAll": true,
-  "frameBarInsetPadding": 8,
+  "frameBarInsetPadding": 14,
   "configVersion": 13
 }

@@ -18,9 +18,10 @@
   "bongoCat": {
     "enabled": true,
     "catColorMode": "primary",
-    "catSizePercent": 70,
+    "catSizePercent": 80,
     "soundEnabled": false,
-    "showMetrics": false
+    "showMetrics": false,
+    "mouseEnabled": true
   },
   "discordVoice": {
     "enabled": true
@@ -158,5 +159,10 @@
     "usePopout": false,
     "hideCount": 0,
     "showRegionPreview": false
+  },
+  "timer": {
+    "enabled": true,
+    "presets": "1, 2, 5, 7, 10, 15, 20, 25, 30, 45, 60, 90, 120",
+    "displayFormat": "minimal"
   }
 }
