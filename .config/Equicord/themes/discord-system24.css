@@ -62,11 +62,11 @@ body {
   --active: #26233a;
   --message-hover: #26233a;
 
-  --accent-1: #ebbcba;
+  --accent-1: #c4a7e7;
   --accent-2: var(--accent-1);
-  --accent-3: #9ccfd8;
+  --accent-3: #f6c177;
   --accent-4: #26233a;
-  --accent-5: #31748f;
+  --accent-5: #9ccfd8;
   --accent-6: var(--accent-1);
 
   --border-light: color-mix(in srgb, var(--accent-1) 10%, transparent);
@@ -80,10 +80,10 @@ body {
   --list-active: var(--accent-1);
   --pill-active: var(--accent-1);
 
-  --online: #ebbcba;
-  --idle: #31748f;
+  --online: #c4a7e7;
+  --idle: #9ccfd8;
   --dnd: #eb6f92;
-  --streaming: #9ccfd8;
+  --streaming: #f6c177;
   --offline: #656278;
 }
 

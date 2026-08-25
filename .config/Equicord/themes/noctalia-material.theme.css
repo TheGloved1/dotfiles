@@ -35,9 +35,9 @@
 :root, .theme-dark, .theme-light {
   /* See options at https://github.com/CapnKitten/Material-Discord */
   /* Accent */
-  --accent-hue: 2;
-  --accent-saturation: 55%;
-  --accent-lightness: 82%;
+  --accent-hue: 267;
+  --accent-saturation: 57%;
+  --accent-lightness: 78%;
   --accent-text-color: #191724;
 
   /* App */
@@ -60,17 +60,17 @@
   ) !important;
   --message-color-alt: #191724;
   --attachment-color: #191724;
-  --main-textarea-color: #ebbcba;
+  --main-textarea-color: #c4a7e7;
   --main-textarea-button-color: #191724;
-  --main-textarea-color-alt: #9ccfd8;
+  --main-textarea-color-alt: #f6c177;
   --main-textarea-border: #26233a;
 
   /* Card */
   --card-color-filled: #26233a;
-  --card-color-hover: #993733;
-  --card-color-active: #993733;
-  --card-color-alt: #2e8493;
-  --card-color-alt-hover: #9ccfd8;
+  --card-color-hover: #613399;
+  --card-color-active: #613399;
+  --card-color-alt: #b16b0a;
+  --card-color-alt-hover: #f6c177;
   --card-border-color: #26233a;
   --card-header-text-color: #e0def4;
 
