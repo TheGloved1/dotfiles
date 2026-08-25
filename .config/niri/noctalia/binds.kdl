@@ -65,7 +65,7 @@ binds {
     MOD+SHIFT+E hotkey-overlay-title="Quick settings" { spawn-sh "/home/gloves/.config/niri/scripts/quick-settings.sh"; }
     MOD+CTRL+S hotkey-overlay-title="Screenshare block toggle" { spawn-sh "/home/gloves/.config/niri/scripts/dynamic-rules.sh --window --screencast"; }
     MOD+Z hotkey-overlay-title="Noctalia Settings" { spawn-sh "noctalia msg settings-toggle"; }
-    MOD+slash hotkey-overlay-title="Keymap" { spawn-sh "noctalia msg panel-toggle blackbartblues/keymap:panel"; }
+    MOD+slash hotkey-overlay-title="Keybindings" { spawn-sh "noctalia msg panel-toggle gloves/keybind-cheatsheet:cheatsheet"; }
 
     // Screen Recording
     CTRL+ALT+R hotkey-overlay-title="Record screen" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all start"; }
