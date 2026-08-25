@@ -46,3 +46,5 @@ a color between surface and surface container so I think just giving this surfac
 @define-color theme_unfocused_base_color @window_bg_color;
 @define-color theme_unfocused_selected_bg_color @accent_bg_color;
 @define-color theme_unfocused_selected_fg_color @accent_fg_color;
+
+@import url("noctalia.css");
