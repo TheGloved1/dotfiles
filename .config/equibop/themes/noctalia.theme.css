@@ -95,18 +95,18 @@ body {
   --message-hover: #26233a40; /* messages when hovered */
 
   /* accent colors */
-  --accent-1: #ebbcba; /* links and other accent text */
-  --accent-2: #c4342e; /* small accent elements */
-  --accent-3: #9ccfd8; /* accent buttons */
-  --accent-4: #030e11; /* accent buttons when hovered */
-  --accent-5: #9ccfd8; /* accent buttons when clicked */
+  --accent-1: #c4a7e7; /* links and other accent text */
+  --accent-2: #6728b4; /* small accent elements */
+  --accent-3: #f6c177; /* accent buttons */
+  --accent-4: #190e00; /* accent buttons when hovered */
+  --accent-5: #f6c177; /* accent buttons when clicked */
   --accent-new: #eb6f92; /* stuff that's normally red like mute/deafen buttons */
 
-    --mention: linear-gradient(to right, color-mix(in hsl, #c4342e, transparent 90%) 40%, transparent); /* background of messages that mention you */
-  --mention-hover: linear-gradient(to right, color-mix(in hsl, #c4342e, transparent 95%) 40%, transparent); /* background of messages that mention you when hovered */
+    --mention: linear-gradient(to right, color-mix(in hsl, #6728b4, transparent 90%) 40%, transparent); /* background of messages that mention you */
+  --mention-hover: linear-gradient(to right, color-mix(in hsl, #6728b4, transparent 95%) 40%, transparent); /* background of messages that mention you when hovered */
 
-    --reply: linear-gradient(to right, color-mix(in hsl, #112f3c, transparent 90%) 40%, transparent); /* background of messages that reply to you */
-  --reply-hover: linear-gradient(to right, color-mix(in hsl, #112f3c, transparent 95%) 40%, transparent); /* background of messages that reply to you when hovered */
+    --reply: linear-gradient(to right, color-mix(in hsl, #2e8493, transparent 90%) 40%, transparent); /* background of messages that reply to you */
+  --reply-hover: linear-gradient(to right, color-mix(in hsl, #2e8493, transparent 95%) 40%, transparent); /* background of messages that reply to you when hovered */
 
   /* status indicator colors */
   --online: var(--green-2); /* change to #43a25a for default */
