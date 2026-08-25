@@ -1,11 +1,12 @@
 # Display Pokemon-colorscripts
 # Project page: https://gitlab.com/phoneybadger/pokemon-colorscripts#on-other-distros-and-macos
 #pokemon-colorscripts --no-title -s -r #without fastfetch
+
 pokefetch() {
   local subcmd="${1:-}"
   shift 2>/dev/null || true
 
-  local theme="$HOME/.config/fastfetch/themes/matugen.jsonc"
+  local theme="$HOME/.config/fastfetch/themes/noctalia.jsonc"
   local args=()
   if [ -f "$theme" ]; then
     local keys="$(jq -r '.display.color.keys // empty' "$theme")"
