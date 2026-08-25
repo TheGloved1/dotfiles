@@ -325,7 +325,6 @@ snippets = [ "notify-send \"Test\"" ]
 auto_update = "all"
 enabled = [
     "tadomika_ari/config-swap",
-    "noctalia/bongocat",
     "noctalia/screen_recorder",
     "noctalia/wallhaven",
     "kenn/keybind-cheatsheet",
@@ -334,7 +333,8 @@ enabled = [
     "weinguyen/shell-command",
     "gloves/screenshot-actions",
     "blackbartblues/keymap",
-    "raycursive/discord-voice"
+    "raycursive/discord-voice",
+    "noctalia/bongocat"
 ]
 
     [[plugins.source]]
@@ -518,13 +518,7 @@ enabled = false
 
 [widget.cat]
 audio_spectrum = true
-input_devices = [
-    "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-event-kbd",
-    "/dev/input/by-id/usb-Razer_Razer_Cynosa_Chroma-if01-event-kbd",
-    "/dev/input/by-id/usb-Razer_Razer_Naga_X-event-mouse",
-    "/dev/input/by-id/usb-Razer_Razer_Naga_X-if01-event-kbd",
-    "/dev/input/by-id/usb-Razer_Razer_Naga_X-if02-event-kbd"
-]
+input_devices = [ "/dev/input/event*" ]
 tappy_mode = true
 type = "noctalia/bongocat:cat"
 
