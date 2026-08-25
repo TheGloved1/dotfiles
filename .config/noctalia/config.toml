@@ -291,6 +291,14 @@ niri_config = "~/.config/niri/modules/30-binds.kdl"
 panel_placement = "attached"
 show_undescribed = false
 
+[plugin_settings."gloves/keybind-cheatsheet"]
+cheatsheet_open_near_click = false
+cheatsheet_placement = "attached"
+columns = 3
+hyprland_parser = "lua"
+show_actions = true
+show_undescribed = true
+
 [plugin_settings."gloves/screenshot-actions"]
 actions_placement = "attached"
 history_placement = "attached"
@@ -299,10 +307,8 @@ panel-placement = "attached"
 
 [plugin_settings."kenn/keybind-cheatsheet"]
 cheatsheet_open_near_click = false
-cheatsheet_placement = "attached"
 columns = 2
 hyprland_parser = "lua"
-show_actions = true
 show_undescribed = false
 
 [plugin_settings."noctalia/screen_recorder"]
@@ -327,14 +333,14 @@ enabled = [
     "tadomika_ari/config-swap",
     "noctalia/screen_recorder",
     "noctalia/wallhaven",
-    "kenn/keybind-cheatsheet",
     "alexander/screen-toolkit",
     "noctalia/timer",
     "weinguyen/shell-command",
     "gloves/screenshot-actions",
     "blackbartblues/keymap",
     "raycursive/discord-voice",
-    "noctalia/bongocat"
+    "noctalia/bongocat",
+    "gloves/keybind-cheatsheet"
 ]
 
     [[plugins.source]]
@@ -349,8 +355,8 @@ enabled = [
 
     [[plugins.source]]
     kind = "git"
-    location = "https://github.com/TheGloved1/noctalia-screenshot-actions"
-    name = "local"
+    location = "https://github.com/TheGloved1/noctalia-plugins.git"
+    name = "gloves"
 
 [shell]
 app_icon_color = "primary"
@@ -440,7 +446,7 @@ polkit_agent = true
 builtin = "Rosé Pine"
 community_palette = "Rose Pine Alt"
 custom_palette = "dragon-mc"
-mode = "auto"
+mode = "dark"
 source = "community"
 wallpaper_scheme = "soft"
 
