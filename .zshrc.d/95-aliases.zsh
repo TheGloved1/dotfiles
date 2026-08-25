@@ -3,6 +3,7 @@ alias exe='chmod +x'
 alias ff="fastfetch"
 alias oc="opencode"
 alias config="cd $HOME/.config/$1"
+alias c='config'
 alias niriconf="cd $HOME/.config/niri; nvim"
 alias hyprconf="cd $HOME/.config/hypr; nvim"
 alias neoconf="cd $HOME/.config/nvim; nvim"
