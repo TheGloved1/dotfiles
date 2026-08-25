@@ -1,4 +1,4 @@
 [flavor]
-use = "matugen"
-dark = "matugen"
-light = "matugen"
+use = "noctalia"
+dark = "noctalia"
+light = "noctalia"
