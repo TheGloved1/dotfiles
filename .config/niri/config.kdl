@@ -16,7 +16,7 @@ include "core/autostart.kdl"
 // include "dms/layout.kdl"
 // include "dms/outputs.kdl"
 // include "dms/alttab.kdl"
-include "dms/wpblur.kdl"
+// include "dms/wpblur.kdl"
 include "dms/windowrules.kdl"
 // include "dms-theme-sync.kdl"
 
