@@ -6,24 +6,25 @@ include "core/dynamic.kdl" optional=true
 include "core/animation.kdl"
 include "core/autostart.kdl"
 
-include "dms-theme-sync.kdl"
 
 // ────────────── Shell Toggle ──────────────
 // DMS (UI-editable) — active by default — manages ALL binds (core + DMS)
-include "dms/binds.kdl"
-include "dms/autostart.kdl"
-include "dms/colors.kdl"
-include "dms/cursor.kdl"
-include "dms/layout.kdl"
-include "dms/outputs.kdl"
-include "dms/alttab.kdl"
+// include "dms/binds.kdl"
+// include "dms/autostart.kdl"
+// include "dms/colors.kdl"
+// include "dms/cursor.kdl"
+// include "dms/layout.kdl"
+// include "dms/outputs.kdl"
+// include "dms/alttab.kdl"
 include "dms/wpblur.kdl"
 include "dms/windowrules.kdl"
+// include "dms-theme-sync.kdl"
 
 // Noctalia (IPC-only) — uncomment to use instead of DMS
 // relies on core/ for Niri layout/display, no UI handling
-// include "core/keybinds.kdl"
-// include "noctalia/binds.kdl"
-// include "noctalia/autostart.kdl"
-// include "core/display.kdl"
-// include "core/layout.kdl"
+include "core/binds.kdl"
+include "noctalia/binds.kdl"
+include "noctalia/autostart.kdl"
+include "core/display.kdl"
+include "core/layout.kdl"
+include "noctalia.kdl"

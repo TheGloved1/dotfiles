@@ -1,37 +1,14 @@
 // ────────────── Layout Settings ──────────────
 layout {
+    background-color "transparent"
     gaps 8
-    // center-focused-column "on-overflow"
-
-    preset-column-widths {
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-    }
-
-    default-column-width { proportion 0.5; }
 
     border {
-        on
         width 2
-        active-color "#f8c6c4"
-        inactive-color "#4a4a4a"
-        urgent-color "#eb6f92"
     }
 
     focus-ring {
-        width 0
-        active-color "#f66151"
-    }
-
-    shadow {
-        on
-        softness 12
-        spread 4
-        offset x=0 y=5
-        color "#000000d1"
-        inactive-color "#00000064"
-        draw-behind-window true
+        width 2
     }
 
 }
