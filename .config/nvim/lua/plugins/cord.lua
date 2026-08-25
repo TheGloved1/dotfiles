@@ -7,7 +7,7 @@ return {
           return opts.repo_url and "View Repository" or "Website"
         end,
         url = function(opts)
-          return opts.repo_url or "https://gloved.dev"
+          return opts.repo_url or "https://github.com/TheGloved1"
         end,
       },
     },
@@ -19,8 +19,25 @@ return {
       tooltip = "💤",
     },
     display = {
-      theme = "catppuccin",
-      flavor = "accent",
+      -- theme = "catppuccin",
+      -- flavor = "accent",
+    },
+    text = {
+      workspace = function(opts)
+        -- Use cwd / project root basename instead of file's parent folder
+        -- e.g. `In nvim` when cwd is ~/.config/nvim even if file is in plugins/
+        local cwd = vim.fn.getcwd()
+        local project = vim.fn.fnamemodify(cwd, ":t")
+        -- fallback: use detected workspace or cwd full path if basename empty (e.g. cwd == "/")
+        if project == "" or project == "." then
+          project = opts.workspace or cwd
+        end
+        -- if cwd is "/" or ".", prefer workspace_dir basename
+        if (project == "" or project == "/") and opts.workspace_dir then
+          project = vim.fn.fnamemodify(opts.workspace_dir, ":t")
+        end
+        return "In " .. project
+      end,
     },
   },
   config = function(_, opts)
