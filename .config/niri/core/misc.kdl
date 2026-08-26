@@ -13,3 +13,7 @@ cursor {
     xcursor-theme "BreezeX-RosePine-Linux"
     xcursor-size 24
 }
+
+debug {
+    honor-xdg-activation-with-invalid-serial
+}

@@ -1,30 +1,5 @@
 // ────────────── Window Rules ──────────────
-// Window rules let you adjust behavior for individual windows.
-// Find more information on the wiki:
-// https://niri-wm.github.io/niri/Configuration:-Window-Rules
 
-// Work around WezTerm's initial configure bug by setting an empty default-column-width.
-// window-rule {
-//     match app-id=r#"^org\.wezfurlong\.wezterm$""
-//     default-column-width {}
-// }
-
-// Example: block out two password managers from screen capture.
-// /-window-rule {
-//     match app-id=r#"^org\.keepassxc\.KeePassXC$""
-//     match app-id=r#"^org\.gnome\.World\.Secrets$""
-//     block-out-from "screen-capture"
-//     // Use this instead if you want them visible on third-party screenshot tools.
-//     // block-out-from "screencast"
-// }
-
-// Example: enable rounded corners for all windows.
-// /-window-rule {
-//     geometry-corner-radius 12
-//     clip-to-geometry true
-// }
-
-// Generic decoration
 window-rule {
     draw-border-with-background false
     geometry-corner-radius 12
@@ -34,9 +9,29 @@ window-rule {
 
     background-effect {
         blur true
-        noise 0.02
-        saturation 3
+        // noise 0.02
+        // saturation 3
     }
+}
+
+window-rule {
+    match is-urgent=true
+
+    baba-is-float true
+
+    shadow {
+        color "#7d0d2d70"
+    }
+}
+
+layer-rule {
+    match namespace="noctalia-backdrop"
+    place-within-backdrop true
+}
+
+layer-rule {
+    match namespace="noctalia-desktop-widget-gloves/activate-linux:watermark-0000000000000001"
+    place-within-backdrop true
 }
 
 window-rule {
@@ -47,72 +42,85 @@ window-rule {
 window-rule {
     match app-id=r"^dev\.noctalia\.Noctalia$"
     open-floating true
-    default-column-width { fixed 920; }
-    default-window-height { fixed 920; }
 }
 
-// Float common dialogs / utilities (Hypr float rules)
 window-rule {
     match app-id=r"^(pavucontrol|org\.pulseaudio\.pavucontrol|com\.saivert\.pwvucontrol|blueman-manager|nm-applet|nm-connection-editor)$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^(org\.kde\.polkit-kde-authentication-agent-1|mate-polkit)$" title="^Authentication.*$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^qalculate-gtk$" title="^Qalculate.*$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^(mpv|com\.github\.rafostar\.Clapper)$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^(com\.obsproject\.Studio)$"
-    open-floating true
+    open-floating false
 }
+
 window-rule {
     match app-id=r"^Bitwarden$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^(org\.cachyos\.KernelManager|mainline-gtk|org\.kde\.kwalletmanager|nvidia-settings|org\.cachyos\.cachyos-pi|com\.shellyorg\.shelly|CachyOSHello|octopi.*|garuda-assistant|com\.github\.hyprmod|com\.github\.wwmm\.easyeffects|nz\.co\.mega\.megasync|io\.github\.amit9838\.mousam|btrfs-assistant|timeshift-gtk|org\.gnome\.Calculator|qalculate-gtk)$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^steam$" title=r"^Steam$"
     open-floating false
 }
+
 window-rule {
     match app-id=r"^steam$"
     exclude title=r"^Steam$"
-    open-floating true
+    open-floating false
 }
+
 window-rule {
     match app-id=r"^(gamescope|steam_app_\d+)$"
     open-floating false
+    default-column-width {}
 }
+
 window-rule {
     match app-id=r"^(thunar)$" 
     open-floating true
 }
+
 window-rule {
     match app-id=r"^(Ferdium)$"
     open-floating true
 }
+
 window-rule {
     match title=r"^(Authentication Required|Save As|Add Folder to Workspace|Open Files)$"
     open-floating true
 }
+
 window-rule {
     match app-id=r"kitty-dropterm"
     open-floating true
 }
+
 window-rule {
     match app-id=r"^com\.heroicgameslauncher\.hgl$"
     open-floating true
 }
+
 window-rule {
     match title=r"^[Pp]icture-in-[Pp]icture$"
     open-floating true
@@ -120,35 +128,55 @@ window-rule {
 
 window-rule {
     match app-id="steam" title=r"^notificationtoasts_\d+_desktop$"
-    default-floating-position x=4 y=4 relative-to="bottom-right"
-    // focus-on-xdg-activate false
+    default-floating-position x=0 y=0 relative-to="bottom-right"
+    open-focused false
 }
 
-// Noctalia layer rule to disable blur
 layer-rule {
     match namespace=r"^(?i)noctalia" 
     background-effect {
         blur false
+        xray false
     }
 }
 
-// Noctalia layer rule to disable blur
 layer-rule {
-    match namespace="^noctalia-wallpaper$"
-    place-within-backdrop false
+    match namespace="noctalia-bar-default"
+    background-effect {
+        blur false
+        xray false
+    }
 }
 
-layer-rule {
-   match namespace="^noctalia-notification$"
-   block-out-from "screencast"
-}
-
-
+// layer-rule {
+//     match layer="bottom"           # it is currently on the bottom layer
+//     match layer="top"              # move it to the top layer
+// }
 
 window-rule {
     match app-id=r"^org\.quickshell$"
     match title=r"(?i)settings"
     open-floating true
-    default-column-width { fixed 900; }
-    default-window-height { fixed 700; }
+}
+
+window-rule {
+    match is-window-cast-target=true
+
+    focus-ring {
+        active-color "#f38ba8"
+        inactive-color "#7d0d2d"
+    }
+
+    border {
+        inactive-color "#7d0d2d"
+    }
+
+    shadow {
+        color "#7d0d2d70"
+    }
+
+    tab-indicator {
+        active-color "#f38ba8"
+        inactive-color "#7d0d2d"
+    }
 }

@@ -5,7 +5,7 @@ binds {
     MOD+SHIFT+SPACE hotkey-overlay-title="Control Center" { spawn-sh "noctalia msg panel-toggle control-center home"; }
     MOD+C hotkey-overlay-title="Calendar" { spawn-sh "noctalia msg panel-toggle control-center calendar"; }
     MOD+SHIFT+slash hotkey-overlay-title="Noctalia Screen Toolkit" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all toggle"; }
-    MOD+P hotkey-overlay-title="Color picker" { spawn-sh "hyprpicker -a -f hex --lowercase-hex"; }
+    MOD+P hotkey-overlay-title="Color picker" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all colorPicker"; }
 
     // Desktop / Overview
     MOD+A hotkey-overlay-title="Window switcher" { spawn-sh "noctalia msg window-switcher"; }
@@ -27,7 +27,7 @@ binds {
     MOD+SHIFT+S hotkey-overlay-title="Screenshot region → menu" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
     MOD+S hotkey-overlay-title="Screenshot history" { spawn-sh "noctalia msg panel-toggle gloves/screenshot-actions:history"; }
     MOD+SHIFT+O hotkey-overlay-title="OCR" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all ocr"; }
-    MOD+SHIFT+C hotkey-overlay-title="Color picker" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all colorPicker"; }
+    MOD+SHIFT+C hotkey-overlay-title="Color picker" { spawn-sh "hyprpicker -a -f hex --lowercase-hex"; }
 
     // Audio Controls
     XF86AudioRaiseVolume allow-when-locked=true hotkey-overlay-title="Raise volume" { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"; }

@@ -2,6 +2,7 @@
 layout {
     background-color "transparent"
     gaps 8
+    default-column-width { proportion 0.5; }
 
     border {
         width 2
@@ -9,6 +10,17 @@ layout {
 
     focus-ring {
         width 2
+    }
+
+    tab-indicator {
+        // hide-when-single-tab
+        place-within-column
+        gap 0
+        width 4
+        length total-proportion=0.98
+        position "right"
+        gaps-between-tabs 0
+        corner-radius 24
     }
 
 }
