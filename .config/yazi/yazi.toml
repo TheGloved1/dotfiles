@@ -43,6 +43,10 @@ video = [
   { run = 'xdg-open "$@"', orphan = true, desc = "xdg-open", for = "linux" },
   { run = 'mpv "$@"', orphan = true, desc = "mpv", for = "linux" },
 ]
+mp4 = [
+  { run = 'mpv "$@"', orphan = true, desc = "mpv", for = "linux" },
+  { run = 'xdg-open "$@"', orphan = true, desc = "xdg-open", for = "linux" },
+]
 audio = [
   { run = 'xdg-open "$@"', orphan = true, desc = "xdg-open", for = "linux" },
   { run = 'mpv "$@"', orphan = true, desc = "mpv", for = "linux" },
@@ -55,6 +59,8 @@ fallback = [
 rules = [
   { url = "*/", use = "folder" },
 
+  { url = "*.mp4", use = "mp4" },
+  { mime = "video/mp4", use = "mp4" },
   { mime = "text/*", use = "text" },
   { mime = "image/*", use = "image" },
   { mime = "video/*", use = "video" },
