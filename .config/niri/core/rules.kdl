@@ -40,6 +40,15 @@ window-rule {
 }
 
 window-rule {
+    match app-id="^explorer.exe$"
+    default-column-width {
+    }
+    default-window-height {
+    }
+    // open-floating true
+}
+
+window-rule {
     match app-id=r"^dev\.noctalia\.Noctalia$"
     open-floating true
 }
@@ -93,7 +102,8 @@ window-rule {
 window-rule {
     match app-id=r"^(gamescope|steam_app_\d+)$"
     open-floating false
-    default-column-width {}
+    default-column-width {
+    }
 }
 
 window-rule {
@@ -128,7 +138,7 @@ window-rule {
 
 window-rule {
     match app-id="steam" title=r"^notificationtoasts_\d+_desktop$"
-    default-floating-position x=0 y=0 relative-to="bottom-right"
+    default-floating-position x=1 y=1 relative-to="bottom-right"
     open-focused false
 }
 

@@ -54,7 +54,6 @@ binds {
     MOD+ALT+comma hotkey-overlay-title="Swap window left" { swap-window-left; }
     MOD+ALT+period hotkey-overlay-title="Swap window right" { swap-window-right; }
     MOD+G hotkey-overlay-title="Toggle column tabs" { toggle-column-tabbed-display; }
-    MOD+Z hotkey-overlay-title="Expand to full width" { expand-column-to-available-width; }
     MOD+R hotkey-overlay-title="Switch preset column width" { switch-preset-column-width; }
     MOD+SHIFT+R hotkey-overlay-title="Refresh" { spawn-sh "/home/gloves/.config/niri/scripts/refresh.sh"; }
     MOD+CTRL+R hotkey-overlay-title="Switch preset window height" { switch-preset-window-height; }

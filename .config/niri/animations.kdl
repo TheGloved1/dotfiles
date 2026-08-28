@@ -3,5 +3,5 @@
 // Your base/fallback animations belong in a file included BEFORE this one.
 
 animations {
-    slowdown 1.00
+    slowdown 1.0
 }
