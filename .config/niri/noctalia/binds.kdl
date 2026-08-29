@@ -10,11 +10,8 @@ binds {
     // Desktop / Overview
     MOD+A hotkey-overlay-title="Window switcher" { spawn-sh "noctalia msg window-switcher"; }
 
-    // Window Management
-    MOD+ALT+SPACE hotkey-overlay-title="Float all windows" { spawn-sh "/home/gloves/.config/niri/scripts/float-all.sh"; }
+    // System
     MOD+CTRL+Q hotkey-overlay-title="Session menu" { spawn-sh "noctalia msg panel-toggle session"; }
-    MOD+SHIFT+Q hotkey-overlay-title="Kill active process" { spawn-sh "/home/gloves/.config/niri/scripts/kill-active.sh"; }
-    MOD+CTRL+O hotkey-overlay-title="Toggle opaque" { spawn-sh "/home/gloves/.config/niri/scripts/toggle-opaque.sh"; }
 
     // Screenshots
     PRINT hotkey-overlay-title="Screenshot selection" { spawn-sh "noctalia msg screenshot-fullscreen"; }

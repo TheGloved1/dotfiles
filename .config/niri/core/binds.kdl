@@ -14,8 +14,8 @@ binds {
     MOD+Q hotkey-overlay-title="Close window" { close-window; }
     MOD+F hotkey-overlay-title="Maximize column" { maximize-column; }
     MOD+SHIFT+F hotkey-overlay-title="Fullscreen window" { fullscreen-window; }
-    MOD+D hotkey-overlay-title="Toggle floating window" { toggle-window-floating; }
-    MOD+ALT+SPACE hotkey-overlay-title="Float all windows" { spawn-sh "/home/gloves/.config/niri/scripts/float-all.sh"; }
+    MOD+D hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
+    MOD+CTRL+SPACE hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
     MOD+SHIFT+Q hotkey-overlay-title="Kill active process" { spawn-sh "/home/gloves/.config/niri/scripts/kill-active.sh"; }
     MOD+CTRL+O hotkey-overlay-title="Toggle opaque" { spawn-sh "/home/gloves/.config/niri/scripts/toggle-opaque.sh"; }
 
