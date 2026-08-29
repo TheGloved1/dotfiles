@@ -33,7 +33,6 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-# A glance at the new for-syntax – load all of the above
 # plugins with a single command. For more information see:
 # https://zdharma-continuum.github.io/zinit/wiki/For-Syntax/
 zinit for \
