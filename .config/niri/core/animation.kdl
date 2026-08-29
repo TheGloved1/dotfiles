@@ -1,4 +1,62 @@
 // ────────────── Animation Settings ──────────────
-// Animation settings.
-// The wiki explains how to configure individual animations:
+// Fast glide — same smoothness (damping 1.0) but higher stiffness.
 // https://niri-wm.github.io/niri/Configuration:-Animations
+
+animations {
+    slowdown 1.5
+
+    // ── Workspace & View ──────────────────────────────────────
+    workspace-switch {
+        // default: 1.0/1000
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+
+    horizontal-view-movement {
+        // default: 1.0/800
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-movement {
+        // default: 1.0/800
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    window-resize {
+        // default: 1.0/800
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    overview-open-close {
+        // default: 1.0/800 — faster than workspace
+        spring damping-ratio=1.0 stiffness=950 epsilon=0.0001
+    }
+
+    // ── Window open / close ───────────────────────────────────
+    window-open {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+
+    window-close {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    // ── UI chrome ─────────────────────────────────────────────
+    config-notification-open-close {
+        // default: 0.6/1000
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.001
+    }
+
+    exit-confirmation-open-close {
+        // default: 0.6/500
+        spring damping-ratio=1.0 stiffness=650 epsilon=0.01
+    }
+
+    screenshot-ui-open {
+        duration-ms 180
+        curve "cubic-bezier" 0.22 1.0 0.36 1.0
+    }
+
+    recent-windows-close {
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.001
+    }
+}
