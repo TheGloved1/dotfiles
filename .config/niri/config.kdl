@@ -30,4 +30,4 @@ include "core/layout.kdl"
 include "noctalia.kdl"
 
 // ────────────── Animation Packs ──────────────
-include "animations.kdl" optional=true
+// include "animations.kdl" optional=true

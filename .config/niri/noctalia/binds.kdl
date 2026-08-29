@@ -68,5 +68,6 @@ binds {
     CTRL+ALT+R hotkey-overlay-title="Record screen" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all start"; }
     MOD+ALT+R hotkey-overlay-title="Record fullscreen" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all start-fullscreen"; }
     MOD+SHIFT+ALT+R hotkey-overlay-title="Stop recording" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all stop"; }
-    MOD+SHIFT+CTRL+R hotkey-overlay-title="Replay buffer" { spawn-sh "noctalia msg plugin noctalia/screen_recorder:service all replay-start"; }
+    MOD+SHIFT+R hotkey-overlay-title="Replay buffer start" { spawn-sh "noctalia msg plugin noctalia/screen_recorder:service all replay-save"; }
+    MOD+SHIFT+CTRL+R hotkey-overlay-title="Replay buffer stop" { spawn-sh "noctalia msg plugin noctalia/screen_recorder:service all replay-toggle"; }
 }
