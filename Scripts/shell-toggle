@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# shell-toggle — toggle between Noctalia and DMS (DankMaterialShell)
+# Usage: shell-toggle [--toggle|--dms|--noctalia|--status|--help] [--no-config]
+# Default: --toggle (if noctalia running → dms, else noctalia)
+#
+# Handles:
+#   - killing/starting daemons: `noctalia --daemon` and `dms run -d`
+#   - swapping Niri config includes in ~/.config/niri/config.kdl
+#     (so keybinds, layout, colors match the active shell + persist on reboot)
+
+CONFIG_KDL="$HOME/.config/niri/config.kdl"
+NO_CONFIG=0
+
+# ── helpers ──────────────────────────────────────────────────────────
+usage() {
+  cat <<'EOF'
+Usage: shell-toggle [OPTIONS]
+
+Toggle between Noctalia and DankMaterialShell (DMS).
+
+Options:
+  --toggle      Auto-toggle (default): noctalia → dms, dms → noctalia
+  --dms         Switch to DMS
+  --noctalia    Switch to Noctalia
+  --status      Show current shell + processes + niri config
+  --no-config   Don't edit niri config.kdl, only kill/start daemons
+  -h, --help    Show this help
+
+Commands run:
+  noctalia --daemon
+  dms run -d
+
+Niri config swapped:  ~/.config/niri/config.kdl  (Shell Toggle block)
+Backup:               ~/.config/niri/config.kdl.bak
+EOF
+}
+
+is_noctalia_running() { pgrep -x noctalia >/dev/null 2>&1; }
+is_dms_running() { pgrep -f "quickshell.*dms" >/dev/null 2>&1 || pgrep -f "qs.*dms" >/dev/null 2>&1 || pgrep -f "dms run" >/dev/null 2>&1; }
+
+current_shell() {
+  if is_noctalia_running && is_dms_running; then echo "both"
+  elif is_noctalia_running; then echo "noctalia"
+  elif is_dms_running; then echo "dms"
+  else echo "none"
+  fi
+}
+
+niri_config_shell() {
+  # inspect config.kdl for which block is active
+  if grep -q '^include "dms/binds.kdl"' "$CONFIG_KDL" 2>/dev/null; then echo "dms"
+  elif grep -q '^include "noctalia/binds.kdl"' "$CONFIG_KDL" 2>/dev/null; then echo "noctalia"
+  else echo "unknown"
+  fi
+}
+
+notify() {
+  local title="$1" body="$2"
+  if command -v notify-send >/dev/null 2>&1; then
+    notify-send -a "shell-toggle" "$title" "$body" 2>/dev/null || true
+  fi
+  echo "→ $title: $body"
+}
+
+kill_noctalia() {
+  if is_noctalia_running; then
+    echo "killing noctalia..."
+    pkill -x noctalia 2>/dev/null || true
+    # give it a moment to exit gracefully
+    for _ in 1 2 3 4 5; do
+      is_noctalia_running || break
+      sleep 0.2
+    done
+    if is_noctalia_running; then
+      pkill -9 -x noctalia 2>/dev/null || true
+      sleep 0.3
+    fi
+  fi
+}
+
+kill_dms() {
+  if is_dms_running; then
+    echo "killing dms..."
+    if command -v dms >/dev/null 2>&1; then
+      dms kill 2>/dev/null || true
+    fi
+    # fallback — cover qs and quickshell variants
+    pkill -f "quickshell.*dms" 2>/dev/null || true
+    pkill -f "qs.*dms" 2>/dev/null || true
+    pkill -f "dms run" 2>/dev/null || true
+    for _ in 1 2 3 4 5; do
+      is_dms_running || break
+      sleep 0.2
+    done
+    if is_dms_running; then
+      pkill -9 -f "quickshell.*dms" 2>/dev/null || true
+      pkill -9 -f "qs.*dms" 2>/dev/null || true
+      pkill -9 -f "dms run" 2>/dev/null || true
+      sleep 0.3
+    fi
+  fi
+}
+
+start_noctalia() {
+  echo "starting noctalia --daemon..."
+  # --daemon already daemonizes; use nohup to detach from terminal
+  nohup noctalia --daemon >/dev/null 2>&1 & disown 2>/dev/null || true
+  if ! is_noctalia_running; then
+    noctalia --daemon >/dev/null 2>&1 & disown 2>/dev/null || true
+  fi
+  sleep 0.8
+  if is_noctalia_running; then
+    notify "Noctalia" "Switched to Noctalia"
+  else
+    echo "warn: noctalia failed to start (check 'noctalia --daemon' manually)" >&2
+    notify "Noctalia" "Failed to start — check logs"
+    return 1
+  fi
+}
+
+start_dms() {
+  echo "starting dms run -d..."
+  nohup dms run -d >/dev/null 2>&1 & disown 2>/dev/null || true
+  if ! is_dms_running; then
+    dms run -d >/dev/null 2>&1 & disown 2>/dev/null || true
+  fi
+  sleep 1.2
+  if is_dms_running; then
+    notify "DMS" "Switched to DankMaterialShell"
+  else
+    echo "warn: dms failed to start (check 'dms run -d' manually)" >&2
+    notify "DMS" "Failed to start — check logs"
+    return 1
+  fi
+}
+
+set_niri_config_dms() {
+  if [[ $NO_CONFIG -eq 1 ]]; then return 0; fi
+  if [[ ! -f "$CONFIG_KDL" ]]; then
+    echo "warn: $CONFIG_KDL not found, skipping config swap" >&2
+    return 0
+  fi
+  if [[ "$(niri_config_shell)" == "dms" ]]; then
+    echo "niri config already DMS"
+    return 0
+  fi
+  echo "swapping niri config → DMS..."
+  cp "$CONFIG_KDL" "$CONFIG_KDL.bak"
+  cat > "$CONFIG_KDL" <<'KDL'
+include "core/env.kdl"
+include "core/input.kdl"
+include "core/rules.kdl"
+include "core/misc.kdl"
+include "core/dynamic.kdl" optional=true
+include "core/animation.kdl"
+include "core/autostart.kdl"
+
+
+// ────────────── Shell Toggle ──────────────
+// DMS (UI-editable) — active by default — manages ALL binds (core + DMS)
+include "dms/binds.kdl"
+include "dms/autostart.kdl"
+include "dms/colors.kdl"
+include "dms/cursor.kdl"
+include "dms/layout.kdl"
+include "dms/outputs.kdl"
+include "dms/alttab.kdl"
+include "dms/wpblur.kdl"
+include "dms/windowrules.kdl"
+include "dms-theme-sync.kdl"
+
+// Noctalia (IPC-only) — uncomment to use instead of DMS
+// relies on core/ for Niri layout/display, no UI handling
+// include "core/binds.kdl"
+// include "noctalia/binds.kdl"
+// include "noctalia/autostart.kdl"
+// include "core/display.kdl"
+// include "core/layout.kdl"
+// include "noctalia.kdl"
+
+// ────────────── Animation Packs ──────────────
+include "animations.kdl" optional=true
+KDL
+  echo "niri config → DMS (backup at $CONFIG_KDL.bak)"
+}
+
+set_niri_config_noctalia() {
+  if [[ $NO_CONFIG -eq 1 ]]; then return 0; fi
+  if [[ ! -f "$CONFIG_KDL" ]]; then
+    echo "warn: $CONFIG_KDL not found, skipping config swap" >&2
+    return 0
+  fi
+  if [[ "$(niri_config_shell)" == "noctalia" ]]; then
+    echo "niri config already Noctalia"
+    return 0
+  fi
+  echo "swapping niri config → Noctalia..."
+  cp "$CONFIG_KDL" "$CONFIG_KDL.bak"
+  cat > "$CONFIG_KDL" <<'KDL'
+include "core/env.kdl"
+include "core/input.kdl"
+include "core/rules.kdl"
+include "core/misc.kdl"
+include "core/dynamic.kdl" optional=true
+include "core/animation.kdl"
+include "core/autostart.kdl"
+
+
+// ────────────── Shell Toggle ──────────────
+// DMS (UI-editable) — active by default — manages ALL binds (core + DMS)
+// include "dms/binds.kdl"
+// include "dms/autostart.kdl"
+// include "dms/colors.kdl"
+// include "dms/cursor.kdl"
+// include "dms/layout.kdl"
+// include "dms/outputs.kdl"
+// include "dms/alttab.kdl"
+// include "dms/wpblur.kdl"
+// include "dms/windowrules.kdl"
+// include "dms-theme-sync.kdl"
+
+// Noctalia (IPC-only) — uncomment to use instead of DMS
+// relies on core/ for Niri layout/display, no UI handling
+include "core/binds.kdl"
+include "noctalia/binds.kdl"
+include "noctalia/autostart.kdl"
+include "core/display.kdl"
+include "core/layout.kdl"
+include "noctalia.kdl"
+
+// ────────────── Animation Packs ──────────────
+include "animations.kdl" optional=true
+KDL
+  echo "niri config → Noctalia (backup at $CONFIG_KDL.bak)"
+}
+
+do_status() {
+  echo "── shell-toggle status ──"
+  echo "processes:"
+  echo "  noctalia: $(is_noctalia_running && echo "running (pid $(pgrep -x noctalia | tr '\n' ' '))" || echo "not running")"
+  echo "  dms:      $(is_dms_running && echo "running (pid $(pgrep -f "dms run" | tr '\n' ' ' ; pgrep -f "qs.*dms" | tr '\n' ' '))" || echo "not running")"
+  echo "  current:  $(current_shell)"
+  echo ""
+  echo "niri config: $(niri_config_shell)  ($CONFIG_KDL)"
+  grep -E '^include|^// include' "$CONFIG_KDL" 2>/dev/null | sed 's/^/  /' || echo "  (no config.kdl)"
+  echo ""
+  echo "commands:"
+  echo "  noctalia --daemon"
+  echo "  dms run -d"
+}
+
+switch_to_dms() {
+  echo "── switching to DMS ──"
+  kill_noctalia
+  kill_dms
+  set_niri_config_dms
+  # niri auto-reloads on config change; no explicit reload needed
+  start_dms
+  echo "done → DMS"
+}
+
+switch_to_noctalia() {
+  echo "── switching to Noctalia ──"
+  kill_dms
+  kill_noctalia
+  set_niri_config_noctalia
+  start_noctalia
+  echo "done → Noctalia"
+}
+
+# ── arg parse ────────────────────────────────────────────────────────
+ACTION="toggle"
+for arg in "$@"; do
+  case "$arg" in
+    --dms) ACTION="dms" ;;
+    --noctalia|--noct) ACTION="noctalia" ;;
+    --toggle) ACTION="toggle" ;;
+    --status) ACTION="status" ;;
+    --no-config) NO_CONFIG=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "unknown option: $arg" >&2; usage >&2; exit 1 ;;
+  esac
+done
+
+case "$ACTION" in
+  status) do_status ;;
+  dms) switch_to_dms ;;
+  noctalia) switch_to_noctalia ;;
+  toggle)
+    case "$(current_shell)" in
+      noctalia) switch_to_dms ;;
+      dms) switch_to_noctalia ;;
+      both)
+        echo "both shells running — restarting to single shell..."
+        # prefer toggling to the shell that matches niri config, or default to dms
+        if [[ "$(niri_config_shell)" == "noctalia" ]]; then switch_to_dms; else switch_to_noctalia; fi
+        ;;
+      none)
+        # nothing running — launch based on niri config
+        if [[ "$(niri_config_shell)" == "dms" ]]; then switch_to_dms; else switch_to_noctalia; fi
+        ;;
+    esac
+    ;;
+esac
