@@ -340,10 +340,10 @@
     }
   ],
   "networkPreference": "ethernet",
-  "iconThemeDark": "Papirus-Dark-DankFolders",
+  "iconThemeDark": "System Default",
   "iconThemeLight": "System Default",
   "iconThemePerMode": false,
-  "lastAppliedIconTheme": "Papirus-Dark-DankFolders",
+  "lastAppliedIconTheme": "",
   "cursorSettings": {
     "theme": "BreezeX-RosePine-Linux",
     "size": 24,
