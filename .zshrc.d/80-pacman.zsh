@@ -143,9 +143,9 @@ aur() {
       yay -Sy
       ;;
     upgrade|up)
-      local aur_pkgs=$(comm -12 <(yay -Quq | sort) <(pacman -Qmq | sort))
-      if [[ -n "$aur_pkgs" ]]; then
-        yay -S $aur_pkgs
+      local aur_pkgs=(${(f)"$(comm -12 <(yay -Quq | sort) <(pacman -Qmq | sort))"})
+      if (( ${#aur_pkgs} )); then
+        yay -S "${aur_pkgs[@]}"
       else
         echo "No AUR packages to upgrade"
       fi
