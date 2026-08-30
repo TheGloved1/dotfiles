@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+import os, sys, subprocess, urllib.parse, pathlib, traceback
+import dbus, dbus.service, dbus.mainloop.glib
+from gi.repository import GLib
+
+LOG = "/tmp/yazi-filemanager-service.log"
+def log(msg):
+    try:
+        with open(LOG, "a") as f:
+            f.write(msg + "\n")
+    except: pass
+
+OPENER = os.path.expanduser("~/.local/bin/yazi-cwd-wrapper")
+if not os.path.exists(OPENER):
+    OPENER = "xdg-open"
+log(f"service started OPENER={OPENER} pid={os.getpid()}")
+
+def uri_to_path(uri):
+    if uri.startswith("file://"):
+        return urllib.parse.unquote(uri[7:])
+    return uri
+
+class FileManager1(dbus.service.Object):
+    @dbus.service.method("org.freedesktop.FileManager1", in_signature="ass", out_signature="")
+    def ShowItems(self, uris, startup_id):
+        log(f"ShowItems called uris={uris} startup_id={startup_id}")
+        for uri in uris:
+            path = uri_to_path(uri)
+            p = pathlib.Path(path)
+            target = str(p.parent) if p.is_file() or (p.exists() and not p.is_dir()) else str(p)
+            if not p.exists() and p.parent.exists():
+                target = str(p.parent)
+            log(f"  uri={uri} -> path={path} -> target={target}")
+            try:
+                cmd = ["kitty", "-e", OPENER, target]
+                log(f"  Popen {cmd}")
+                proc = subprocess.Popen(cmd, stdout=open(LOG, "a"), stderr=subprocess.STDOUT)
+                log(f"  launched pid={proc.pid}")
+            except Exception as e:
+                log(f"  failed {e}\n{traceback.format_exc()}")
+                try:
+                    subprocess.Popen(["xdg-open", target])
+                    log("  fallback xdg-open launched")
+                except Exception as e2:
+                    log(f"  fallback failed {e2}")
+    
+    @dbus.service.method("org.freedesktop.FileManager1", in_signature="ass", out_signature="")
+    def ShowFolders(self, uris, startup_id):
+        log(f"ShowFolders called {uris}")
+        self.ShowItems(uris, startup_id)
+
+    @dbus.service.method("org.freedesktop.FileManager1", in_signature="ass", out_signature="")
+    def ShowItemProperties(self, uris, startup_id):
+        log(f"ShowItemProperties called {uris}")
+        self.ShowItems(uris, startup_id)
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    bus = dbus.SessionBus()
+    name = dbus.service.BusName("org.freedesktop.FileManager1", bus)
+    obj = FileManager1(bus, "/org/freedesktop/FileManager1")
+    log("service name acquired, entering MainLoop")
+    loop = GLib.MainLoop()
+    loop.run()
+
+if __name__ == "__main__":
+    main()
