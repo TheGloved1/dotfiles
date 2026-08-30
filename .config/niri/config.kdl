@@ -1,4 +1,5 @@
 include "core/env.kdl"
+include "core/defaults.kdl"
 include "core/input.kdl"
 include "core/rules.kdl"
 include "core/misc.kdl"
