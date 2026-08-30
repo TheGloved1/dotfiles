@@ -1,21 +1,57 @@
 #!/bin/bash
-# setup-yazi-filemanager - make yazi (via kitty) the DBus FileManager1 for browsers
+# setup-yazi-filemanager - make yazi (via kitty) the default FileManager for xdg-open and DBus FileManager1
 # Fixes: Zen/Firefox "Show in Folder" opening nautilus instead of yazi-kitty
 # Requires: yazi, kitty, ~/.local/bin/yazi-cwd-wrapper, ~/.local/bin/yazi-filemanager-service (symlinked from ~/Scripts)
 set -euo pipefail
 
 YAZI_SERVICE="$HOME/.local/bin/yazi-filemanager-service"
 YAZI_WRAPPER="$HOME/.local/bin/yazi-cwd-wrapper"
+YAZI_DESKTOP="yazi-kitty.desktop"
 SYSTEM_SERVICE="/usr/share/dbus-1/services/org.freedesktop.FileManager1.service"
 THUNAR_SERVICE="/usr/share/dbus-1/services/org.xfce.Thunar.FileManager1.service"
 USER_SERVICE="$HOME/.local/share/dbus-1/services/org.freedesktop.FileManager1.service"
+
+# handle revert early
+if [[ "${1:-}" == "--revert" ]]; then
+  echo "==> Reverting FileManager1 DBus service..."
+  sudo mv "${SYSTEM_SERVICE}.bak" "$SYSTEM_SERVICE" 2>/dev/null || echo "no backup found for $SYSTEM_SERVICE"
+  if [[ -f "${THUNAR_SERVICE}.bak" ]]; then
+    sudo mv "${THUNAR_SERVICE}.bak" "$THUNAR_SERVICE" 2>/dev/null || true
+  fi
+  if [[ -f "${THUNAR_SERVICE}.disabled" ]]; then
+    sudo mv "${THUNAR_SERVICE}.disabled" "$THUNAR_SERVICE" 2>/dev/null || true
+  fi
+  echo "==> Reverting xdg mime to Nautilus (if available)..."
+  if [[ -f "/usr/share/applications/org.gnome.Nautilus.desktop" ]]; then
+    xdg-mime default org.gnome.Nautilus.desktop inode/directory 2>/dev/null || true
+    xdg-mime default org.gnome.Nautilus.desktop inode/mount-point 2>/dev/null || true
+    XDG_CURRENT_DESKTOP=niri xdg-mime default org.gnome.Nautilus.desktop inode/directory 2>/dev/null || true
+    XDG_CURRENT_DESKTOP=niri xdg-mime default org.gnome.Nautilus.desktop inode/mount-point 2>/dev/null || true
+    gio mime inode/directory org.gnome.Nautilus.desktop 2>/dev/null | head -n 3 || true
+    python3 - <<PY 2>/dev/null || true
+import configparser, pathlib
+for p in [pathlib.Path.home()/".config/mimeapps.list", pathlib.Path.home()/".config/niri-mimeapps.list"]:
+    if p.exists():
+        c=configparser.ConfigParser()
+        c.optionxform=str
+        c.read(p)
+        if "Default Applications" in c:
+            c["Default Applications"]["inode/directory"]="org.gnome.Nautilus.desktop"
+            c["Default Applications"]["inode/mount-point"]="org.gnome.Nautilus.desktop"
+            with open(p,"w") as f:
+                c.write(f)
+PY
+  fi
+  pkill -f yazi-filemanager-service 2>/dev/null || true
+  echo "reverted (xdg mime may need manual change: xdg-mime default <desktop> inode/directory)"
+  exit 0
+fi
 
 if [[ ! -x "$YAZI_SERVICE" ]]; then
   echo "error: $YAZI_SERVICE not found/executable. Run previous setup first." >&2
   exit 1
 fi
 if [[ ! -x "$YAZI_WRAPPER" ]]; then
-  # fallback to Scripts location
   if [[ -x "$HOME/Scripts/yazi-cwd-wrapper" ]]; then
     YAZI_WRAPPER="$HOME/Scripts/yazi-cwd-wrapper"
   else
@@ -23,6 +59,43 @@ if [[ ! -x "$YAZI_WRAPPER" ]]; then
     exit 1
   fi
 fi
+if [[ ! -f "$HOME/.local/share/applications/$YAZI_DESKTOP" ]]; then
+  echo "error: $HOME/.local/share/applications/$YAZI_DESKTOP not found" >&2
+  exit 1
+fi
+
+echo "==> Setting yazi-kitty as default for xdg-open (system-wide mime)..."
+xdg-mime default "$YAZI_DESKTOP" inode/directory
+xdg-mime default "$YAZI_DESKTOP" inode/mount-point
+# niri (and other compositors) use desktop-specific mimeapps.list - xdg-mime query checks niri-mimeapps.list first
+XDG_CURRENT_DESKTOP=niri xdg-mime default "$YAZI_DESKTOP" inode/directory 2>/dev/null || true
+XDG_CURRENT_DESKTOP=niri xdg-mime default "$YAZI_DESKTOP" inode/mount-point 2>/dev/null || true
+# ensure niri-mimeapps.list is correct even if xdg-mime didn't write there (headless env may have no XDG_CURRENT_DESKTOP)
+python3 - <<PY 2>/dev/null || true
+import configparser, pathlib
+for p in [pathlib.Path.home()/".config/mimeapps.list", pathlib.Path.home()/".config/niri-mimeapps.list"]:
+    if p.exists() or p.parent.exists():
+        c=configparser.ConfigParser()
+        c.optionxform=str
+        if p.exists():
+            c.read(p)
+        if "Default Applications" not in c:
+            c["Default Applications"]={}
+        c["Default Applications"]["inode/directory"]="$YAZI_DESKTOP"
+        c["Default Applications"]["inode/mount-point"]="$YAZI_DESKTOP"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p,"w") as f:
+            c.write(f)
+PY
+gio mime inode/directory "$YAZI_DESKTOP" 2>/dev/null | head -n 3 || true
+gio mime inode/mount-point "$YAZI_DESKTOP" 2>/dev/null | head -n 3 || true
+mkdir -p ~/.config/xfce4
+printf "[helpers]\nFileManager=yazi\nTerminalEmulator=kitty\n" > ~/.config/xfce4/helpers.rc
+xfconf-query -c xfce4-helpers -p /helpers/FileManager -n -t string -s yazi 2>/dev/null || true
+xfconf-query -c xfce4-helpers -p /helpers/TerminalEmulator -n -t string -s kitty 2>/dev/null || true
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
+echo "    xdg-mime: $(xdg-mime query default inode/directory) / $(xdg-mime query default inode/mount-point)"
+echo "    niri-mime: $(XDG_CURRENT_DESKTOP=niri xdg-mime query default inode/directory 2>/dev/null || cat ~/.config/niri-mimeapps.list 2>/dev/null | grep inode/directory || echo unknown)"
 
 echo "==> Backing up system FileManager1 services..."
 sudo cp -a "$SYSTEM_SERVICE" "${SYSTEM_SERVICE}.bak" 2>/dev/null || true
@@ -51,35 +124,24 @@ pkill -x nautilus 2>/dev/null || true
 pkill -x Thunar 2>/dev/null || true
 pkill -f yazi-filemanager-service 2>/dev/null || true
 
-echo "==> Validating desktop mime (should be yazi-kitty.desktop)"
+echo "==> Validating..."
 xdg-mime query default inode/directory || true
 gio mime inode/directory 2>&1 | head -n 3 || true
-desktop-file-validate "$HOME/.local/share/applications/yazi-kitty.desktop" 2>&1 | head || true
+desktop-file-validate "$HOME/.local/share/applications/$YAZI_DESKTOP" 2>&1 | head || true
+grep -E "inode/directory|inode/mount" ~/.config/mimeapps.list 2>&1 | head -n 5 || true
 
 cat <<NEXT
 
-Done.
+Done. yazi is now default for:
+  - xdg-open / FileManager1 DBus (browsers Show in Folder)
+  - inode/directory + inode/mount-point
 
 Test:
-  python3 -c "import dbus; dbus.Interface(dbus.SessionBus().get_object('org.freedesktop.FileManager1','/org/freedesktop/FileManager1'),'org.freedesktop.FileManager1').ShowItems(['file:///tmp'],'test')"
-  # should open kitty -e yazi, not nautilus
   xdg-open /tmp
+  python3 -c "import dbus; dbus.Interface(dbus.SessionBus().get_object('org.freedesktop.FileManager1','/org/freedesktop/FileManager1'),'org.freedesktop.FileManager1').ShowItems(['file:///tmp'],'test')"
+  # both should open kitty -e yazi, not nautilus
 
 Revert:
-  setup-yazi-filemanager --revert  # or: sudo mv ${SYSTEM_SERVICE}.bak $SYSTEM_SERVICE
+  setup-yazi-filemanager --revert
 
 NEXT
-
-if [[ "${1:-}" == "--revert" ]]; then
-  echo "==> Reverting..."
-  sudo mv "${SYSTEM_SERVICE}.bak" "$SYSTEM_SERVICE" 2>/dev/null || echo "no backup found"
-  if [[ -f "${THUNAR_SERVICE}.bak" ]]; then
-    sudo mv "${THUNAR_SERVICE}.bak" "$THUNAR_SERVICE" 2>/dev/null || true
-  fi
-  if [[ -f "${THUNAR_SERVICE}.disabled" ]]; then
-    sudo mv "${THUNAR_SERVICE}.disabled" "$THUNAR_SERVICE" 2>/dev/null || true
-  fi
-  pkill -f yazi-filemanager-service 2>/dev/null || true
-  echo "reverted"
-  exit 0
-fi
