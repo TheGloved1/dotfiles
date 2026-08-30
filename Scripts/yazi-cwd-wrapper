@@ -1,0 +1,18 @@
+#!/bin/bash
+# Wrapper for yazi-kitty.desktop: keep kitty open in last yazi dir (like `y` function)
+tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+# yazi expects files/dirs as args, pass through
+command yazi "$@" --cwd-file="$tmp"
+status=$?
+if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    rm -f -- "$tmp"
+    # cd and drop into interactive shell instead of closing kitty
+    cd -- "$cwd" 2>/dev/null
+    exec zsh
+else
+    rm -f -- "$tmp"
+    # if yazi didn't change dir, still keep shell (remove `exec zsh` if you want kitty to close)
+    exec zsh
+fi
+# fallback
+exit $status
