@@ -1,0 +1,32 @@
+// ────────────── COSMIC on niri — keybindings ──────────────
+binds {
+    // Launchers — aligned with Noctalia MOD+SPACE
+    Mod+Space hotkey-overlay-title="COSMIC Launcher" { spawn "cosmic-launcher"; }
+    Mod+Shift+Space hotkey-overlay-title="COSMIC App Library" { spawn "cosmic-app-library"; }
+    Mod+A hotkey-overlay-title="COSMIC App Library (alt)" { spawn "cosmic-app-library"; }
+
+    // Terminal — package extra/cosmic-terminal provides binary cosmic-term
+    Mod+T hotkey-overlay-title="COSMIC Terminal" { spawn "cosmic-term"; }
+    // Mod+Return hotkey-overlay-title="COSMIC Terminal (alt)" { spawn "cosmic-term"; }
+
+    // System — keep noctalia muscle memory, swap backend to COSMIC/generic
+    Mod+Alt+L hotkey-overlay-title="Lock / Greeter" { spawn "cosmic-greeter"; }
+    Mod+Z hotkey-overlay-title="COSMIC Settings" { spawn "cosmic-settings"; }
+    Mod+W hotkey-overlay-title="COSMIC Settings → Wallpaper" { spawn "cosmic-settings"; }
+    Mod+Shift+W hotkey-overlay-title="COSMIC Settings → Wallpaper" { spawn "cosmic-bg"; }
+    Mod+C hotkey-overlay-title="Calendar / Settings → Time" { spawn "cosmic-settings"; }
+    Mod+Ctrl+Q hotkey-overlay-title="Session menu" { spawn "cosmic-greeter"; }
+    Ctrl+Alt+Delete hotkey-overlay-title="Session menu" { spawn "cosmic-greeter"; }
+    Ctrl+Alt+L hotkey-overlay-title="Lock screen" { spawn "cosmic-greeter"; }
+
+    // Screenshots — cosmic-screenshot + niri builtins (no noctalia plugin) DONT WORK WITH COSMIC
+    // Print hotkey-overlay-title="Screenshot selection" { spawn "cosmic-screenshot"; }
+    // Mod+Shift+Print hotkey-overlay-title="Screenshot region" { spawn "cosmic-screenshot"; }
+    // Mod+Print hotkey-overlay-title="Screenshot screen" { spawn "cosmic-screenshot"; }
+    // Mod+Shift+S hotkey-overlay-title="Screenshot region" { spawn "cosmic-screenshot"; }
+
+    // Utilities — keep same keys, generic fallbacks
+    Mod+Slash hotkey-overlay-title="Keybindings (COSMIC Settings → Shortcuts)" { spawn "cosmic-settings"; }
+    Mod+V hotkey-overlay-title="Clipboard" { spawn-sh "cliphist list | rofi -dmenu | cliphist decode | wl-copy &"; }
+    Mod+Shift+E hotkey-overlay-title="Quick settings" { spawn "cosmic-settings"; }
+}

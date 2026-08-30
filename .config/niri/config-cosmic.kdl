@@ -1,0 +1,15 @@
+include "core/env.kdl"
+include "core/defaults.kdl"
+include "core/input.kdl"
+include "core/rules.kdl"
+include "core/misc.kdl"
+include "core/dynamic.kdl" optional=true
+include "core/animation.kdl"
+include "core/autostart.kdl"
+include "core/binds.kdl"
+include "core/display.kdl"
+include "core/layout.kdl"
+
+// ────────────── COSMIC on niri ──────────────
+include "cosmic/autostart.kdl"
+include "cosmic/binds.kdl"

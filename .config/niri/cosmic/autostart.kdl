@@ -1,0 +1,6 @@
+// ────────────── COSMIC on niri — bridge ──────────────
+// Spawned by niri for the "COSMIC on niri" session.
+// Safe for plain niri: if COSMIC_SESSION_SOCK is not set (plain niri),
+// the binary just prints "Failed to find cosmic session socket" and exits.
+// See: https://github.com/Drakulix/cosmic-ext-extra-sessions
+spawn-at-startup "cosmic-ext-alternative-startup"
