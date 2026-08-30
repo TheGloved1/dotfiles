@@ -21,6 +21,7 @@ binds {
     MOD+SHIFT+PRINT hotkey-overlay-title="Screenshot region" { spawn-sh "noctalia msg screenshot-region"; }
     ALT+PRINT hotkey-overlay-title="Screenshot window" { screenshot-window; }
     ALT+SHIFT+S hotkey-overlay-title="Screenshot region freeze" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
+    // MOD+SHIFT+S hotkey-overlay-title="Screenshot region → menu" { spawn-sh "$HOME/.config/niri/scripts/screenshot-to-waytator.sh"; }
     MOD+SHIFT+S hotkey-overlay-title="Screenshot region → menu" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
     MOD+S hotkey-overlay-title="Screenshot history" { spawn-sh "noctalia msg panel-toggle gloves/screenshot-actions:history"; }
     MOD+SHIFT+O hotkey-overlay-title="OCR" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all ocr"; }
