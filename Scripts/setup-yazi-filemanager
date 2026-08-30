@@ -1,0 +1,85 @@
+#!/bin/bash
+# setup-yazi-filemanager - make yazi (via kitty) the DBus FileManager1 for browsers
+# Fixes: Zen/Firefox "Show in Folder" opening nautilus instead of yazi-kitty
+# Requires: yazi, kitty, ~/.local/bin/yazi-cwd-wrapper, ~/.local/bin/yazi-filemanager-service (symlinked from ~/Scripts)
+set -euo pipefail
+
+YAZI_SERVICE="$HOME/.local/bin/yazi-filemanager-service"
+YAZI_WRAPPER="$HOME/.local/bin/yazi-cwd-wrapper"
+SYSTEM_SERVICE="/usr/share/dbus-1/services/org.freedesktop.FileManager1.service"
+THUNAR_SERVICE="/usr/share/dbus-1/services/org.xfce.Thunar.FileManager1.service"
+USER_SERVICE="$HOME/.local/share/dbus-1/services/org.freedesktop.FileManager1.service"
+
+if [[ ! -x "$YAZI_SERVICE" ]]; then
+  echo "error: $YAZI_SERVICE not found/executable. Run previous setup first." >&2
+  exit 1
+fi
+if [[ ! -x "$YAZI_WRAPPER" ]]; then
+  # fallback to Scripts location
+  if [[ -x "$HOME/Scripts/yazi-cwd-wrapper" ]]; then
+    YAZI_WRAPPER="$HOME/Scripts/yazi-cwd-wrapper"
+  else
+    echo "error: yazi-cwd-wrapper not found" >&2
+    exit 1
+  fi
+fi
+
+echo "==> Backing up system FileManager1 services..."
+sudo cp -a "$SYSTEM_SERVICE" "${SYSTEM_SERVICE}.bak" 2>/dev/null || true
+if [[ -f "$THUNAR_SERVICE" ]]; then
+  sudo cp -a "$THUNAR_SERVICE" "${THUNAR_SERVICE}.bak" 2>/dev/null || true
+fi
+
+echo "==> Overriding $SYSTEM_SERVICE -> $YAZI_SERVICE"
+sudo tee "$SYSTEM_SERVICE" >/dev/null <<EOF
+[D-BUS Service]
+Name=org.freedesktop.FileManager1
+Exec=$YAZI_SERVICE
+EOF
+
+if [[ -f "$THUNAR_SERVICE" ]]; then
+  echo "==> Disabling duplicate $THUNAR_SERVICE (same Name, races with nautilus)"
+  sudo mv "$THUNAR_SERVICE" "${THUNAR_SERVICE}.disabled" 2>/dev/null || true
+fi
+
+echo "==> Removing stale user override (now system one is correct)"
+rm -f "$USER_SERVICE"
+
+echo "==> Reloading DBus activation env"
+dbus-update-activation-environment --systemd --all 2>/dev/null || true
+pkill -x nautilus 2>/dev/null || true
+pkill -x Thunar 2>/dev/null || true
+pkill -f yazi-filemanager-service 2>/dev/null || true
+
+echo "==> Validating desktop mime (should be yazi-kitty.desktop)"
+xdg-mime query default inode/directory || true
+gio mime inode/directory 2>&1 | head -n 3 || true
+desktop-file-validate "$HOME/.local/share/applications/yazi-kitty.desktop" 2>&1 | head || true
+
+cat <<NEXT
+
+Done.
+
+Test:
+  python3 -c "import dbus; dbus.Interface(dbus.SessionBus().get_object('org.freedesktop.FileManager1','/org/freedesktop/FileManager1'),'org.freedesktop.FileManager1').ShowItems(['file:///tmp'],'test')"
+  # should open kitty -e yazi, not nautilus
+  xdg-open /tmp
+
+Revert:
+  setup-yazi-filemanager --revert  # or: sudo mv ${SYSTEM_SERVICE}.bak $SYSTEM_SERVICE
+
+NEXT
+
+if [[ "${1:-}" == "--revert" ]]; then
+  echo "==> Reverting..."
+  sudo mv "${SYSTEM_SERVICE}.bak" "$SYSTEM_SERVICE" 2>/dev/null || echo "no backup found"
+  if [[ -f "${THUNAR_SERVICE}.bak" ]]; then
+    sudo mv "${THUNAR_SERVICE}.bak" "$THUNAR_SERVICE" 2>/dev/null || true
+  fi
+  if [[ -f "${THUNAR_SERVICE}.disabled" ]]; then
+    sudo mv "${THUNAR_SERVICE}.disabled" "$THUNAR_SERVICE" 2>/dev/null || true
+  fi
+  pkill -f yazi-filemanager-service 2>/dev/null || true
+  echo "reverted"
+  exit 0
+fi
