@@ -6,11 +6,3 @@ window-rule {
     match app-id="skyrimse.exe"
     block-out-from "screencast"
 }
-window-rule {
-    match app-id="zen"
-    block-out-from "screencast"
-}
-window-rule {
-    match app-id="discord"
-    block-out-from "screencast"
-}
