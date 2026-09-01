@@ -114,6 +114,12 @@ binds {
     MOD+CTRL+SHIFT+J hotkey-overlay-title="Move workspace down (SUPER+CTRL+SHIFT+J)" { move-workspace-down; }
     MOD+CTRL+SHIFT+K hotkey-overlay-title="Move workspace up (SUPER+CTRL+SHIFT+K)" { move-workspace-up; }
 
+    // Screencasting — dynamic cast target (https://niri-wm.github.io/niri/Screencasting.html#dynamic-screencast-target)
+    // Select "niri Dynamic Cast Target" in portal dialog (OBS/Browser) first, then use these to live-switch.
+    MOD+ALT+C hotkey-overlay-title="Cast focused window (dynamic)" { set-dynamic-cast-window; }
+    MOD+CTRL+C hotkey-overlay-title="Cast window — pick with mouse" { spawn-sh "niri msg action set-dynamic-cast-window --id $(niri msg --json pick-window | jq -r .id)"; }
+    MOD+ALT+X hotkey-overlay-title="Clear dynamic cast (blank stream)" { clear-dynamic-cast-target; }
+
     // System
     XF86Sleep allow-when-locked=true hotkey-overlay-title="Suspend" { spawn-sh "systemctl suspend"; }
     MOD+ESCAPE allow-inhibiting=false hotkey-overlay-title="Toggle keyboard shortcuts inhibit" { toggle-keyboard-shortcuts-inhibit; }

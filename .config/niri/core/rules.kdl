@@ -29,11 +29,6 @@ layer-rule {
     place-within-backdrop true
 }
 
-layer-rule {
-    match namespace="noctalia-desktop-widget-gloves/activate-linux:watermark-0000000000000001"
-    place-within-backdrop true
-}
-
 window-rule {
     match app-id=r"firefox$" title="^Picture-in-Picture$"
     open-floating true
@@ -103,6 +98,46 @@ window-rule {
     match app-id=r"^(gamescope|steam_app_\d+)$"
     open-floating false
     default-column-width {
+    }
+
+    // background-effect {
+    //     blur false
+    // }
+    //
+    // focus-ring {
+    //     off
+    // }
+    //
+    // border {
+    //     off
+    // }
+    //
+    // shadow {
+    //     off
+    // }
+}
+
+window-rule {
+    match app-id=r"^(gw2-64.exe)$"
+    open-floating false
+    default-column-width {
+    }
+    opacity 1.0
+
+    background-effect {
+        blur false
+    }
+
+    focus-ring {
+        off
+    }
+
+    border {
+        off
+    }
+
+    shadow {
+        off
     }
 }
 
