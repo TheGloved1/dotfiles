@@ -1,3 +1,4 @@
+@import "/home/gloves/.cache/noctalia/zen-browser/zen-userChrome.css";
 /* DMS Matugen Zen Browser Theme */
 :root {
   --zen-primary-color: #26233a !important;
@@ -121,4 +122,3 @@ toolbar .toolbarbutton-1 {
 toolbar .toolbarbutton-1 > .toolbarbutton-icon {
   fill: #c4a7e7 !important;
 }
-@import "/home/gloves/.cache/noctalia/zen-browser/zen-userChrome.css";
