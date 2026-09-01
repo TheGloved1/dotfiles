@@ -3,6 +3,7 @@ ratio = [2, 4, 2]
 sort_by = "natural"
 sort_dir_first = true
 show_hidden = true
+mouse_events = ["click", "scroll"]
 
 [opener]
 folder = [
@@ -55,12 +56,21 @@ archive = [
   { run = 'xdg-open %s', orphan = true, desc = "xdg-open", for = "linux" },
   { run = 'xarchiver %s', orphan = true, desc = "xarchiver", for = "linux" },
 ]
+extract = [
+  { run = 'ouch d -y "$@"', desc = "Extract here with ouch", for = "unix" },
+  { run = 'ouch d -y %*', desc = "Extract here with ouch", for = "windows" },
+]
 fallback = [
   { run = 'xdg-open %s', orphan = true, desc = "xdg-open", for = "linux" },
+]
+trash = [
+  { run = 'ya pub trash-restore --list %S', desc = "Restore selected files" },
+  { run = 'ya pub trash-empty --list %S', desc = "Empty trash bin" },
 ]
 
 [open]
 rules = [
+  { mime = "trash/**", use = [ "open", "trash" ] },
   { url = "*/", use = "folder" },
   { mime = "folder/*", use = "folder" },
 
@@ -87,6 +97,10 @@ rules = [
 
   { mime = "*", use = "fallback" },
 ]
+
+[[plugin.prepend_previewers]]
+mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}"
+run = "ouch"
 
 [[plugin.prepend_fetchers]]
 id = "git"
