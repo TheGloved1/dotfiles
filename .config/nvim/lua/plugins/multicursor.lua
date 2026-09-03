@@ -1,5 +1,6 @@
 return {
   "brenton-leighton/multiple-cursors.nvim",
+  enabled = false,
   version = "*", -- Use the latest tagged version
   opts = {
     match_visible_only = false,
