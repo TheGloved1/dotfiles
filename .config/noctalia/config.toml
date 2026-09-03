@@ -12,24 +12,26 @@ tint_intensity = 0.14999999664723873
 background_opacity = 0.89999997988343239
 border = "outline"
 capsule = true
-capsule_opacity = 0.84999998100101948
-capsule_padding = 8.0
-capsule_radius = 8
-capsule_thickness = 0.64999998919665813
+capsule_opacity = 0.0
+capsule_padding = 6.0
+capsule_radius = 0
+capsule_thickness = 0.74999998696148396
 center = [ "active_window" ]
-end = [ "group:g2", "weather", "clock", "group:g4" ]
+concave_edge_corners = false
+end = [ "bar", "group:g2", "weather", "clock", "group:g4" ]
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 margin_ends = 0
 margin_opposite_edge = 0
 padding = 6
 panel_overlap = 0
-radius = 24
+radius = 0
+scale = 0.90000000596046448
 shadow = true
 show_on_workspace_switch = false
 start = [ "launcher", "group:g1", "group:g5", "group:g3", "cat" ]
-thickness = 32
-widget_spacing = 6
+thickness = 24
+widget_spacing = 4
 
     [bar.default.dead_zone.actions]
     left = "panel-toggle control-center home"
@@ -43,7 +45,7 @@ widget_spacing = 6
     fill = "surface_variant"
     id = "g1"
     members = [ "workspaces", "taskbar" ]
-    opacity = 1.0
+    opacity = 0.0
     padding = 6.0
 
     [[bar.default.capsule_group]]
@@ -52,8 +54,8 @@ widget_spacing = 6
     enabled = true
     fill = "surface_variant"
     id = "g2"
-    members = [ "bar", "recorder", "privacy", "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
-    opacity = 1.0
+    members = [ "recorder", "privacy", "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
+    opacity = 0.0
     padding = 6.0
 
     [[bar.default.capsule_group]]
@@ -63,7 +65,7 @@ widget_spacing = 6
     fill = "surface_variant"
     id = "g3"
     members = [ "ram", "cpu", "sysmon" ]
-    opacity = 1.0
+    opacity = 0.0
     padding = 6.0
 
     [[bar.default.capsule_group]]
@@ -405,6 +407,7 @@ enabled = [
 app_icon_color = "primary"
 clipboard_auto_paste = "off"
 clipboard_history_max_entries = 500
+corner_radius_scale = 0.0
 external_ip_enabled = true
 font_family = "CaskaydiaCove Nerd Font"
 launch_apps_custom_command = ""
@@ -426,16 +429,18 @@ polkit_agent = true
 
     [shell.panel]
     clipboard_placement = "attached"
+    control_center_position = "center"
     floating_layer = "overlay"
-    launcher_placement = "floating"
-    launcher_position = "center"
+    floating_offset = 0
+    launcher_placement = "attached"
+    launcher_position = "auto"
     polkit_placement = "attached"
     polkit_position = "auto"
     shadow = true
-    transparency_mode = "soft"
+    transparency_mode = "solid"
 
     [shell.screen_corners]
-    enabled = true
+    enabled = false
     size = 24
 
     [shell.screenshot]
@@ -490,8 +495,8 @@ builtin = "Rosé Pine"
 community_palette = "Rose Pine Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
-source = "community"
-wallpaper_scheme = "soft"
+source = "builtin"
+wallpaper_scheme = "m3-content"
 
     [theme.templates]
     builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
@@ -509,6 +514,7 @@ wallpaper_scheme = "soft"
         "fastfetch",
         "hyprtoolkit",
         "papirus-icons",
+        "fzf",
         "lazygit",
         "yazi"
     ]
@@ -534,34 +540,36 @@ transition_on_startup = true
     wallpaper_scheme = "soft"
 
     [[wallpaper.favorite]]
-    builtin_palette = "Rosé Pine"
-    palette_source = "builtin"
+    community_palette = "Rose Pine Moon"
+    palette_source = "community"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/os/arch.jpg"
     theme_mode = "dark"
 
     [[wallpaper.favorite]]
-    community_palette = "Rose Pine Alt"
+    community_palette = "Rose Pine Moon"
     palette_source = "community"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/os/arch-recolored.png"
     theme_mode = "dark"
 
     [[wallpaper.favorite]]
-    community_palette = "Rose Pine Alt"
-    palette_source = "community"
+    palette_source = "wallpaper"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/generative/noise-line.png"
     theme_mode = "dark"
+    wallpaper_scheme = "soft"
 
     [[wallpaper.favorite]]
+    community_palette = "Rose Pine Moon"
+    palette_source = "community"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/generative/maze.png"
-    theme_mode = "auto"
+    theme_mode = "dark"
 
     [[wallpaper.favorite]]
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/minimalistic/this-wallpaper-is-not-available.png"
     theme_mode = "auto"
 
     [[wallpaper.favorite]]
-    builtin_palette = "Ayu"
-    palette_source = "builtin"
+    community_palette = "ADW"
+    palette_source = "community"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/abstract-2.jpg"
     theme_mode = "dark"
 
@@ -589,13 +597,16 @@ capsule = false
 capsule_opacity = 0.90000000000000002
 capsule_padding = 8
 capsule_radius = "auto"
+font_scale = 0.90000000000000013
 icon_size = 16
+max_length = 320
 min_length = 45
-scale = 0.90000000000000013
+scale = 1.0
 title_scroll = "on_hover"
 
 [widget.bar]
-hide_when_disconnected = true
+capsule_radius = "auto"
+hide_when_disconnected = false
 scale = 0.90000000000000013
 show_channel_name = false
 type = "raycursive/discord-voice:bar"
@@ -611,6 +622,8 @@ enabled = false
 
 [widget.cat]
 audio_spectrum = true
+capsule = true
+capsule_padding = 3
 input_devices = [ "/dev/input/event*" ]
 tappy_mode = true
 type = "noctalia/bongocat:cat"
@@ -633,12 +646,15 @@ glyph = "hyprland"
 visualization = "none"
 
 [widget.launcher]
+capsule = true
+capsule_padding = 0
 capsule_radius = "auto"
 custom_image = "/home/gloves/Pictures/Assets/arch-linux.svg"
+custom_image_colorize = true
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
 glyph = "prompt"
-scale = 1.25
+scale = 1.8
 
 [widget.network]
 show_label = false
@@ -674,15 +690,17 @@ hidden = [ "Network", "Blueman" ]
 show_label = false
 
 [widget.weather]
+capsule = true
 show_condition = true
 
     [widget.weather.actions]
     right = "exec fz --title 'Wheather' -- curl wttr.in"
 
 [widget.workspaces]
-active_pill_size = 2.0
+active_pill_size = 1.75
 hide_when_empty = true
-inactive_pill_size = 1.25
-label_source = "name"
+inactive_pill_size = 1.0
+label_source = "id"
 labels_only_when_occupied = true
+pill_scale = 0.80000000000000004
 show_labels = false
