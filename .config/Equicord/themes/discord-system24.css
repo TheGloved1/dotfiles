@@ -46,27 +46,27 @@ body {
   --radius-xxl: 0px !important;
   --radius-round: 0px !important;
 
-  --text-0: #232136;
+  --text-0: #191724;
   --text-1: #e0def4;
   --text-2: color-mix(in srgb, #e0def4 90%, transparent);
   --text-3: color-mix(in srgb, #e0def4 75%, transparent);
   --text-4: color-mix(in srgb, #e0def4 60%, transparent);
   --text-5: color-mix(in srgb, #e0def4 45%, transparent);
 
-  --bg-1: #232136;
-  --bg-2: #393552;
-  --bg-3: #393552;
-  --bg-4: #232136;
+  --bg-1: #191724;
+  --bg-2: #26233a;
+  --bg-3: #26233a;
+  --bg-4: #191724;
 
-  --hover: #393552;
-  --active: #393552;
-  --message-hover: #393552;
+  --hover: #26233a;
+  --active: #26233a;
+  --message-hover: #26233a;
 
-  --accent-1: #ea9a97;
+  --accent-1: #ebbcba;
   --accent-2: var(--accent-1);
   --accent-3: #9ccfd8;
-  --accent-4: #393552;
-  --accent-5: #3e8fb0;
+  --accent-4: #26233a;
+  --accent-5: #31748f;
   --accent-6: var(--accent-1);
 
   --border-light: color-mix(in srgb, var(--accent-1) 10%, transparent);
@@ -80,11 +80,11 @@ body {
   --list-active: var(--accent-1);
   --pill-active: var(--accent-1);
 
-  --online: #ea9a97;
-  --idle: #3e8fb0;
+  --online: #ebbcba;
+  --idle: #31748f;
   --dnd: #eb6f92;
   --streaming: #9ccfd8;
-  --offline: #6c6a85;
+  --offline: #656278;
 }
 
 /* --- GLOBAL RESET --- */
