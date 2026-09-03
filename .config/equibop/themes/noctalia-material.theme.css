@@ -36,47 +36,47 @@
   /* See options at https://github.com/CapnKitten/Material-Discord */
   /* Accent */
   --accent-hue: 2;
-  --accent-saturation: 66%;
-  --accent-lightness: 75%;
-  --accent-text-color: #232136;
+  --accent-saturation: 55%;
+  --accent-lightness: 82%;
+  --accent-text-color: #191724;
 
   /* App */
-  --app-bg: #232136;
-  --main-color: #232136;
-  --main-alt: #232136;
-  --server-color: #232136;
-  --status-picker-color: #393552;
-  --sidebar-panel-color: #393552;
-  --chat-color: #232136;
-  --tooltip-color: #232136;
+  --app-bg: #191724;
+  --main-color: #191724;
+  --main-alt: #191724;
+  --server-color: #191724;
+  --status-picker-color: #26233a;
+  --sidebar-panel-color: #26233a;
+  --chat-color: #191724;
+  --tooltip-color: #191724;
   --tooltip-text-color: #e0def4;
 
   /* Message */
-  --message-color: #393552;
+  --message-color: #26233a;
   --message-color-hover: hsl(
     var(--accent-hue),
     calc(var(--accent-saturation) * var(--saturation-modifier) * var(--saturation-factor)),
     calc(var(--accent-lightness) * var(--lightness-modifier) * var(--ui-darkness-modifier) * 4)
   ) !important;
-  --message-color-alt: #232136;
-  --attachment-color: #232136;
-  --main-textarea-color: #ea9a97;
-  --main-textarea-button-color: #232136;
+  --message-color-alt: #191724;
+  --attachment-color: #191724;
+  --main-textarea-color: #ebbcba;
+  --main-textarea-button-color: #191724;
   --main-textarea-color-alt: #9ccfd8;
-  --main-textarea-border: #393552;
+  --main-textarea-border: #26233a;
 
   /* Card */
-  --card-color-filled: #393552;
-  --card-color-hover: #9c3430;
-  --card-color-active: #9c3430;
+  --card-color-filled: #26233a;
+  --card-color-hover: #993733;
+  --card-color-active: #993733;
   --card-color-alt: #2e8493;
   --card-color-alt-hover: #9ccfd8;
-  --card-border-color: #393552;
+  --card-border-color: #26233a;
   --card-header-text-color: #e0def4;
 
   /* Slider & Switch */
-  --switch-knob-color: #393552;
-  --switch-slider-color: #232136;
+  --switch-knob-color: #26233a;
+  --switch-slider-color: #191724;
 
   /* Input */
   --input-text-color: #e0def4;
