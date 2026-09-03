@@ -4,7 +4,6 @@
 # Floating launcher with floating_layer="overlay" stays above fullscreen (niri-wm.github.io/niri/Fullscreen-and-Maximize.html).
 # Docs: docs.noctalia.dev/noctalia/configuration/shell/  (launcher_placement = attached|floating, launcher_position = center|auto)
 # Niri IPC: no is_fullscreen field in stable 26.4.0 (PR #2836/#2270 pending) — heuristic tile_size ≈ output logical.
-# User choices: focused workspace only, true fullscreen (Mod+Shift+F) only, settings.toml override, ignore centered.
 # Visible check: fullscreen is considered onscreen only when is_focused==true (tile_pos_in_workspace_view is null for tiled in niri 26.4; see niri/issues/2381). Scrolling away unfocuses it → attached.
 set -euo pipefail
 
@@ -17,7 +16,7 @@ mkdir -p "$STATE_DIR"
 
 # tolerance for size compare (gaps 8 + borders): normal 1904x1032 vs fullscreen 1920x1080
 TOL=4
-DEBOUNCE=0.35
+DEBOUNCE=0.25
 
 log() {
   local ts
@@ -29,7 +28,7 @@ log() {
 ensure_settings_exists() {
   if [[ ! -f "$SETTINGS" ]]; then
     mkdir -p "$(dirname "$SETTINGS")"
-    cat > "$SETTINGS" <<'EOF'
+    cat >"$SETTINGS" <<'EOF'
 config_version = 13
 [shell.panel]
 launcher_placement = "attached"
@@ -39,90 +38,29 @@ EOF
   fi
 }
 
-# Python helper to atomically set launcher_placement (+ launcher_position when floating)
+# Delegates to standalone Python helper (extracted for testability)
 # Returns 0 if changed, 1 if no change, 2 on error
 set_placement() {
-  local desired="$1"  # attached|floating
+  local desired="$1" # attached|floating
   local position="auto"
   if [[ "$desired" == "floating" ]]; then
     position="center"
   fi
-
-  python3 - "$SETTINGS" "$desired" "$position" <<'PY'
-import sys
-from pathlib import Path
-try:
-    import tomllib
-except ImportError:
-    import tomli as tomllib
-try:
-    import tomli_w
-except ImportError:
-    tomli_w = None
-
-settings_path = Path(sys.argv[1])
-desired = sys.argv[2]
-position = sys.argv[3]
-
-# read existing
-try:
-    data = tomllib.load(open(settings_path, "rb"))
-except FileNotFoundError:
-    data = {"config_version": 13}
-except Exception as e:
-    print(f"read error: {e}", file=sys.stderr)
-    sys.exit(2)
-
-if "shell" not in data or not isinstance(data["shell"], dict):
-    data["shell"] = {}
-if "panel" not in data["shell"] or not isinstance(data["shell"]["panel"], dict):
-    data["shell"]["panel"] = {}
-
-panel = data["shell"]["panel"]
-old_placement = panel.get("launcher_placement")
-old_position = panel.get("launcher_position")
-
-# If old_placement is None, fallback is from config.toml (floating). We still treat None as needs update if desired != "floating" ?
-# For idempotence, we track last applied in state file to avoid reload loops when config.toml provides default.
-# Simple: if old matches desired and (floating check position), no change.
-
-needs = False
-if old_placement != desired:
-    needs = True
-if old_position != position:
-    # position matters for next floating; ensure it matches desired state's position
-    needs = True
-# Also handle None defaults (config.toml provides floating/center, settings may be missing)
-if old_placement is None:
-    needs = True
-
-if not needs:
-    sys.exit(1)
-
-panel["launcher_placement"] = desired
-panel["launcher_position"] = position
-# keep floating_offset etc untouched
-# preserve floating_layer if missing? config provides overlay, but settings may override — leave as is.
-
-# atomic write
-if tomli_w is None:
-    print("tomli_w missing", file=sys.stderr)
-    sys.exit(2)
-
-tmp = settings_path.with_suffix(".tmp")
-with open(tmp, "wb") as f:
-    tomli_w.dump(data, f)
-tmp.replace(settings_path)
-# success changed
-sys.exit(0)
-PY
-  ret=$?
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local helper="$script_dir/noctalia-launcher-placement.py"
+  if [[ ! -x "$helper" ]]; then
+    log "ERROR: helper not found at $helper"
+    return 2
+  fi
+  "$helper" --settings "$SETTINGS" --desired "$desired" --position "$position" 2>>"$LOG"
+  local ret=$?
   if [[ $ret -eq 0 ]]; then
-    return 0  # changed
+    return 0
   elif [[ $ret -eq 1 ]]; then
-    return 1  # no change
+    return 1
   else
-    log "ERROR: python set_placement failed code $ret for $desired"
+    log "ERROR: python helper failed code $ret for $desired/$position"
     return 2
   fi
 }
@@ -160,7 +98,7 @@ has_fullscreen() {
   local width height
   width="$(echo "$logical" | jq -r '.width' 2>/dev/null)"
   height="$(echo "$logical" | jq -r '.height' 2>/dev/null)"
-  if [[ -z "$width" || "$width" == "null" ]]; then
+  if [[ -z "$width" || "$width" == "null" || -z "$height" || "$height" == "null" ]]; then
     return 1
   fi
   # heuristic: tile_size within TOL of logical, is_floating==false, workspace==focused, is_focused==true (visible)
@@ -259,8 +197,10 @@ ensure_settings_exists
 # initial evaluate
 evaluate_and_apply
 
-# debounce state
+# debounce state (kept for external inspection, used implicitly via sleep/drain)
+# shellcheck disable=SC2034
 LAST_EVAL=0
+# shellcheck disable=SC2034
 PENDING=0
 
 # trap cleanup
@@ -287,14 +227,14 @@ fi
 while IFS= read -r line; do
   [[ -z "$line" ]] && continue
   case "$line" in
-    *WindowsChanged*|*WindowOpenedOrChanged*|*WindowClosed*|*WindowFocusChanged*|*WorkspaceActivated*|*WindowLayoutsChanged*|*WorkspacesChanged*|*ConfigLoaded*)
-      ;;
-    *KeyboardLayoutsChanged*|*OverviewOpenedOrClosed*|*CastsChanged*)
-      continue
-      ;;
-    *)
-      continue
-      ;;
+  *WindowsChanged* | *WindowOpenedOrChanged* | *WindowClosed* | *WindowFocusChanged* | *WorkspaceActivated* | *WindowLayoutsChanged* | *WorkspacesChanged* | *ConfigLoaded*)
+    ;;
+  *KeyboardLayoutsChanged* | *OverviewOpenedOrClosed* | *CastsChanged*)
+    continue
+    ;;
+  *)
+    continue
+    ;;
   esac
 
   # synchronous debounce — sleep briefly to coalesce bursts (WindowLayoutsChanged fires rapidly)
@@ -303,8 +243,8 @@ while IFS= read -r line; do
   while IFS= read -t 0.05 -r _extra 2>/dev/null; do
     # if extra is relevant, keep draining
     case "$_extra" in
-      *WindowsChanged*|*WindowOpenedOrChanged*|*WindowClosed*|*WindowFocusChanged*|*WorkspaceActivated*|*WindowLayoutsChanged*|*WorkspacesChanged*|*ConfigLoaded*) continue ;;
-      *) continue ;;
+    *WindowsChanged* | *WindowOpenedOrChanged* | *WindowClosed* | *WindowFocusChanged* | *WorkspaceActivated* | *WindowLayoutsChanged* | *WorkspacesChanged* | *ConfigLoaded*) continue ;;
+    *) continue ;;
     esac
   done || true
 

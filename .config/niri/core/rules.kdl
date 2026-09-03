@@ -2,7 +2,7 @@
 
 window-rule {
     draw-border-with-background false
-    geometry-corner-radius 12
+    geometry-corner-radius 0
     clip-to-geometry true
     opacity 0.95
     scroll-factor 0.75
@@ -123,6 +123,35 @@ window-rule {
     default-column-width {
     }
     opacity 1.0
+
+    background-effect {
+        blur false
+    }
+
+    focus-ring {
+        off
+    }
+
+    border {
+        off
+    }
+
+    shadow {
+        off
+    }
+}
+
+// ── Burrito HUD overlay — native Godot overlay, must be floating fullscreen transparent ──
+window-rule {
+    match app-id=r"^Burrito$"
+    match title=r"^Burrito$"
+    open-floating true
+    open-focused false
+    opacity 1.0
+    draw-border-with-background false
+    geometry-corner-radius 0
+    clip-to-geometry false
+    default-floating-position x=0 y=0 relative-to="top-left"
 
     background-effect {
         blur false

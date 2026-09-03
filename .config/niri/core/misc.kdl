@@ -12,6 +12,8 @@ overview {
 cursor {
     xcursor-theme "BreezeX-RosePine-Linux"
     xcursor-size 24
+
+    hide-when-typing
 }
 
 debug {

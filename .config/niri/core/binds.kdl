@@ -13,6 +13,7 @@ binds {
     // Window Management
     MOD+Q hotkey-overlay-title="Close window" { close-window; }
     MOD+F hotkey-overlay-title="Maximize column" { maximize-column; }
+    MOD+M hotkey-overlay-title="Maximize to edges" { maximize-window-to-edges; }
     MOD+SHIFT+F hotkey-overlay-title="Fullscreen window" { fullscreen-window; }
     MOD+D hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
     MOD+CTRL+SPACE hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
