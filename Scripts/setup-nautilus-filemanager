@@ -1,0 +1,93 @@
+#!/bin/bash
+# setup-nautilus-filemanager - make Nautilus the default FileManager for xdg-open and DBus FileManager1
+# Reverts yazi setup: restores DBus service and mime to Nautilus
+set -euo pipefail
+
+NAUTILUS_DESKTOP="org.gnome.Nautilus.desktop"
+SYSTEM_SERVICE="/usr/share/dbus-1/services/org.freedesktop.FileManager1.service"
+THUNAR_SERVICE="/usr/share/dbus-1/services/org.xfce.Thunar.FileManager1.service"
+USER_SERVICE="$HOME/.local/share/dbus-1/services/org.freedesktop.FileManager1.service"
+
+if [[ ! -f "/usr/share/applications/$NAUTILUS_DESKTOP" ]]; then
+  echo "error: $NAUTILUS_DESKTOP not found - is nautilus installed?" >&2
+  exit 1
+fi
+
+# handle revert early (revert to yazi)
+if [[ "${1:-}" == "--revert" ]]; then
+  echo "==> Reverting to yazi (via setup-yazi-filemanager)..."
+  exec "$HOME/Scripts/setup-yazi-filemanager"
+fi
+
+echo "==> Setting Nautilus as default for xdg-open (system-wide mime)..."
+xdg-mime default "$NAUTILUS_DESKTOP" inode/directory
+xdg-mime default "$NAUTILUS_DESKTOP" inode/mount-point
+XDG_CURRENT_DESKTOP=niri xdg-mime default "$NAUTILUS_DESKTOP" inode/directory 2>/dev/null || true
+XDG_CURRENT_DESKTOP=niri xdg-mime default "$NAUTILUS_DESKTOP" inode/mount-point 2>/dev/null || true
+python3 - <<PY 2>/dev/null || true
+import configparser, pathlib
+for p in [pathlib.Path.home()/".config/mimeapps.list", pathlib.Path.home()/".config/niri-mimeapps.list"]:
+    c=configparser.ConfigParser()
+    c.optionxform=str
+    if p.exists():
+        c.read(p)
+    if "Default Applications" not in c:
+        c["Default Applications"]={}
+    c["Default Applications"]["inode/directory"]="$NAUTILUS_DESKTOP"
+    c["Default Applications"]["inode/mount-point"]="$NAUTILUS_DESKTOP"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(p,"w") as f:
+        c.write(f)
+PY
+gio mime inode/directory "$NAUTILUS_DESKTOP" 2>/dev/null | head -n 3 || true
+gio mime inode/mount-point "$NAUTILUS_DESKTOP" 2>/dev/null | head -n 3 || true
+mkdir -p ~/.config/xfce4
+printf "[helpers]\nFileManager=nautilus\nTerminalEmulator=kitty\n" > ~/.config/xfce4/helpers.rc
+xfconf-query -c xfce4-helpers -p /helpers/FileManager -n -t string -s nautilus 2>/dev/null || true
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
+echo "    xdg-mime: $(xdg-mime query default inode/directory) / $(xdg-mime query default inode/mount-point)"
+echo "    niri-mime: $(XDG_CURRENT_DESKTOP=niri xdg-mime query default inode/directory 2>/dev/null || echo unknown)"
+
+echo "==> Restoring system FileManager1 DBus service to Nautilus..."
+if [[ -f "${SYSTEM_SERVICE}.bak" ]]; then
+  sudo mv "${SYSTEM_SERVICE}.bak" "$SYSTEM_SERVICE" 2>/dev/null || sudo cp -a "${SYSTEM_SERVICE}.bak" "$SYSTEM_SERVICE" 2>/dev/null || true
+else
+  # no backup, recreate nautilus service directly
+  sudo tee "$SYSTEM_SERVICE" >/dev/null <<EOF
+[D-BUS Service]
+Name=org.freedesktop.FileManager1
+Exec=/usr/bin/nautilus --gapplication-service
+EOF
+fi
+if [[ -f "${THUNAR_SERVICE}.bak" ]]; then
+  sudo mv "${THUNAR_SERVICE}.bak" "$THUNAR_SERVICE" 2>/dev/null || true
+fi
+if [[ -f "${THUNAR_SERVICE}.disabled" ]]; then
+  sudo mv "${THUNAR_SERVICE}.disabled" "$THUNAR_SERVICE" 2>/dev/null || true
+fi
+rm -f "$USER_SERVICE"
+
+echo "==> Reloading DBus activation env"
+dbus-update-activation-environment --systemd --all 2>/dev/null || true
+pkill -f yazi-filemanager-service 2>/dev/null || true
+
+echo "==> Validating..."
+xdg-mime query default inode/directory || true
+gio mime inode/directory 2>&1 | head -n 3 || true
+grep -E "inode/directory|inode/mount" ~/.config/mimeapps.list 2>&1 | head -n 5 || true
+grep -E "inode/directory|inode/mount" ~/.config/niri-mimeapps.list 2>&1 | head -n 5 || true
+
+cat <<NEXT
+
+Done. Nautilus is now default for:
+  - xdg-open
+  - FileManager1 DBus (browsers Show in Folder)
+
+Test:
+  xdg-open /tmp
+  python3 -c "import dbus; dbus.Interface(dbus.SessionBus().get_object('org.freedesktop.FileManager1','/org/freedesktop/FileManager1'),'org.freedesktop.FileManager1').ShowItems(['file:///tmp'],'test')"
+
+Revert to yazi:
+  setup-nautilus-filemanager --revert  # or setup-yazi-filemanager
+
+NEXT
