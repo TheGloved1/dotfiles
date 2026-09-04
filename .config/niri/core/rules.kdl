@@ -24,11 +24,6 @@ window-rule {
     }
 }
 
-layer-rule {
-    match namespace="noctalia-backdrop"
-    place-within-backdrop true
-}
-
 window-rule {
     match app-id=r"firefox$" title="^Picture-in-Picture$"
     open-floating true
@@ -40,11 +35,6 @@ window-rule {
     }
     default-window-height {
     }
-    // open-floating true
-}
-
-window-rule {
-    match app-id=r"^dev\.noctalia\.Noctalia$"
     open-floating true
 }
 
@@ -141,35 +131,6 @@ window-rule {
     }
 }
 
-// ── Burrito HUD overlay — native Godot overlay, must be floating fullscreen transparent ──
-window-rule {
-    match app-id=r"^Burrito$"
-    match title=r"^Burrito$"
-    open-floating true
-    open-focused false
-    opacity 1.0
-    draw-border-with-background false
-    geometry-corner-radius 0
-    clip-to-geometry false
-    default-floating-position x=0 y=0 relative-to="top-left"
-
-    background-effect {
-        blur false
-    }
-
-    focus-ring {
-        off
-    }
-
-    border {
-        off
-    }
-
-    shadow {
-        off
-    }
-}
-
 window-rule {
     match app-id=r"^(thunar)$" 
     open-floating true
@@ -182,11 +143,6 @@ window-rule {
 
 window-rule {
     match title=r"^(Authentication Required|Save As|Add Folder to Workspace|Open Files)$"
-    open-floating true
-}
-
-window-rule {
-    match app-id=r"kitty-dropterm"
     open-floating true
 }
 
@@ -205,27 +161,6 @@ window-rule {
     default-floating-position x=1 y=1 relative-to="bottom-right"
     open-focused false
 }
-
-layer-rule {
-    match namespace=r"^(?i)noctalia" 
-    background-effect {
-        blur false
-        xray false
-    }
-}
-
-layer-rule {
-    match namespace="noctalia-bar-default"
-    background-effect {
-        blur false
-        xray false
-    }
-}
-
-// layer-rule {
-//     match layer="bottom"           # it is currently on the bottom layer
-//     match layer="top"              # move it to the top layer
-// }
 
 window-rule {
     match app-id=r"^org\.quickshell$"

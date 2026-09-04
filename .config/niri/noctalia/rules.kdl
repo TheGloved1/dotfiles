@@ -1,0 +1,30 @@
+layer-rule {
+    match namespace="noctalia-backdrop"
+    place-within-backdrop true
+}
+
+layer-rule {
+    match namespace="noctalia-notification"
+    block-out-from "screencast"
+}
+
+window-rule {
+    match app-id=r"^dev\.noctalia\.Noctalia$"
+    open-floating true
+}
+
+layer-rule {
+    match namespace=r"^(?i)noctalia" 
+    background-effect {
+        blur false
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="noctalia-bar-default"
+    background-effect {
+        blur false
+        xray false
+    }
+}
