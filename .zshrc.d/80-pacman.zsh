@@ -78,7 +78,18 @@ pac() {
       pacman -Qdt
       ;;
     autoremove)
-      sudo pacman -Rn $(pacman -Qtdq)
+      local orphans=(${(f)"$(pacman -Qtdq 2>/dev/null)"})
+      if (( ! ${#orphans[@]} )); then
+        echo "No orphans to remove"
+        return 0
+      fi
+      local selected
+      selected=(${(f)"$(printf '%s\n' "${orphans[@]}" | fzf --multi --prompt="Select packages to remove > " --header="Orphaned packages (TAB to select, Ctrl-A to select all, Enter to confirm)" --bind='ctrl-a:select-all,ctrl-d:deselect-all' --preview='pacman -Qi {1} 2>/dev/null | head -n 30' --preview-window=down:60%:wrap)"})
+      if (( ${#selected[@]} )); then
+        sudo pacman -Rns "${selected[@]}"
+      else
+        echo "Nothing selected"
+      fi
       ;;
     clean)
       sudo pacman -Sc
@@ -188,13 +199,14 @@ aur() {
       ;;
     autoremove)
       local orphans=(${(f)"$(comm -12 <(pacman -Qmq | sort) <(pacman -Qdtq | sort))"})
-      if [[ $#orphans -eq 0 ]]; then
+      if (( ! ${#orphans[@]} )); then
         echo "No AUR orphans to remove"
-        return
+        return 0
       fi
-      local selected=(${(f)"$(printf '%s\n' $orphans | fzf --multi --prompt="Select AUR packages to remove > " --header="Orphaned AUR packages (Ctrl-A to select all)")"})
-      if [[ $#selected -gt 0 ]]; then
-        sudo pacman -Rn $selected
+      local selected
+      selected=(${(f)"$(printf '%s\n' "${orphans[@]}" | fzf --multi --prompt="Select AUR packages to remove > " --header="Orphaned AUR packages (TAB to select, Ctrl-A to select all, Enter to confirm)" --bind='ctrl-a:select-all,ctrl-d:deselect-all' --preview='pacman -Qi {1} 2>/dev/null | head -n 30' --preview-window=down:60%:wrap)"})
+      if (( ${#selected[@]} )); then
+        sudo pacman -Rns "${selected[@]}"
       else
         echo "Nothing selected"
       fi
