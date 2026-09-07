@@ -4,9 +4,28 @@
 set -euo pipefail
 
 VERSION="1.1.0"
-STEAM_ROOT="/home/gloves/.local/share/Steam"
+# Portable Steam root detection — works on any user/distro
+_detect_steam_root() {
+  if [[ -n "${STEAM_ROOT:-}" && -d "$STEAM_ROOT/steamapps" ]]; then echo "$STEAM_ROOT"; return 0; fi
+  local cand
+  for cand in "$HOME/.local/share/Steam" "$HOME/.steam/steam" "$HOME/.steam/root" "$HOME/.steam"; do
+    if [[ -d "$cand/steamapps" ]]; then realpath -m "$cand" 2>/dev/null || echo "$cand"; return 0; fi
+    if [[ -L "$cand" ]]; then
+      local r; r=$(realpath -m "$cand" 2>/dev/null || true)
+      [[ -n "$r" && -d "$r/steamapps" ]] && { echo "$r"; return 0; }
+      [[ -n "$r" && -d "$r/steam/steamapps" ]] && { echo "$r/steam"; return 0; }
+    fi
+  done
+  # fallback: try to locate any libraryfolders.vdf
+  local found; found=$(find "$HOME/.local/share" "$HOME/.steam" -name "libraryfolders.vdf" 2>/dev/null | head -n1 || true)
+  if [[ -n "$found" ]]; then dirname "$(dirname "$found")"; return 0; fi
+  echo "$HOME/.local/share/Steam"
+}
+STEAM_ROOT="$(_detect_steam_root)"
 LIBRARY_VDF="$STEAM_ROOT/steamapps/libraryfolders.vdf"
-STEAM_PID_FILE="/home/gloves/.steam/steam.pid"
+STEAM_PID_FILE="$HOME/.steam/steam.pid"
+# Script path for self-invocation (portable)
+SCRIPT_PATH="$(realpath -m "${BASH_SOURCE[0]:-$0}" 2>/dev/null || echo "${BASH_SOURCE[0]:-$0}")"
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; BOLD=$'\033[1m'; DIM=$'\033[2m'; NC=$'\033[0m'
 
 # ---------- UI layout (consistent columns + ellipsis) ----------
@@ -98,8 +117,8 @@ ${BOLD}USAGE:${NC}
 
 ${BOLD}ALIASES:${NC}
   Home, Internal, Main  → $STEAM_ROOT
-  External, Ext, Mnt    → /mnt/External/SteamLibrary (auto-discovers, prefers /mnt over /run/media)
-  You can also use full paths: /mnt/External/SteamLibrary, /home/gloves/.local/share/Steam
+  External, Ext, Mnt    → first external library (auto-discovers next library not Home; scans /mnt, /run/media, /media)
+  You can also use full paths: e.g., /mnt/External/SteamLibrary, $HOME/.local/share/Steam
 
 ${BOLD}OPTIONS:${NC}
   --dry-run            Show actions without executing
@@ -115,10 +134,10 @@ ${BOLD}OPTIONS:${NC}
 ${BOLD}EXAMPLES:${NC}
   $(basename "$0")                              # TUI: pick action → fzf → confirm
   $(basename "$0") move                         # fzf pick game → pick target (Home/External)
-  $(basename "$0") move 230410 Home             # shorthand, no full path needed
-  $(basename "$0") move 230410 External --dry-run
+  $(basename "$0") move 123456 Home             # shorthand, no full path needed
+  $(basename "$0") move 123456 External --dry-run
   $(basename "$0") uninstall                    # fzf pick (multi TAB) → uninstall keep prefix
-  $(basename "$0") uninstall 230410 --purge-compatdata
+  $(basename "$0") uninstall 123456 --purge-compatdata
 
 ${BOLD}TUI:${NC}
   • Main menu via gum choose (Move/Uninstall/List/Fix/Quit)
@@ -139,17 +158,17 @@ get_libraries() {
 }
 
 resolve_external() {
-  local cand="/mnt/External/SteamLibrary"
-  if [[ -d "$cand/steamapps" ]]; then echo "$cand"; return 0; fi
+  # Generic: first library that is not STEAM_ROOT, else scan for SteamLibrary
   local lib
   while IFS= read -r lib; do
     [[ -z "$lib" ]] && continue
-    if [[ "$lib" != "$STEAM_ROOT" && -d "$lib/steamapps" ]]; then echo "$lib"; return 0; fi
+    if [[ "$(realpath -m "$lib" 2>/dev/null || echo "$lib")" != "$(realpath -m "$STEAM_ROOT" 2>/dev/null || echo "$STEAM_ROOT")" && -d "$lib/steamapps" ]]; then echo "$lib"; return 0; fi
   done < <(get_libraries | grep -v "^$STEAM_ROOT$" || true)
   local found
-  found=$(find /mnt /run/media -maxdepth 4 -type d -name "SteamLibrary" 2>/dev/null | head -n1 || true)
+  found=$(find /mnt /run/media /media -maxdepth 4 -type d -name "SteamLibrary" 2>/dev/null | head -n1 || true)
   if [[ -n "$found" ]]; then echo "$found"; return 0; fi
-  echo "$cand"
+  # fallback: any library not STEAM_ROOT
+  echo "$STEAM_ROOT"
 }
 
 resolve_library_alias() {
@@ -212,6 +231,13 @@ stop_steam_if_needed() {
 
 compatdata_realpath() {
   local appid="$1"
+  # Search all libraries for compatdata (supports per-library compatdata on newer Steam)
+  local lib
+  while IFS= read -r lib; do
+    [[ -z "$lib" ]] && continue
+    local p="$lib/steamapps/compatdata/$appid"
+    if [[ -e "$p" ]]; then readlink -f "$p" 2>/dev/null || echo "$p"; return 0; fi
+  done < <(get_libraries)
   local p1="$STEAM_ROOT/steamapps/compatdata/$appid"
   if [[ -e "$p1" ]]; then readlink -f "$p1" 2>/dev/null || echo "$p1"; else echo "$p1"; fi
 }
@@ -233,35 +259,44 @@ confirm() {
   read -r ans; [[ "$ans" == "y" || "$ans" == "Y" ]]
 }
 
-# ---------- preview helper (avoids nested quoting hell) ----------
+# ---------- preview helper (portable, no hardcoded paths) ----------
 __preview_app() {
   local appid="${1:-}"; appid="${appid%% *}"; appid="$(echo -n "$appid" | tr -d '[:space:]')"
   [[ -z "$appid" ]] && { echo "no appid"; return 0; }
-  local manifest
-  manifest=$(find "$STEAM_ROOT/steamapps" "/mnt/External/SteamLibrary/steamapps" "/run/media/gloves/External/SteamLibrary/steamapps" -name "appmanifest_${appid}.acf" 2>/dev/null | head -n1 || true)
+  local manifest=""
+  local lib
+  while IFS= read -r lib; do
+    [[ -z "$lib" ]] && continue
+    local cand="$lib/steamapps/appmanifest_${appid}.acf"
+    if [[ -f "$cand" ]]; then manifest="$cand"; break; fi
+  done < <(get_libraries)
   echo "=== $appid ==="
   if [[ -n "$manifest" && -f "$manifest" ]]; then
     echo "manifest: $manifest"
     grep -E '"(name|installdir|SizeOnDisk|buildid|StateFlags)"' "$manifest" 2>/dev/null | head -n 10 || true
     echo ""
     echo "--- compatdata ---"
-    local cdir="$STEAM_ROOT/steamapps/compatdata/$appid"
+    local cdir; cdir=$(compatdata_realpath "$appid")
     if [[ -d "$cdir" ]]; then
       du -sh "$cdir" 2>&1 | head -n 3 || true
-      local eecfg; eecfg=$(find "$cdir" -name "EE.cfg" 2>/dev/null | head -n1 || true)
-      if [[ -n "$eecfg" ]]; then ls -lh "$eecfg" 2>&1 | head -n 5 || true; else echo "prefix: keep (${cdir})"; fi
+      # Generic prefix sample (any cfg)
+      local sample; sample=$(find "$cdir" -type f -name "*.cfg" 2>/dev/null | head -n1 || true)
+      if [[ -n "$sample" ]]; then ls -lh "$sample" 2>&1 | head -n 5 || true; echo "prefix: keep (${cdir})"
+      else echo "prefix: keep (${cdir})"; fi
     else
-      echo "prefix: none"
+      echo "prefix: none (will be created on first launch)"
     fi
     echo "--- shadercache ---"
-    local sdir="$STEAM_ROOT/steamapps/shadercache/$appid"
-    local sdir2="/mnt/External/SteamLibrary/steamapps/shadercache/$appid"
-    if [[ -d "$sdir" ]]; then ls -lh "$sdir" 2>&1 | head -n 5 || true
-    elif [[ -d "$sdir2" ]]; then ls -lh "$sdir2" 2>&1 | head -n 5 || true; echo "(external: $sdir2)"
-    else echo "none"; fi
+    local found_sh=false
+    while IFS= read -r lib; do
+      [[ -z "$lib" ]] && continue
+      local sdir="$lib/steamapps/shadercache/$appid"
+      if [[ -d "$sdir" ]]; then ls -lh "$sdir" 2>&1 | head -n 5 || true; echo "(${lib})"; found_sh=true; break; fi
+    done < <(get_libraries)
+    $found_sh || echo "none"
   else
     echo "manifest not found for $appid"
-    echo "searched: $STEAM_ROOT/steamapps, /mnt/External/SteamLibrary/steamapps"
+    echo -n "searched: "; get_libraries | tr '\n' ' '; echo "/steamapps"
   fi
 }
 
@@ -284,11 +319,23 @@ list_apps_for_fzf() {
       size=$(parse_manifest_field "$manifest" "SizeOnDisk")
       if [[ -n "$size" && "$size" =~ ^[0-9]+$ && "$size" != "0" ]]; then hsize=$(numfmt --to=iec "$size" 2>/dev/null || echo "$size"); else hsize="—"; fi
       shortlib="?"
-      if [[ "$lib" == "$STEAM_ROOT" ]]; then shortlib="Home"
-      elif [[ "$lib" == "/mnt/External/SteamLibrary" ]]; then shortlib="External"
-      elif [[ "$lib" == "/run/media/gloves/External/SteamLibrary" ]]; then shortlib="External(run)"
-      else shortlib=$(basename "$lib"); fi
-      # skip staging zero? keep
+      if [[ "$(realpath -m "$lib" 2>/dev/null || echo "$lib")" == "$(realpath -m "$STEAM_ROOT" 2>/dev/null || echo "$STEAM_ROOT")" ]]; then shortlib="Home"
+      else
+        # Generic external label: basename + optional size hint, no hardcoded /mnt or /run/media
+        local base; base=$(basename "$lib")
+        # If library path contains "SteamLibrary" use parent dir name for clarity else basename
+        if [[ "$lib" == *"SteamLibrary"* ]]; then
+          local parent; parent=$(basename "$(dirname "$lib")")
+          # Prefer External vs Home distinction
+          if [[ "$parent" != "SteamLibrary" && "$parent" != "$(basename "$STEAM_ROOT")" ]]; then shortlib="${parent}/${base}"
+          else shortlib="External"
+          fi
+        else
+          shortlib="$base"
+        fi
+        # Truncate long labels later via ui_trunc
+        [[ -z "$shortlib" ]] && shortlib="Ext"
+      fi
       printf "%s\t%s\t%s\t%s\t%s\n" "$appid" "${name:-$installdir}" "$hsize" "$shortlib" "$installdir"
     done
   done < <(echo "$libs")
@@ -312,8 +359,8 @@ tui_pick_apps() {
     display+="${d_appid}  ${d_name}  ${d_size}  ${d_lib}  ${d_install}"$'\n'
   done <<< "$list"
   display=${display%$'\n'}
-  # Use helper via script re-invocation to avoid nested quoting (no awk {print} collision)
-  local preview_cmd="bash /home/gloves/Scripts/steam-ctl.sh __preview {1}"
+  # Use helper via script re-invocation to avoid nested quoting (no awk {print} collision) — portable
+  local preview_cmd="bash \"$SCRIPT_PATH\" __preview {1}"
   local selected=""
   if command -v fzf >/dev/null 2>&1; then
     selected=$(echo "$display" | fzf --multi --prompt="$prompt" --header="$header" --bind='ctrl-a:select-all,ctrl-d:deselect-all' --preview="$preview_cmd" --preview-window=down:60%:wrap --height=80% --reverse --ansi || true)
@@ -332,7 +379,6 @@ tui_pick_library() {
   local exclude="${1:-}"
   local opts=() lib
   local libs; libs=$(get_libraries)
-  # Build friendly list, dedup by realpath
   declare -A seen_path
   while IFS= read -r lib; do
     [[ -z "$lib" ]] && continue
@@ -342,18 +388,26 @@ tui_pick_library() {
     if [[ -n "$exclude" && "$(realpath -m "$exclude" 2>/dev/null)" == "$rp" ]]; then continue; fi
     local label
     if [[ "$rp" == "$(realpath -m "$STEAM_ROOT")" ]]; then label="Home          ($rp)"
-    elif [[ "$rp" == "$(realpath -m "/mnt/External/SteamLibrary")" ]]; then label="External      ($rp)"
-    else label="$(basename "$rp") ($rp)"; fi
+    else label="$(basename "$rp")          ($rp)"; fi
+    # Shorten Home/External generic without hardcoded /mnt
+    if [[ "$rp" != "$(realpath -m "$STEAM_ROOT")" ]]; then
+      # Use External as friendly for first non-Home, but keep path for clarity
+      label="External      ($rp)"
+      # If multiple externals, use basename to distinguish
+      local count_ext; count_ext=$(echo "$libs" | wc -l)
+      if (( count_ext > 2 )); then label="$(basename "$rp")          ($rp)"; fi
+    fi
     opts+=("$label")
   done < <(echo "$libs")
-  # ensure Home/External present
   local rp_home; rp_home=$(realpath -m "$STEAM_ROOT")
   if [[ -z "${seen_path[$rp_home]:-}" && -d "$STEAM_ROOT/steamapps" ]]; then
     opts=("Home          ($rp_home)" "${opts[@]}"); seen_path[$rp_home]=1
   fi
-  local ext; ext=$(resolve_external 2>/dev/null || echo "/mnt/External/SteamLibrary")
-  local rp_ext; rp_ext=$(realpath -m "$ext" 2>/dev/null || echo "$ext")
-  if [[ -z "${seen_path[$rp_ext]:-}" && -d "$ext/steamapps" ]]; then opts+=("External      ($rp_ext)"); fi
+  local ext; ext=$(resolve_external 2>/dev/null || echo "")
+  if [[ -n "$ext" ]]; then
+    local rp_ext; rp_ext=$(realpath -m "$ext" 2>/dev/null || echo "$ext")
+    if [[ -z "${seen_path[$rp_ext]:-}" && -d "$ext/steamapps" ]]; then opts+=("External      ($rp_ext)"); fi
+  fi
 
   local choice=""
   if command -v gum >/dev/null 2>&1; then
@@ -450,18 +504,23 @@ cmd_list() {
       installdir=$(parse_manifest_field "$manifest" "installdir")
       size=$(parse_manifest_field "$manifest" "SizeOnDisk")
       local hsize="?"; if [[ -n "$size" && "$size" =~ ^[0-9]+$ ]]; then hsize=$(numfmt --to=iec "$size" 2>/dev/null || echo "$size"); else hsize="—"; fi
-      # Fixed-width, truncated fields — prevents overflow
       local disp_appid disp_size disp_lib disp_name
       disp_appid=$(ui_pad "$(ui_trunc "$appid" $COL_APPID)" $COL_APPID)
       disp_size=$(printf "%${COL_SIZE}s" "$(ui_trunc "$hsize" $COL_SIZE)")
       local prefix_plain shader_plain shortlib
       local cpath; cpath=$(compatdata_realpath "$appid")
       if [[ -d "$cpath" ]]; then prefix_plain="keep ✓"; else prefix_plain="none"; fi
-      local sp; sp="$lib/steamapps/shadercache/$appid"
-      if [[ -d "$sp" ]] || [[ -d "$STEAM_ROOT/steamapps/shadercache/$appid" ]]; then shader_plain="keep"; else shader_plain="none"; fi
-      shortlib=$(basename "$lib")
-      if [[ "$lib" == "$STEAM_ROOT" ]]; then shortlib="Home"; elif [[ "$lib" == "/mnt/External/SteamLibrary" ]]; then shortlib="External"; elif [[ "$lib" == "/run/media/gloves/External/SteamLibrary" ]]; then shortlib="External(run)"; fi
-      # Color AFTER padding so ANSI doesn't break column width
+      # Portable shadercache check: any library has it
+      local has_shader=false
+      local slib
+      while IFS= read -r slib; do
+        [[ -z "$slib" ]] && continue
+        if [[ -d "$slib/steamapps/shadercache/$appid" ]]; then has_shader=true; break; fi
+      done < <(get_libraries)
+      if $has_shader; then shader_plain="keep"; else shader_plain="none"; fi
+      # Generic shortlib: Home for STEAM_ROOT, else basename
+      if [[ "$(realpath -m "$lib" 2>/dev/null || echo "$lib")" == "$(realpath -m "$STEAM_ROOT" 2>/dev/null || echo "$STEAM_ROOT")" ]]; then shortlib="Home"
+      else shortlib=$(basename "$lib"); [[ "$shortlib" == "SteamLibrary" ]] && shortlib="External"; [[ -z "$shortlib" ]] && shortlib="Ext"; fi
       local prefix_disp shader_disp
       prefix_disp=$(ui_pad "$prefix_plain" $COL_PREFIX)
       shader_disp=$(ui_pad "$shader_plain" $COL_SHADER)
@@ -473,10 +532,19 @@ cmd_list() {
     done
   done < <(echo "$libs")
   echo ""
-  log "Compatdata realpath: $(readlink -f "$STEAM_ROOT/steamapps/compatdata" 2>/dev/null || echo "$STEAM_ROOT/steamapps/compatdata")"
-  log "Symlink check: /mnt/External/.../compatdata -> $(readlink /mnt/External/SteamLibrary/steamapps/compatdata 2>/dev/null || echo "no symlink")"
+  # Portable compatdata location reporting
+  local compat_real; compat_real=$(readlink -f "$STEAM_ROOT/steamapps/compatdata" 2>/dev/null || echo "$STEAM_ROOT/steamapps/compatdata")
+  log "Compatdata: $compat_real"
+  # Generic symlink check: iterate libraries for compatdata symlink
+  local has_link=false
+  while IFS= read -r lib; do
+    [[ -z "$lib" ]] && continue
+    if [[ -L "$lib/steamapps/compatdata" ]]; then
+      log "Symlink: $lib/steamapps/compatdata -> $(readlink "$lib/steamapps/compatdata" 2>/dev/null || echo "?")"; has_link=true; fi
+  done < <(get_libraries)
+  $has_link || log "No compatdata symlink detected (each library has its own compatdata)"
   echo ""
-  warn "Use '$(basename "$0") fix-libraries --dry-run' to review stale /run/media prune."
+  warn "Use '$(basename "$0") fix-libraries --dry-run' to review stale library prune."
 }
 
 cmd_fix_libraries() {
@@ -484,24 +552,28 @@ cmd_fix_libraries() {
   if [[ ! -f "$LIBRARY_VDF" ]]; then err "No $LIBRARY_VDF found"; return 1; fi
   cat "$LIBRARY_VDF"; echo ""
   local dup_ids; dup_ids=$(grep -oP '"contentid"\s+"\K[^"]+' "$LIBRARY_VDF" | sort | uniq -d || true)
-  if [[ -z "$dup_ids" ]]; then success "No duplicate contentid found."; else warn "Duplicate contentid(s): $dup_ids"; warn "This matches your /run/media vs /mntExternal dup (contentid 5417633093559943861)."; fi
-  if grep -q "/run/media/gloves/External/SteamLibrary" "$LIBRARY_VDF"; then
-    warn "Found stale entry: /run/media/gloves/External/SteamLibrary"
-    if [[ -d "/run/media/gloves/External/SteamLibrary" ]]; then warn "But directory exists. Skipping auto-prune."; else
+  if [[ -z "$dup_ids" ]]; then success "No duplicate contentid found."; else warn "Duplicate contentid(s): $dup_ids"; warn "This indicates same drive mounted at two paths (e.g., /run/media vs /mnt)."; fi
+  # Generic stale detection: any library path containing /run/media
+  local stale_paths; stale_paths=$(grep -oP '"path"\s+"\K[^"]*\/run\/media[^"]*' "$LIBRARY_VDF" || true)
+  if [[ -n "$stale_paths" ]]; then
+    warn "Found stale entry(ies):"
+    echo "$stale_paths" | while IFS= read -r sp; do echo "  $sp"; done
+    local stale_dir; stale_dir=$(echo "$stale_paths" | head -n1)
+    if [[ -d "$stale_dir" ]]; then warn "But directory still exists ($stale_dir). Skipping auto-prune."; else
       echo ""
-      if [[ "$DRY_RUN" == true ]]; then dry "Would remove stale block \"1\" {/run/media/...} and reindex 2 -> 1"; dry "Backup to: $LIBRARY_VDF.bak.\$(date +%s)"; else
-        if confirm "Remove stale /run/media block and reindex?"; then
+      if [[ "$DRY_RUN" == true ]]; then dry "Would remove stale block(s) containing /run/media and reindex"; dry "Backup to: $LIBRARY_VDF.bak.\$(date +%s)"; else
+        if confirm "Remove stale /run/media block(s) and reindex?"; then
           local bak="$LIBRARY_VDF.bak.$(date +%s)"; cp "$LIBRARY_VDF" "$bak"; log "Backup created: $bak"
-          python3 << 'PYEOF'
-import re, pathlib
-vdf_path = pathlib.Path("/home/gloves/.local/share/Steam/steamapps/libraryfolders.vdf")
+          LIBRARY_VDF="$LIBRARY_VDF" python3 << 'PYEOF'
+import re, pathlib, os
+vdf_path = pathlib.Path(os.environ.get("LIBRARY_VDF", ""))
 text = vdf_path.read_text()
 pattern = re.compile(r'(\n\t)"(\d+)"\n\t\{\n(.*?)\n\t\}', re.DOTALL)
 matches = list(pattern.finditer(text))
 kept=[]
 for m in matches:
     prefix, num, body = m.group(1), m.group(2), m.group(3)
-    if "/run/media/gloves/External/SteamLibrary" in body: print(f"Removing block {num}"); continue
+    if "/run/media" in body: print(f"Removing block {num}"); continue
     kept.append((num, body))
 new_blocks=""
 for i, (old_num, body) in enumerate(kept): new_blocks += f'\n\t"{i}"\n\t{{\n{body}\n\t}}'
@@ -534,7 +606,7 @@ cmd_move() {
   log "Move ${BOLD}$name ($appid)${NC} — $installdir ($hsize)"
   echo "  Source: $source/steamapps/common/$installdir"; echo "  Target: $target/steamapps/common/$installdir"; echo "  Manifest: appmanifest_${appid}.acf"
   local cpath; cpath=$(compatdata_realpath "$appid")
-  if [[ -d "$cpath" ]]; then echo -e "  Prefix: ${GREEN}PRESERVE${NC} $cpath (never deleted)"; if [[ "$appid" == "230410" ]]; then local eecfg="$cpath/pfx/drive_c/users/steamuser/AppData/Local/Warframe/EE.cfg"; if [[ -f "$eecfg" ]]; then echo "    Warframe EE.cfg: $eecfg ($(stat -c %y "$eecfg" 2>/dev/null | cut -d. -f1))"; fi; fi; else echo -e "  Prefix: ${YELLOW}none${NC}"; fi
+  if [[ -d "$cpath" ]]; then echo -e "  Prefix: ${GREEN}PRESERVE${NC} $cpath (never deleted)"; else echo -e "  Prefix: ${YELLOW}none${NC} (will be created on first launch)"; fi
   local src_common="$source/steamapps/common/$installdir"
   local dst_common="$target/steamapps/common/$installdir"
   local src_manifest="$source/steamapps/appmanifest_${appid}.acf"
@@ -561,7 +633,13 @@ cmd_move() {
   fi
   log "Moving manifest..."; mv "$src_manifest" "$dst_manifest" || { err "Failed to move manifest"; return 1; }
   success "Move complete. Compatdata preserved: $cpath"
-  if [[ -d "$STEAM_ROOT/steamapps/shadercache/$appid" ]]; then success "Shadercache preserved: $STEAM_ROOT/steamapps/shadercache/$appid"; fi
+  # Portable shadercache preservation notice (any library)
+  local _sc_found=false
+  while IFS= read -r _sclib; do
+    [[ -z "$_sclib" ]] && continue
+    if [[ -d "$_sclib/steamapps/shadercache/$appid" ]]; then success "Shadercache preserved: $_sclib/steamapps/shadercache/$appid"; _sc_found=true; break; fi
+  done < <(get_libraries)
+  $_sc_found || true
   log "Reopen Steam — game will appear in new library."
 }
 
@@ -574,13 +652,27 @@ cmd_uninstall() {
   local hsize; hsize=$(numfmt --to=iec "$size" 2>/dev/null || echo "$size")
   log "Uninstall ${BOLD}$name ($appid)${NC} — $installdir ($hsize)"
   echo "  Library: $source"; echo "  To delete: $source/steamapps/common/$installdir"; echo "  To delete: $manifest"
-  local cpath shader; cpath=$(compatdata_realpath "$appid"); shader="$STEAM_ROOT/steamapps/shadercache/$appid"; local shader2="$source/steamapps/shadercache/$appid"
-  if [[ -d "$cpath" ]]; then if [[ "$PURGE_COMPDATA" == true ]]; then echo -e "  Prefix: ${RED}DELETE${NC} $cpath (--purge-compatdata)"; else echo -e "  Prefix: ${GREEN}PRESERVE ✓${NC} $cpath (use --purge-compatdata to wipe)"; if [[ "$appid" == "230410" ]]; then local eecfg="$cpath/pfx/drive_c/users/steamuser/AppData/Local/Warframe/EE.cfg"; if [[ -f "$eecfg" ]]; then echo "    Warframe EE.cfg will be KEPT: $eecfg"; fi; fi; fi; else echo "  Prefix: none"; fi
-  if [[ -d "$shader" || -d "$shader2" ]]; then if [[ "$PURGE_SHADERCACHE" == true ]]; then echo -e "  Shadercache: ${RED}DELETE${NC} $shader"; else echo -e "  Shadercache: ${GREEN}PRESERVE${NC} (use --purge-shadercache to wipe)"; fi; else echo "  Shadercache: none"; fi
+  local cpath; cpath=$(compatdata_realpath "$appid")
+  if [[ -d "$cpath" ]]; then
+    if [[ "$PURGE_COMPDATA" == true ]]; then echo -e "  Prefix: ${RED}DELETE${NC} $cpath (--purge-compatdata)"
+    else echo -e "  Prefix: ${GREEN}PRESERVE ✓${NC} $cpath (use --purge-compatdata to wipe)"; fi
+  else echo "  Prefix: none"; fi
+  # Portable shadercache detection (any library)
+  local has_shader=false
+  while IFS= read -r _slib; do
+    [[ -z "$_slib" ]] && continue
+    if [[ -d "$_slib/steamapps/shadercache/$appid" ]]; then has_shader=true; break; fi
+  done < <(get_libraries)
+  if $has_shader; then
+    if [[ "$PURGE_SHADERCACHE" == true ]]; then echo -e "  Shadercache: ${RED}DELETE${NC} (all libraries)"
+    else echo -e "  Shadercache: ${GREEN}PRESERVE${NC} (use --purge-shadercache to wipe)"; fi
+  else echo "  Shadercache: none"; fi
   if [[ "$DRY_RUN" == true ]]; then
     if is_steam_running; then warn "Steam is running — live run would require --stop-steam, but dry-run continues."; fi
     dry "Would rm -rf \"$source/steamapps/common/$installdir\""; dry "Would rm \"$manifest\""; if [[ "$PURGE_COMPDATA" == true ]]; then dry "Would rm -rf \"$cpath\""; else dry "Would PRESERVE \"$cpath\""; fi
-    if [[ -d "$shader" || -d "$shader2" ]]; then if [[ "$PURGE_SHADERCACHE" == true ]]; then dry "Would rm -rf $shader*"; else dry "Would PRESERVE shadercache"; fi; fi
+    if $has_shader; then
+      if [[ "$PURGE_SHADERCACHE" == true ]]; then dry "Would rm -rf shadercache/$appid (all libraries)"; else dry "Would PRESERVE shadercache (all libraries)"; fi
+    fi
     return 0
   fi
   stop_steam_if_needed || return 1
@@ -588,7 +680,17 @@ cmd_uninstall() {
   if [[ -d "$source/steamapps/common/$installdir" ]]; then log "Deleting $source/steamapps/common/$installdir ..."; rm -rf "$source/steamapps/common/$installdir"; success "Deleted common/$installdir"; else warn "Common not found: $source/steamapps/common/$installdir"; fi
   if [[ -f "$manifest" ]]; then rm -f "$manifest"; success "Deleted appmanifest_${appid}.acf"; fi
   if [[ "$PURGE_COMPDATA" == true && -d "$cpath" ]]; then log "Purging compatdata $cpath ..."; rm -rf "$cpath"; success "Purged compatdata"; else if [[ -d "$cpath" ]]; then success "Preserved compatdata: $cpath — reinstall will reuse settings"; fi; fi
-  if [[ "$PURGE_SHADERCACHE" == true ]]; then if [[ -d "$shader" ]]; then rm -rf "$shader" && success "Purged $shader"; fi; if [[ -d "$shader2" && "$shader2" != "$shader" ]]; then rm -rf "$shader2" && success "Purged $shader2"; fi; else if [[ -d "$shader" || -d "$shader2" ]]; then success "Preserved shadercache"; fi; fi
+  if [[ "$PURGE_SHADERCACHE" == true ]]; then
+    local _purged=false
+    while IFS= read -r _slib; do
+      [[ -z "$_slib" ]] && continue
+      local _sp="$_slib/steamapps/shadercache/$appid"
+      if [[ -d "$_sp" ]]; then rm -rf "$_sp" && success "Purged $_sp"; _purged=true; fi
+    done < <(get_libraries)
+    $_purged || true
+  else
+    if $has_shader; then success "Preserved shadercache"; fi
+  fi
   success "Uninstall complete. Reinstall via Steam UI later to reuse preserved prefix."
 }
 
@@ -638,7 +740,7 @@ case "$CMD" in
         count=$(echo "$picks" | wc -w)
         if ! confirm "Move $count game(s) [$picks] → $(basename "$target") ?"; then log "Aborted."; exit 0; fi
         for a in $picks; do cmd_move "$a" "$target" || warn "Failed $a"; done
-      else err "move requires <appid> <target_library>"; echo "  Example: $(basename "$0") move 230410 Home"; exit 1; fi
+      else err "move requires <appid> <target_library>"; echo "  Example: $(basename "$0") move <appid> Home"; exit 1; fi
     elif [[ $# -eq 1 ]]; then
       if is_interactive; then
         appid="$1"; src=$(find_source_lib "$appid" 2>/dev/null || echo "")
@@ -660,7 +762,7 @@ case "$CMD" in
         for a in $picks; do cmd_uninstall "$a" || warn "Failed $a"; done
       else err "uninstall requires <appid>"; exit 1; fi
     else
-      # support multi uninstall: uninstall 230410 392160 ...
+      # support multi uninstall: uninstall <appid> ...
       for a in "$@"; do cmd_uninstall "$a" || warn "Failed $a"; done
     fi
     ;;
