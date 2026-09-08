@@ -93,6 +93,8 @@ enable_ddcutil = true
 minimum_brightness = 0.39999999105930328
 sync_all_monitors = true
 
+[calendar]
+
 [control_center]
 width = 800
 
@@ -200,7 +202,7 @@ pre_action_fade_seconds = 30
 
     [idle.behavior.screen-off]
     action = "screen_off"
-    enabled = true
+    enabled = false
     timeout = 750.0
 
 [keybinds]
@@ -490,13 +492,16 @@ polkit_agent = true
     alpha = 0.64999998547136784
     direction = "center"
 
+    [shell.window_switcher]
+    mru = true
+
 [theme]
 builtin = "Rosé Pine"
 community_palette = "Rose Pine Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
 source = "builtin"
-wallpaper_scheme = "m3-content"
+wallpaper_scheme = "soft"
 
     [theme.templates]
     builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
@@ -525,19 +530,19 @@ transition_duration = 2000
 transition_on_startup = true
 
     [wallpaper.default]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/abstract-2.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
 
     [wallpaper.last]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/abstract-2.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/abstract-2.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
 
     [[wallpaper.favorite]]
-    palette_source = "wallpaper"
+    builtin_palette = "Rosé Pine"
+    palette_source = "builtin"
     path = "/home/gloves/Pictures/Wallpapers/Catppuccin/dragon.jpg"
     theme_mode = "dark"
-    wallpaper_scheme = "soft"
 
     [[wallpaper.favorite]]
     community_palette = "Rose Pine Moon"
@@ -580,8 +585,10 @@ transition_on_startup = true
     theme_mode = "dark"
 
     [[wallpaper.favorite]]
+    builtin_palette = "Rosé Pine"
+    palette_source = "builtin"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
-    theme_mode = "auto"
+    theme_mode = "dark"
 
     [[wallpaper.favorite]]
     community_palette = "Rose Pine Alt"
