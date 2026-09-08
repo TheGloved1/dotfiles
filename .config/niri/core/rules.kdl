@@ -156,6 +156,27 @@ window-rule {
 // }
 
 window-rule {
+    match title="Restricted VC"
+    exclude title="Discord"
+    open-floating true
+    opacity 0.75
+    default-floating-position x=15 y=15 relative-to="bottom-right"
+    default-column-width {
+        fixed 630;
+    }
+    default-window-height {
+        fixed 370;
+    }
+
+    background-effect {
+        blur false
+
+        // noise 0.02
+        // saturation 3
+    }
+}
+
+window-rule {
     match app-id=r"^(AppImageLauncher)$"
     match title=r".*AppImageLauncher.*"
     open-floating true
