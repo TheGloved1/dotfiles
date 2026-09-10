@@ -1,3 +1,16 @@
+-- Transparent statusline fix for lualine rounded separators ( / )
+-- The outer caps use StatusLine bg for their corners; setting it to NONE
+-- makes the black squares disappear and reveals Normal bg (#191724) or
+-- terminal transparency.
+local _hl_group = vim.api.nvim_create_augroup("lualine_transparent", { clear = true })
+vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter", "UIEnter" }, {
+  group = _hl_group,
+  callback = function()
+    vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE" })
+  end,
+})
+
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 --
