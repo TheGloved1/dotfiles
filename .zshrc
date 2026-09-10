@@ -46,3 +46,14 @@ zinit for \
 # After automatic unpacking it provides program "fzf".
 zi ice from"gh-r" as"program"
 zi light junegunn/fzf
+
+# Ensure arrow keys keep prefix-filter but also navigate multiline buffers.
+# Re-apply after zinit plugins (plugins may reset keymaps).
+autoload -Uz up-line-or-search down-line-or-search
+for _km in viins vicmd main; do
+  bindkey -M $_km '^[[A' up-line-or-search
+  bindkey -M $_km '^[[B' down-line-or-search
+  bindkey -M $_km '^[OA' up-line-or-search
+  bindkey -M $_km '^[OB' down-line-or-search
+done
+unset _km
