@@ -215,17 +215,35 @@ is_steam_running() {
 }
 
 stop_steam_if_needed() {
-  if is_steam_running; then
-    if [[ "$STOP_STEAM" == true ]]; then
+  if ! is_steam_running; then return 0; fi
+  if [[ "$DRY_RUN" == true ]]; then
+    warn "Steam is running — live run would close Steam, but dry-run continues."
+    return 0
+  fi
+  # Auto-close if --stop-steam or -f
+  if [[ "$STOP_STEAM" == true || "$FORCE" == true ]]; then
+    log "Shutting down Steam..."
+    if command -v steam >/dev/null 2>&1; then steam -shutdown 2>/dev/null || true; fi
+    for _ in {1..15}; do if ! is_steam_running; then break; fi; sleep 1; done
+    if is_steam_running; then warn "Steam still running after 15s."; [[ "$FORCE" == true ]] || return 1; else success "Steam stopped."; fi
+    return 0
+  fi
+  # Interactive confirmation, default Yes (works even with --no-tui if tty)
+  if is_tty; then
+    if confirm_default_yes "Steam is running. Close Steam now?"; then
       log "Shutting down Steam..."
       if command -v steam >/dev/null 2>&1; then steam -shutdown 2>/dev/null || true; fi
       for _ in {1..15}; do if ! is_steam_running; then break; fi; sleep 1; done
       if is_steam_running; then warn "Steam still running after 15s."; [[ "$FORCE" == true ]] || return 1; else success "Steam stopped."; fi
     else
-      err "Steam is running. Close Steam or use --stop-steam."
-      echo "  Hint: Steam > Exit, or: steam -shutdown"
+      err "Aborted — Steam still running."
+      echo "  Hint: close Steam or re-run with --stop-steam / -f"
       return 1
     fi
+  else
+    err "Steam is running. Close Steam or use --stop-steam."
+    echo "  Hint: Steam > Exit, or: steam -shutdown"
+    return 1
   fi
 }
 
@@ -249,6 +267,8 @@ is_interactive() {
   [[ -t 0 && -t 1 ]] && return 0 || return 1
 }
 
+is_tty() { [[ -t 0 && -t 1 ]]; }
+
 confirm() {
   local msg="$1"
   if [[ "$FORCE" == true ]] || [[ "$DRY_RUN" == true ]]; then return 0; fi
@@ -257,6 +277,24 @@ confirm() {
   fi
   echo -e "${YELLOW}$msg [y/N]${NC} "
   read -r ans; [[ "$ans" == "y" || "$ans" == "Y" ]]
+}
+
+confirm_default_yes() {
+  local msg="$1"
+  if [[ "$FORCE" == true ]]; then return 0; fi
+  if is_tty && command -v gum >/dev/null 2>&1; then
+    gum confirm --default "$msg" && return 0 || return 1
+  fi
+  # Fallback read with [Y/n] default Yes — works even with --no-tui if tty
+  if is_tty; then
+    echo -ne "${YELLOW}$msg [Y/n]${NC} "
+    read -r ans
+    ans="${ans:-Y}"
+    [[ "$ans" =~ ^[Yy]$ ]]
+  else
+    # non-tty, no default — require explicit --stop-steam / -f
+    return 1
+  fi
 }
 
 # ---------- preview helper (portable, no hardcoded paths) ----------
@@ -611,15 +649,45 @@ cmd_move() {
   local dst_common="$target/steamapps/common/$installdir"
   local src_manifest="$source/steamapps/appmanifest_${appid}.acf"
   local dst_manifest="$target/steamapps/appmanifest_${appid}.acf"
+  # Check target conflict BEFORE shutting down Steam — graceful, default Yes to overwrite (just delete)
+  local needs_overwrite=false
+  if [[ -e "$dst_common" || -e "$dst_manifest" ]]; then
+    local dst_info=""
+    if [[ -f "$dst_manifest" ]]; then
+      local dst_size dst_flags
+      dst_size=$(parse_manifest_field "$dst_manifest" "SizeOnDisk")
+      dst_flags=$(parse_manifest_field "$dst_manifest" "StateFlags")
+      dst_info=" (manifest SizeOnDisk=${dst_size:-?} StateFlags=${dst_flags:-?})"
+    elif [[ -d "$dst_common" ]]; then
+      dst_info=" (dir exists)"
+    fi
+    warn "Target already has $(basename "$dst_common")${dst_info} at $target"
+    if [[ "$FORCE" == true ]]; then
+      log "FORCE: will overwrite target (just delete)"
+      needs_overwrite=true
+    elif [[ "$DRY_RUN" == true ]]; then
+      needs_overwrite=true
+    else
+      if confirm_default_yes "Overwrite target (just delete existing)?"; then
+        needs_overwrite=true
+      else
+        err "Aborted — target exists, not overwriting"
+        return 1
+      fi
+    fi
+  fi
   if [[ "$DRY_RUN" == true ]]; then
-    if is_steam_running; then warn "Steam is running — live run would require --stop-steam, but dry-run continues."; fi
+    if is_steam_running; then warn "Steam is running — live run would require close, but dry-run continues."; fi
+    if $needs_overwrite; then dry "Would rm -rf \"$dst_common\" and \"$dst_manifest\" (overwrite)"; fi
     dry "Would rsync -aH --info=progress2 \"$src_common/\" -> \"$dst_common/\""; dry "Would mv \"$src_manifest\" -> \"$dst_manifest\""; dry "Would PRESERVE compatdata: $cpath"
     return 0
   fi
   stop_steam_if_needed || return 1
+  if $needs_overwrite; then
+    log "Removing existing target for overwrite..."
+    rm -rf "$dst_common" "$dst_manifest" 2>/dev/null || true
+  fi
   if [[ ! -d "$src_common" ]]; then warn "Source common missing: $src_common"; fi
-  if [[ -e "$dst_common" ]]; then err "Target already has $dst_common — abort"; return 1; fi
-  if [[ -e "$dst_manifest" ]]; then err "Target already has manifest $dst_manifest"; return 1; fi
   if ! confirm "Proceed with move?"; then log "Aborted."; return 0; fi
   mkdir -p "$target/steamapps/common"
   if [[ -d "$src_common" ]]; then
