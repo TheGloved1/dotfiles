@@ -2,14 +2,14 @@
 
 window-rule {
     draw-border-with-background false
-    geometry-corner-radius 0
+    geometry-corner-radius 12
     clip-to-geometry true
     opacity 0.95
 
     background-effect {
         blur true
-        // noise 0.02
-        // saturation 3
+        noise 0.02
+        saturation 3
     }
 }
 
@@ -24,7 +24,7 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r"firefox$" title="^Picture-in-Picture$"
+    match app-id="firefox" title="Picture-in-Picture"
     open-floating true
 }
 
