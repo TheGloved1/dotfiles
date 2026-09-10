@@ -92,6 +92,10 @@ pac() {
       fi
       ;;
     clean)
+      # Pacman 7 ParallelDownloads leaves alpm-owned download-* dirs that
+      # pacman -Sc tries to parse as packages -> "Error reading fd 8".
+      # Remove stale temp dirs first (silent, safe: only alpm-owned dirs).
+      sudo find /var/cache/pacman/pkg -maxdepth 1 -name 'download-*' -user alpm -exec rm -rf {} + 2>/dev/null || true
       sudo pacman -Sc
       ;;
     refresh)
@@ -212,6 +216,7 @@ aur() {
       fi
       ;;
     clean)
+      sudo find /var/cache/pacman/pkg -maxdepth 1 -name 'download-*' -user alpm -exec rm -rf {} + 2>/dev/null || true
       yay -Sc
       ;;
     refresh)
