@@ -25,9 +25,9 @@ binds {
     MOD+H hotkey-overlay-title="Focus column left" { focus-column-left; }
     MOD+RIGHT hotkey-overlay-title="Focus column right" { focus-column-right; }
     MOD+L hotkey-overlay-title="Focus column right" { focus-column-right; }
-    MOD+UP hotkey-overlay-title="Focus window up" { focus-window-up; }
+    MOD+UP hotkey-overlay-title="Focus window/workspace up" { focus-window-or-workspace-up; }
     MOD+K hotkey-overlay-title="Focus window/workspace up" { focus-window-or-workspace-up; }
-    MOD+DOWN hotkey-overlay-title="Focus window down" { focus-window-down; }
+    MOD+DOWN hotkey-overlay-title="Focus window/workspace down" { focus-window-or-workspace-down; }
     MOD+J hotkey-overlay-title="Focus window/workspace down" { focus-window-or-workspace-down; }
 
     // Move / Swap / Resize
