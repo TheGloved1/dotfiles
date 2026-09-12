@@ -15,6 +15,9 @@
       "keys": "white",
     },
     "brightColor": true,
+    "key": {
+      "width": 16,
+    },
   },
 
   "modules": [
