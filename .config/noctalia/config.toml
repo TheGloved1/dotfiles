@@ -9,15 +9,15 @@ enabled = true
 tint_intensity = 0.14999999664723873
 
 [bar.default]
-background_opacity = 0.89999997988343239
+background_opacity = 0.9499999787658453
 border = "outline"
 capsule = true
 capsule_opacity = 0.0
 capsule_padding = 6.0
-capsule_radius = 0
+capsule_radius = 6
 capsule_thickness = 0.74999998696148396
 center = [ "active_window" ]
-concave_edge_corners = false
+concave_edge_corners = true
 end = [ "bar", "group:g2", "weather", "clock", "group:g4" ]
 font_family = "CaskaydiaCove Nerd Font"
 font_weight = 400
@@ -25,12 +25,12 @@ margin_ends = 0
 margin_opposite_edge = 0
 padding = 6
 panel_overlap = 0
-radius = 0
+radius = 16
 scale = 0.90000000596046448
 shadow = true
 show_on_workspace_switch = false
 start = [ "launcher", "group:g1", "group:g5", "group:g3", "cat" ]
-thickness = 24
+thickness = 26
 widget_spacing = 4
 
     [bar.default.dead_zone.actions]
@@ -409,7 +409,7 @@ enabled = [
 app_icon_color = "primary"
 clipboard_auto_paste = "off"
 clipboard_history_max_entries = 500
-corner_radius_scale = 0.0
+corner_radius_scale = 1.0000000149011612
 external_ip_enabled = true
 font_family = "CaskaydiaCove Nerd Font"
 launch_apps_custom_command = ""
@@ -439,7 +439,7 @@ polkit_agent = true
     polkit_placement = "attached"
     polkit_position = "auto"
     shadow = true
-    transparency_mode = "solid"
+    transparency_mode = "soft"
 
     [shell.screen_corners]
     enabled = false
@@ -500,6 +500,7 @@ builtin = "Rosé Pine"
 community_palette = "Rose Pine Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
+shell_mode = "dark"
 source = "builtin"
 wallpaper_scheme = "soft"
 
@@ -521,6 +522,7 @@ wallpaper_scheme = "soft"
         "papirus-icons",
         "fzf",
         "lazygit",
+        "tmux",
         "yazi"
     ]
 
@@ -705,6 +707,8 @@ show_condition = true
 
 [widget.workspaces]
 active_pill_size = 1.75
+capsule_padding = 37
+capsule_radius = "auto"
 hide_when_empty = true
 inactive_pill_size = 1.0
 label_source = "id"
