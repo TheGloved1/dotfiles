@@ -36,12 +36,6 @@ function M.setup()
   hi('TelescopeSelection',      { fg = '#e0def4',          bg = '#2e2b47' })
   hi('TelescopeSelectionCaret', { fg = '#ebbcba',             bg = '#2e2b47' })
   hi('TelescopeMatching',       { fg = '#ebbcba',             bold = true })
-
-  -- Transparent statusline: lets lualine's rounded outer caps ( / ) show
-  -- the Normal bg instead of black. Keep Normal opaque (#191724), only
-  -- StatusLine transparent.
-  hi('StatusLine',   { bg = 'NONE' })
-  hi('StatusLineNC', { bg = 'NONE' })
 end
 
 -- Register a signal handler for SIGUSR1 (matugen updates).
