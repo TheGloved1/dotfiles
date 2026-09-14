@@ -68,6 +68,11 @@ window-rule {
 }
 
 window-rule {
+  match app-id="vrmonitor"
+  open-floating true
+}
+
+window-rule {
     match app-id=r"^(org\.cachyos\.KernelManager|mainline-gtk|org\.kde\.kwalletmanager|nvidia-settings|org\.cachyos\.cachyos-pi|com\.shellyorg\.shelly|CachyOSHello|octopi.*|garuda-assistant|com\.github\.hyprmod|com\.github\.wwmm\.easyeffects|nz\.co\.mega\.megasync|io\.github\.amit9838\.mousam|btrfs-assistant|timeshift-gtk|org\.gnome\.Calculator|qalculate-gtk)$"
     open-floating true
 }
