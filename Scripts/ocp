@@ -25,11 +25,23 @@ done
 command -v opencode >/dev/null || { echo "ocp: opencode not found" >&2; exit 1; }
 command -v fzf >/dev/null || { echo "ocp: fzf not found" >&2; exit 1; }
 command -v python3 >/dev/null || { echo "ocp: python3 not found" >&2; exit 1; }
+command -v sqlite3 >/dev/null || { echo "ocp: sqlite3 not found" >&2; exit 1; }
 
-list_args=()
-[ -n "$MAX_COUNT" ] && list_args+=(-n "$MAX_COUNT")
+LIMIT=100
+if [ -n "$MAX_COUNT" ]; then
+  case "$MAX_COUNT" in
+    ''|*[!0-9]*|0) echo "ocp: -n requires a positive integer" >&2; exit 1 ;;
+  esac
+  LIMIT="$MAX_COUNT"
+fi
 
-json="$(opencode session list --format json "${list_args[@]}")" ||
+# Query globally: `opencode session list` is project-scoped in v2 and
+# returns [] outside the session's project directory.
+DB="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
+[ -f "$DB" ] || { echo "ocp: session database not found at $DB" >&2; exit 1; }
+
+json="$(sqlite3 -readonly -json "$DB" \
+  "SELECT id, title, directory, time_updated FROM session WHERE parent_id IS NULL OR parent_id = '' ORDER BY time_updated DESC LIMIT $LIMIT;")" ||
   { echo "ocp: failed to list sessions" >&2; exit 1; }
 [ -n "$json" ] || { echo "ocp: no sessions found" >&2; exit 1; }
 
@@ -42,7 +54,8 @@ now = datetime.now()
 for s in data:
     title = s.get("title") or ""
     title = title.replace("\t", " ").replace("\n", " ").strip()
-    t = datetime.fromtimestamp(s["updated"] / 1000)
+    updated = s.get("time_updated", s.get("updated"))
+    t = datetime.fromtimestamp(updated / 1000)
     delta = now - t
     secs = delta.total_seconds()
     if secs < 60:
@@ -55,7 +68,8 @@ for s in data:
         rel = f"{delta.days}d ago"
     else:
         rel = t.strftime("%Y-%m-%d")
-    print(f"{s['id']}\t{title}\t{rel}\t{s.get('directory', '')}")
+    directory = (s.get("directory") or "").replace("\t", " ").replace("\n", " ").strip()
+    print(f"{s['id']}\t{title}\t{rel}\t{directory}")
 PY
 )"
 
@@ -74,5 +88,10 @@ sel="$(printf '%s\n' "$lines" | fzf \
 
 id="$(printf '%s\n' "$sel" | cut -f1)"
 [ -n "$id" ] || { echo "ocp: could not parse selection" >&2; exit 1; }
+
+dir="$(printf '%s\n' "$sel" | cut -f4)"
+if [ -n "$dir" ] && [ -d "$dir" ]; then
+  cd "$dir" || { echo "ocp: cannot cd to $dir" >&2; exit 1; }
+fi
 
 exec opencode -s "$id"
