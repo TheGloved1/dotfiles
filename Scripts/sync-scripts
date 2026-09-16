@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SRC="$HOME/Scripts"
+DST="$HOME/.local/bin"
+
+mkdir -p "$DST"
+
+# Prune symlinks managed by this script whose source no longer exists.
+# Handles both removed and renamed scripts (rename = prune old + link new below).
+for link in "$DST"/*; do
+  [ -L "$link" ] || continue
+  target="$(readlink "$link")"
+  case "$target" in
+    /*) abs_target="$target" ;;
+    *) abs_target="$DST/$target" ;;
+  esac
+  # Normalize ../, ./, // so relative links (e.g. ../../Scripts/foo) match $SRC.
+  abs_target="$(readlink -m "$abs_target")"
+  case "$abs_target" in
+    "$SRC"/*) ;;
+    *) continue ;;
+  esac
+  if [ ! -e "$abs_target" ]; then
+    rm "$link"
+    echo "removed $link"
+  fi
+done
+
+for script in "$SRC"/*; do
+  [ -f "$script" ] || continue
+  name="$(basename "$script")"
+  link="$DST/$name"
+
+  if [ -L "$link" ]; then
+    rm "$link"
+  elif [ -e "$link" ]; then
+    echo "warning: $link exists and is not a symlink, skipping" >&2
+    continue
+  fi
+
+  ln -s "$script" "$link"
+  chmod +x "$script"
+  echo "linked $link"
+done
