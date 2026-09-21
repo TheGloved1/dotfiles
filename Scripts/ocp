@@ -37,11 +37,19 @@ fi
 
 # Query globally: `opencode session list` is project-scoped in v2 and
 # returns [] outside the session's project directory.
+# NOTE: opencode v2 stores sessions in `session_v2`; the legacy `session`
+# table stopped receiving new rows after 1.18.x, so query session_v2 first.
 DB="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
 [ -f "$DB" ] || { echo "ocp: session database not found at $DB" >&2; exit 1; }
 
+if [ "$(sqlite3 -readonly "$DB" "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_v2';")" = "1" ]; then
+  SESSION_TABLE="session_v2"
+else
+  SESSION_TABLE="session"
+fi
+
 json="$(sqlite3 -readonly -json "$DB" \
-  "SELECT id, title, directory, time_updated FROM session WHERE parent_id IS NULL OR parent_id = '' ORDER BY time_updated DESC LIMIT $LIMIT;")" ||
+  "SELECT id, title, directory, time_updated FROM $SESSION_TABLE WHERE parent_id IS NULL OR parent_id = '' ORDER BY time_updated DESC LIMIT $LIMIT;")" ||
   { echo "ocp: failed to list sessions" >&2; exit 1; }
 [ -n "$json" ] || { echo "ocp: no sessions found" >&2; exit 1; }
 
