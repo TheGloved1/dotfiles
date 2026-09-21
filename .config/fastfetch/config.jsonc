@@ -50,7 +50,7 @@
       "key": "{#separator}│  {icon}  CPU",
       "showPeCoreCount": true,
     },
-    { "type": "gpu", "key": "{#separator}│  {icon}  GPU", "format": "lua:local g = (...); local n = g.name:gsub(' Lite Hash Rate', ''); return g.vendor .. ' ' .. n" },
+    { "type": "gpu", "key": "{#separator}│  {icon}  GPU", "format": "{vendor} {name}" },
     {
       "type": "memory",
       "key": "{#separator}│  {icon}  RAM",
