@@ -4,4 +4,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH=$PATH:/usr/local/bin
 
 # env: idempotently prepends ~/.local/bin if missing
-. "$HOME/.local/share/../bin/env"
+if [[ -r "$HOME/.local/share/../bin/env" ]]; then
+  . "$HOME/.local/share/../bin/env"
+fi
