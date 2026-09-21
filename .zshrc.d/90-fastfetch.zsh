@@ -25,12 +25,17 @@ pokefetch() {
     [ -n "$lc2" ] && args+=(--logo-color-2 "$lc2")
   fi
 
+  # Portable GPU cleanup: fastfetch format stays plain "{vendor} {name}"
+  # (works on builds without Lua, e.g. Termux) and sed strips the
+  # "Lite Hash Rate" noise. --pipe false keeps colors when piping to sed.
+  local gpu_clean='s/ Lite Hash Rate//g'
+
   case "$subcmd" in
     -c)
-      pokemon-colorscripts --no-title -s -r | fastfetch -c $@ "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      pokemon-colorscripts --no-title -s -r | fastfetch -c $@ "${args[@]}" --pipe false --logo-type file-raw --logo-height 10 --logo-width 5 --logo - | sed "$gpu_clean"
       ;;
     *)
-      pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config.jsonc "${args[@]}" --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+      pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config.jsonc "${args[@]}" --pipe false --logo-type file-raw --logo-height 10 --logo-width 5 --logo - | sed "$gpu_clean"
       ;;
   esac
 }
