@@ -24,8 +24,9 @@ binds {
     // MOD+SHIFT+S hotkey-overlay-title="Screenshot region → menu" { spawn-sh "$HOME/.config/niri/scripts/screenshot-to-waytator.sh"; }
     MOD+SHIFT+S hotkey-overlay-title="Screenshot region → menu" { spawn-sh "noctalia msg plugin gloves/screenshot-actions:service all capture"; }
     MOD+S hotkey-overlay-title="Screenshot history" { spawn-sh "noctalia msg panel-toggle gloves/screenshot-actions:history"; }
+    MOD+SHIFT+C hotkey-overlay-title="Video browser" { spawn-sh "noctalia msg panel-toggle gloves/video-browser:browser"; }
     MOD+SHIFT+O hotkey-overlay-title="OCR" { spawn-sh "noctalia msg plugin alexander/screen-toolkit:service all ocr"; }
-    MOD+SHIFT+C hotkey-overlay-title="Color picker" { spawn-sh "hyprpicker -a -f hex --lowercase-hex"; }
+    // MOD+SHIFT+C hotkey-overlay-title="Color picker" { spawn-sh "hyprpicker -a -f hex --lowercase-hex"; }
 
     // Audio Controls
     XF86AudioRaiseVolume allow-when-locked=true hotkey-overlay-title="Raise volume" { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"; }
