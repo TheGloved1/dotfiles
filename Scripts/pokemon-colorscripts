@@ -1,0 +1,502 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# pokemon-colorscripts — drop-in bash replacement (no python required)
+# Same CLI as phoneybadger/pokemon-colorscripts, plus self-bootstrapping data.
+#
+# Why this exists: the original python script resolves data relative to its
+# real path (PROGRAM_DIR/pokemon.json + PROGRAM_DIR/colorscripts). Copying or
+# symlinking just the single script file (e.g. via ~/.local/bin symlink) to a
+# new system breaks with:
+#   FileNotFoundError: ... '/home/.../Scripts/pokemon.json'
+# This script searches known data locations and auto-fetches the upstream
+# repo on first run, so a single file really is drop-in.
+#
+# Data layout searched (first hit wins):
+#   1. $POKEMON_COLORSCRIPTS_DATA_DIR (if set)
+#   2. <script-dir>/ (legacy layout: pokemon.json + colorscripts/ next to script)
+#   3. ${XDG_STATE_HOME:-~/.local/state}/pokemon-colorscripts (default fetch target)
+#   4. ${XDG_DATA_HOME:-~/.local/share}/pokemon-colorscripts (previous default, kept as fallback)
+#   5. /usr/local/opt/pokemon-colorscripts (install.sh location)
+#
+# Env overrides:
+#   POKEMON_COLORSCRIPTS_DATA_DIR  use this data dir, skip search
+#   POKEMON_COLORSCRIPTS_REPO      git repo to clone (default: gitlab phoneybadger)
+#   POKEMON_COLORSCRIPTS_NO_FETCH=1  never auto-fetch, fail with clear error
+
+REPO_DEFAULT="https://gitlab.com/phoneybadger/pokemon-colorscripts.git"
+TARBALL_DEFAULT="https://gitlab.com/phoneybadger/pokemon-colorscripts/-/archive/main/pokemon-colorscripts-main.tar.gz"
+
+# ── resolve script location (symlink-aware, portable) ────────────────────
+_script_path() {
+  local src="${BASH_SOURCE[0]:-$0}"
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "$src" 2>/dev/null || printf '%s' "$src"
+  elif readlink -f "$src" >/dev/null 2>&1; then
+    readlink -f "$src"
+  else
+    # macOS/BSD fallback: walk symlinks manually
+    local p="$src"
+    while [[ -L "$p" ]]; do
+      local link
+      link="$(readlink "$p")"
+      case "$link" in
+        /*) p="$link" ;;
+        *) p="$(dirname "$p")/$link" ;;
+      esac
+    done
+    printf '%s' "$p"
+  fi
+}
+SCRIPT_PATH="$(_script_path)"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+SHARE_FALLBACK="${XDG_DATA_HOME:-$HOME/.local/share}/pokemon-colorscripts"
+DEFAULT_DATA_DIR="$STATE_HOME/pokemon-colorscripts"
+
+# ── data location ────────────────────────────────────────────────────────
+find_data_dir() {
+  local c
+  if [[ -n "${POKEMON_COLORSCRIPTS_DATA_DIR:-}" ]]; then
+    c="${POKEMON_COLORSCRIPTS_DATA_DIR}"
+    if [[ -f "$c/pokemon.json" && -d "$c/colorscripts" ]]; then
+      printf '%s' "$c"
+      return 0
+    fi
+    return 1
+  fi
+  for c in "$SCRIPT_DIR" "$DEFAULT_DATA_DIR" "$SHARE_FALLBACK" "/usr/local/opt/pokemon-colorscripts"; do
+    if [[ -f "$c/pokemon.json" && -d "$c/colorscripts" ]]; then
+      printf '%s' "$c"
+      return 0
+    fi
+  done
+  return 1
+}
+
+fetch_data() {
+  local target="$DEFAULT_DATA_DIR"
+  local repo="${POKEMON_COLORSCRIPTS_REPO:-$REPO_DEFAULT}"
+  if [[ -n "${POKEMON_COLORSCRIPTS_DATA_DIR:-}" ]]; then
+    target="${POKEMON_COLORSCRIPTS_DATA_DIR}"
+  fi
+  echo "pokemon-colorscripts: data not found, fetching from $repo ..." >&2
+  echo "pokemon-colorscripts: target: $target" >&2
+  mkdir -p "$(dirname "$target")"
+  # Remove incomplete target (has neither valid data set)
+  if [[ -e "$target" && ! ( -f "$target/pokemon.json" && -d "$target/colorscripts" ) ]]; then
+    echo "pokemon-colorscripts: removing incomplete $target ..." >&2
+    rm -rf "$target"
+  fi
+  if [[ -d "$target" ]]; then
+    printf '%s' "$target"
+    return 0
+  fi
+  if command -v git >/dev/null 2>&1; then
+    git clone --depth 1 "$repo" "$target" >&2
+  elif command -v curl >/dev/null 2>&1 && command -v tar >/dev/null 2>&1; then
+    local tmp
+    tmp="$(mktemp -d)"
+    curl -fsSL "${POKEMON_COLORSCRIPTS_TARBALL:-$TARBALL_DEFAULT}" | tar -xz -C "$tmp"
+    mkdir -p "$target"
+    # archive extracts to pokemon-colorscripts-main*/
+    cp -a "$tmp"/*/pokemon.json "$tmp"/*/colorscripts "$target"/
+    rm -rf "$tmp"
+  elif command -v wget >/dev/null 2>&1 && command -v tar >/dev/null 2>&1; then
+    local tmp
+    tmp="$(mktemp -d)"
+    wget -qO- "${POKEMON_COLORSCRIPTS_TARBALL:-$TARBALL_DEFAULT}" | tar -xz -C "$tmp"
+    mkdir -p "$target"
+    cp -a "$tmp"/*/pokemon.json "$tmp"/*/colorscripts "$target"/
+    rm -rf "$tmp"
+  else
+    echo "pokemon-colorscripts: cannot fetch data (need git, or curl/wget+tar)" >&2
+    echo "pokemon-colorscripts: clone manually:" >&2
+    echo "  git clone --depth 1 $repo \"$target\"" >&2
+    return 1
+  fi
+  if [[ ! -f "$target/pokemon.json" || ! -d "$target/colorscripts" ]]; then
+    echo "pokemon-colorscripts: fetch succeeded but data still missing in $target" >&2
+    return 1
+  fi
+  printf '%s' "$target"
+}
+
+DATA_DIR=""
+if ! DATA_DIR="$(find_data_dir)"; then
+  if [[ "${POKEMON_COLORSCRIPTS_NO_FETCH:-0}" == "1" ]]; then
+    echo "pokemon-colorscripts: data not found." >&2
+    echo "  looked in: $SCRIPT_DIR, $DEFAULT_DATA_DIR, $SHARE_FALLBACK, /usr/local/opt/pokemon-colorscripts" >&2
+    echo "  fix: git clone --depth 1 ${POKEMON_COLORSCRIPTS_REPO:-$REPO_DEFAULT} \"$DEFAULT_DATA_DIR\"" >&2
+    echo "  or set POKEMON_COLORSCRIPTS_DATA_DIR" >&2
+    exit 1
+  fi
+  DATA_DIR="$(fetch_data)"
+fi
+POKEMON_JSON="$DATA_DIR/pokemon.json"
+COLORSCRIPTS_DIR="$DATA_DIR/colorscripts"
+
+# ── helpers ──────────────────────────────────────────────────────────────
+usage() {
+  cat <<'EOF'
+usage: pokemon-colorscripts [OPTION] [POKEMON NAME]
+
+CLI utility to print out unicode image of a pokemon in your shell
+
+options:
+  -h, --help            Show this help message and exit
+  -l, --list            Print list of all pokemon
+  -n, --name NAME       Select pokemon by name. Generally spelled like in the
+                        games. a few exceptions are nidoran-f, nidoran-m, mr-
+                        mime, farfetchd, flabebe type-null etc. Perhaps grep
+                        the output of --list if in doubt.
+  -f, --form FORM       Show an alternate form of a pokemon
+  --no-title            Do not display pokemon name
+  -s, --shiny           Show the shiny version of the pokemon instead
+  -b, --big             Show a larger version of the sprite
+  -r, --random [RANDOM]
+                        Show a random pokemon. This flag can optionally be
+                        followed by a generation number or range (1-8) to show
+                        random pokemon from a specific generation or range of
+                        generations. The generations can be provided as a
+                        continuous range (eg. 1-3) or as a list of generations
+                        (1,3,6)
+  -rn, --random-by-names RANDOM_BY_NAMES
+                        Show a random pokemon chosen in the provided list of
+                        names. This list is in form (poke_1,poke_2,...,poke_n)
+                        only separated by comas WITHOUT whitespace (eg.
+                        charmander,bulbasaur,squirtle)
+EOF
+}
+
+# Ordered names, one per line (pokemon.json order == pokedex order)
+read_names() {
+  grep -o '"name": "[^"]*"' "$POKEMON_JSON" | cut -d'"' -f4
+}
+
+name_exists() {
+  grep -Fq "\"name\": \"$1\"" "$POKEMON_JSON"
+}
+
+# Print all forms for a pokemon, one per line (fast path: jq)
+get_forms() {
+  local name="$1"
+  if command -v jq >/dev/null 2>&1; then
+    jq -r --arg n "$name" '.[] | select(.name == $n) | .forms[]' "$POKEMON_JSON"
+  else
+    awk -v name="$name" '
+      $0 ~ "\"name\": \"" name "\"" { found = 1 }
+      found && /"forms"/ { in_forms = 1; next }
+      in_forms && /\]/ { exit }
+      in_forms {
+        line = $0
+        gsub(/[" ,]/, "", line)
+        if (line != "") print line
+      }
+    ' "$POKEMON_JSON"
+  fi
+}
+
+rand_int() {
+  local lo="$1" hi="$2"
+  if command -v shuf >/dev/null 2>&1; then
+    shuf -i "$lo-$hi" -n1
+  else
+    echo $((RANDOM % (hi - lo + 1) + lo))
+  fi
+}
+
+rand_128_shiny() {
+  # 1/128 chance; $RANDOM avoids forking shuf for the common case
+  ((RANDOM % 128 == 0))
+}
+
+gen_range() {
+  # echo "START END" for gen N, or fail
+  case "$1" in
+    1) echo "1 151" ;;
+    2) echo "152 251" ;;
+    3) echo "252 386" ;;
+    4) echo "387 493" ;;
+    5) echo "494 649" ;;
+    6) echo "650 721" ;;
+    7) echo "722 809" ;;
+    8) echo "810 898" ;;
+    *) return 1 ;;
+  esac
+}
+
+show_by_name() {
+  local name="$1" show_title="$2" shiny="$3" big="$4" form="${5:-}"
+  local display="$name"
+
+  if ! name_exists "$name"; then
+    echo "Invalid pokemon $name"
+    exit 1
+  fi
+
+  if [[ -n "$form" ]]; then
+    local forms alternate=()
+    mapfile -t forms < <(get_forms "$name")
+    local f
+    for f in "${forms[@]}"; do
+      if [[ "$f" != "regular" ]]; then alternate+=("$f"); fi
+    done
+    local ok=0
+    for f in "${alternate[@]}"; do
+      if [[ "$f" == "$form" ]]; then ok=1; break; fi
+    done
+    if ((ok)); then
+      display="$name-$form"
+    else
+      echo "Invalid form '$form' for pokemon $name"
+      if ((${#alternate[@]} == 0)); then
+        echo "No alternate forms available for $name"
+      else
+        echo "Available alternate forms are"
+        for f in "${alternate[@]}"; do echo "- $f"; done
+      fi
+      exit 1
+    fi
+  else
+    display="$name"
+  fi
+
+  local size_subdir color_subdir
+  if ((big)); then size_subdir="large"; else size_subdir="small"; fi
+  if ((shiny)); then color_subdir="shiny"; else color_subdir="regular"; fi
+
+  local sprite="$COLORSCRIPTS_DIR/$size_subdir/$color_subdir/$display"
+  if ((show_title)); then
+    if ((shiny)); then echo "$display (shiny)"; else echo "$display"; fi
+  fi
+  if [[ ! -f "$sprite" ]]; then
+    echo "Sprite file not found: $sprite" >&2
+    exit 1
+  fi
+  cat "$sprite"
+  # Match original python print(f.read()): always ends output with a newline
+  # (sprite files themselves have no trailing newline).
+  printf '\n'
+}
+
+show_random() {
+  local generations="$1" show_title="$2" shiny="$3" big="$4"
+  local start_gen end_gen
+
+  if [[ "$generations" == *","* ]]; then
+    IFS=',' read -r -a parts <<<"$generations"
+    start_gen="${parts[$(rand_int 0 $((${#parts[@]} - 1)))]}"
+    end_gen="$start_gen"
+  elif [[ "$generations" == *"-"* ]]; then
+    start_gen="${generations%%-*}"
+    end_gen="${generations##*-}"
+  else
+    start_gen="$generations"
+    end_gen="$generations"
+  fi
+
+  local s e range
+  if ! range="$(gen_range "$start_gen")"; then
+    echo "Invalid generation '$generations'"
+    exit 1
+  fi
+  s="${range%% *}"
+  if ! range="$(gen_range "$end_gen")"; then
+    echo "Invalid generation '$generations'"
+    exit 1
+  fi
+  e="${range##* }"
+  # range form spans start_gen's start .. end_gen's end
+  if [[ "$generations" == *"-"* && "$generations" != *","* ]]; then
+    s="$(gen_range "$start_gen")" || { echo "Invalid generation '$generations'"; exit 1; }
+    s="${s%% *}"
+  fi
+
+  local idx picked
+  idx="$(rand_int "$s" "$e")"
+  picked="$(read_names | sed -n "${idx}p")"
+  if [[ -z "$picked" ]]; then
+    echo "Invalid generation '$generations'"
+    exit 1
+  fi
+  if ((!shiny)); then
+    if rand_128_shiny; then shiny=1; fi
+  fi
+  show_by_name "$picked" "$show_title" "$shiny" "$big"
+}
+
+show_random_by_names() {
+  local names="$1" show_title="$2" shiny="$3" big="$4"
+  IFS=',' read -r -a want <<<"$names"
+  local valid=()
+  local n
+  for n in "${want[@]}"; do
+    if name_exists "$n"; then
+      valid+=("$n")
+    else
+      echo "Invalid pokemon $n"
+    fi
+  done
+  if ((${#valid[@]} < 1)); then
+    echo "No correct pokemon names has been provided."
+    exit 1
+  fi
+  local picked="${valid[$(rand_int 0 $((${#valid[@]} - 1)))]}"
+  if ((!shiny)); then
+    if rand_128_shiny; then shiny=1; fi
+  fi
+  show_by_name "$picked" "$show_title" "$shiny" "$big"
+}
+
+# ── arg parse (manual; mimics argparse incl. -r's optional value) ─────────
+LIST=0
+OPT_NAME=""
+OPT_FORM=""
+SHOW_TITLE=1
+SHINY=0
+BIG=0
+OPT_RANDOM=""
+OPT_RANDOM_NAMES=""
+
+need_value() {
+  # $1=flag $2=next-or-empty $3=has-next(0/1)
+  if ((!$3)) || [[ "$2" == -* ]]; then
+    echo "error: $1 requires an argument" >&2
+    usage >&2
+    exit 2
+  fi
+}
+
+# Expand combined single-char boolean flags: -sb, -bs, -sl, etc.
+# (only s/b/l/h which take no argument)
+_expand_combined=()
+for _a in "$@"; do
+  if [[ "$_a" =~ ^-[slbh]{2,}$ ]]; then
+    for (( _i = 1; _i < ${#_a}; _i++ )); do
+      _expand_combined+=("-${_a:$_i:1}")
+    done
+  else
+    _expand_combined+=("$_a")
+  fi
+done
+set -- "${_expand_combined[@]}"
+
+while (($#)); do
+  case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -l | --list)
+      LIST=1
+      shift
+      ;;
+    -rn | --random-by-names)
+      need_value "$1" "${2:-}" $(($# >= 2 ? 1 : 0))
+      OPT_RANDOM_NAMES="$2"
+      shift 2
+      ;;
+    --random-by-names=*)
+      OPT_RANDOM_NAMES="${1#*=}"
+      shift
+      ;;
+    -rn*)
+      # attached: -rnbulbasaur,pikachu
+      OPT_RANDOM_NAMES="${1#-rn}"
+      shift
+      ;;
+    -n | --name)
+      need_value "$1" "${2:-}" $(($# >= 2 ? 1 : 0))
+      OPT_NAME="$2"
+      shift 2
+      ;;
+    --name=*)
+      OPT_NAME="${1#*=}"
+      shift
+      ;;
+    -n*)
+      OPT_NAME="${1#-n}"
+      shift
+      ;;
+    -f | --form)
+      need_value "$1" "${2:-}" $(($# >= 2 ? 1 : 0))
+      OPT_FORM="$2"
+      shift 2
+      ;;
+    --form=*)
+      OPT_FORM="${1#*=}"
+      shift
+      ;;
+    -f*)
+      OPT_FORM="${1#-f}"
+      shift
+      ;;
+    --no-title)
+      SHOW_TITLE=0
+      shift
+      ;;
+    -s | --shiny)
+      SHINY=1
+      shift
+      ;;
+    -b | --big)
+      BIG=1
+      shift
+      ;;
+    -r | --random)
+      if (($# >= 2)) && [[ "$2" != -* ]]; then
+        OPT_RANDOM="$2"
+        shift 2
+      else
+        OPT_RANDOM="1-8"
+        shift
+      fi
+      ;;
+    --random=*)
+      OPT_RANDOM="${1#*=}"
+      shift
+      ;;
+    -r*)
+      OPT_RANDOM="${1#-r}"
+      if [[ -z "$OPT_RANDOM" ]]; then OPT_RANDOM="1-8"; fi
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "error: unknown option: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      echo "error: unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+unset _a _i _expand_combined
+
+# ── dispatch (precedence matches original python: list > name > random > rn) ──
+if ((LIST)); then
+  read_names
+elif [[ -n "$OPT_NAME" ]]; then
+  show_by_name "$OPT_NAME" "$SHOW_TITLE" "$SHINY" "$BIG" "$OPT_FORM"
+elif [[ -n "$OPT_RANDOM" ]]; then
+  if [[ -n "$OPT_FORM" ]]; then
+    echo "--form flag unexpected with --random"
+    exit 1
+  fi
+  show_random "$OPT_RANDOM" "$SHOW_TITLE" "$SHINY" "$BIG"
+elif [[ -n "$OPT_RANDOM_NAMES" ]]; then
+  if [[ -n "$OPT_FORM" ]]; then
+    echo "--form flag unexpected with --random_by_names"
+    exit 1
+  fi
+  show_random_by_names "$OPT_RANDOM_NAMES" "$SHOW_TITLE" "$SHINY" "$BIG"
+else
+  usage
+fi
