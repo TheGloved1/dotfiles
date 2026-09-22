@@ -8,8 +8,8 @@ window-rule {
 
     background-effect {
         blur true
-        noise 0.02
-        saturation 3
+        // noise 0.02
+        // saturation 3
     }
 }
 
@@ -110,12 +110,14 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r"^(gw2-64.exe)$"
+    match app-id="^(gw2-64.exe|steam_app_1284210)$"
+    match title="Guild Wars 2"
     open-floating false
     opacity 1.0
 
     background-effect {
         blur false
+        xray false
     }
 
     focus-ring {

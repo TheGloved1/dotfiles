@@ -18,6 +18,7 @@ binds {
     MOD+D hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
     MOD+CTRL+SPACE hotkey-overlay-title="Toggle window floating" { toggle-window-floating; }
     MOD+SHIFT+Q hotkey-overlay-title="Kill active process" { spawn-sh "/home/gloves/.config/niri/scripts/kill-active.sh"; }
+    MOD+CTRL+M hotkey-overlay-title="Mute window audio" { spawn-sh "/home/gloves/.config/niri/scripts/toggle-window-mute.sh"; }
     MOD+CTRL+O hotkey-overlay-title="Toggle opaque" { spawn-sh "/home/gloves/.config/niri/scripts/toggle-opaque.sh"; }
 
     // Focus / Navigation
