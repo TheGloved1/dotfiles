@@ -11,6 +11,15 @@ window-rule {
         // noise 0.02
         // saturation 3
     }
+
+    popups {
+        background-effect {
+            xray false
+            blur true
+            noise 0.05
+            saturation 3
+        }
+    }
 }
 
 window-rule {
@@ -112,7 +121,7 @@ window-rule {
 window-rule {
     match app-id="^(gw2-64.exe|steam_app_1284210)$"
     match title="Guild Wars 2"
-    open-floating false
+    open-floating true
     opacity 1.0
 
     background-effect {

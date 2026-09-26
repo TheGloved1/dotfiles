@@ -58,9 +58,10 @@ is_satellite_pid() {
 PIDSET=""
 if [[ "$pid" =~ ^[0-9]+$ && "$pid" != "0" ]]; then
   if is_satellite_pid "$pid"; then
+    # Focus-INDEPENDENT X resolution: the focused niri window is not always
+    # the active X window, so correlate by title instead of getactivewindow.
     if [[ -n "${DISPLAY:-}" ]] && is_exec xdotool; then
-      xid=$(xdotool getactivewindow 2>/dev/null || echo "")
-      xpid=$(xdotool getwindowpid "$xid" 2>/dev/null || echo "")
+      read -r _xid xpid <<< "$(x11_resolve_by_title "$title" "$app_id" 2>/dev/null || echo "")"
       if [[ "$xpid" =~ ^[0-9]+$ && "$xpid" != "0" ]] && ! is_satellite_pid "$xpid"; then
         PIDSET="$xpid"$'\n'"$(descendants "$xpid")"
       fi

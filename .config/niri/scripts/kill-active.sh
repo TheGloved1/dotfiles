@@ -150,27 +150,13 @@ fi
 # ── Phase 2a: XWayland — real X PID, never the satellite ─────────────
 # niri reports the satellite PID for all X11 windows; killing it kills
 # every XWayland app (Steam + Discord + games). Resolve the true client.
-if [[ -n "${DISPLAY:-}" ]] && { is_satellite_pid "$pid" || is_exec xdotool || is_exec xprop; }; then
+if [[ -n "${DISPLAY:-}" ]] && { is_satellite_pid "$pid" || is_exec xdotool; }; then
   xid=""
   xpid=""
+  # Focus-INDEPENDENT: correlate by window title (the picked/clicked window
+  # is not always the active one, so getactivewindow can't be trusted).
   if is_exec xdotool; then
-    # Picker click focuses the target, so the active X window is ours.
-    xid=$(xdotool getactivewindow 2>/dev/null || echo "")
-    if [[ "$xid" =~ ^[0-9]+$ ]]; then
-      xpid=$(xdotool getwindowpid "$xid" 2>/dev/null || echo "")
-    fi
-  fi
-  if [[ ! "$xpid" =~ ^[0-9]+$ || "$xpid" == "0" ]] && is_exec xprop; then
-    if [[ ! "$xid" =~ ^[0-9]+$ ]]; then
-      xid=$(xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | awk '{print $NF}' || echo "")
-      # xprop prints hex like 0x1a00007; convert for xdotool/wmctrl
-      if [[ "$xid" =~ ^0x ]]; then
-        xid=$((xid))
-      fi
-    fi
-    if [[ "$xid" =~ ^[0-9]+$ ]]; then
-      xpid=$(xprop -id "$xid" _NET_WM_PID 2>/dev/null | awk '{print $NF}' || echo "")
-    fi
+    read -r xid xpid <<< "$(x11_resolve_by_title "$title" "$app_id" 2>/dev/null || echo "")"
   fi
   if [[ "$xpid" =~ ^[0-9]+$ && "$xpid" != "0" ]] && ! is_satellite_pid "$xpid"; then
     # Server-side window destroy first: removes THIS X window even if the
