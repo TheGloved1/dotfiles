@@ -99,7 +99,7 @@ sync_all_monitors = true
 width = 800
 
     [control_center.calendar]
-    show_events_card = false
+    show_events_card = true
 
 [desktop_widgets]
 enabled = true
@@ -214,7 +214,8 @@ tab_previous = [ "Shift+ISO_Left_Tab", "Ctrl+Shift+k", "Ctrl+Shift+h" ]
 up = [ "Up", "Ctrl+k" ]
 
 [location]
-auto_locate = true
+address = "Mediapolis IA, United States"
+auto_locate = false
 
 [lockscreen]
 blurred_desktop = true
@@ -349,6 +350,10 @@ history_placement = "attached"
 ocr-result_placement = "attached"
 panel-placement = "attached"
 
+[plugin_settings."gloves/video-browser"]
+browser_placement = "attached"
+panel-placement = "attached"
+
 [plugin_settings."kenn/keybind-cheatsheet"]
 cheatsheet_open_near_click = false
 columns = 2
@@ -387,7 +392,8 @@ enabled = [
     "gloves/keybind-cheatsheet",
     "gloves/activate-linux",
     "gloves/pokedash",
-    "imjustdoingmypart/niri-animations"
+    "imjustdoingmypart/niri-animations",
+    "gloves/video-browser"
 ]
 
     [[plugins.source]]
