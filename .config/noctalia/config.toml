@@ -54,7 +54,17 @@ widget_spacing = 4
     enabled = true
     fill = "surface_variant"
     id = "g2"
-    members = [ "recorder", "privacy", "notifications", "network", "bluetooth", "volume", "brightness", "battery" ]
+    members = [
+        "screenshot",
+        "recorder",
+        "privacy",
+        "notifications",
+        "network",
+        "bluetooth",
+        "volume",
+        "brightness",
+        "battery"
+    ]
     opacity = 0.0
     padding = 6.0
 
@@ -452,9 +462,11 @@ polkit_agent = true
     size = 24
 
     [shell.screenshot]
+    annotate = true
     confirm_region = true
     directory = "~/Pictures/Screenshots"
-    pipe_command = "swappy -f -"
+    pipe_command = ""
+    pipe_to_command = true
 
     [shell.session]
     grid = false
