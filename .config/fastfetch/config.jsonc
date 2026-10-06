@@ -59,7 +59,7 @@
     {
       "type": "disk",
       "key": "{#separator}│  {icon}  Disk",
-      "format": "{size-used} / {size-total} ({size-percentage})",
+      "format": "{size-free} free / {size-total} ({size-used} | {size-percentage})",
     },
     { "type": "custom", "format": "{#keys}│" },
     // ── DESKTOP ───────────────────────────────
