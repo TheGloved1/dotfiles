@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# noctalia-launcher-auto-placement.sh — auto-switch launcher between attached (idle) and floating centered (fullscreen)
-# Why: Niri fullscreen (Mod+Shift+F) covers top layer-shell (bar) — attached launcher is behind bar and invisible.
-# Floating launcher with floating_layer="overlay" stays above fullscreen (niri-wm.github.io/niri/Fullscreen-and-Maximize.html).
-# Docs: docs.noctalia.dev/noctalia/configuration/shell/  (launcher_placement = attached|floating, launcher_position = center|auto)
+# noctalia-launcher-auto-placement.sh — auto-switch ALL Noctalia panels between attached (idle) and floating centered (fullscreen)
+# Why: Niri fullscreen (Mod+Shift+F) covers top layer-shell (bar) — attached panels are behind bar and invisible.
+# Floating panels with floating_layer="overlay" stay above fullscreen (niri-wm.github.io/niri/Fullscreen-and-Maximize.html).
+# Docs: docs.noctalia.dev/noctalia/configuration/shell/  (all *_placement = attached|floating, *_position = center|auto)
 # Niri IPC: no is_fullscreen field in stable 26.4.0 (PR #2836/#2270 pending) — heuristic tile_size ≈ output logical.
 # Visible check: fullscreen is considered onscreen only when is_focused==true (tile_pos_in_workspace_view is null for tiled in niri 26.4; see niri/issues/2381). Scrolling away unfocuses it → attached.
+# Scope: all core [shell.panel] (launcher, clipboard, control_center, wallpaper, session, polkit incl.) + all plugin_settings.* *placement keys; force attached/auto idle.
 set -euo pipefail
 
 SETTINGS="$HOME/.local/state/noctalia/settings.toml"
@@ -16,7 +17,32 @@ mkdir -p "$STATE_DIR"
 
 # tolerance for size compare (gaps 8 + borders): normal 1904x1032 vs fullscreen 1920x1080
 TOL=4
-DEBOUNCE=0.25
+# Timing philosophy (sub-second decisions): the panel-open guard in
+# confirm_attached is the primary protection and costs no sleep — an open
+# panel means HOLD immediately. The sleeps below only damp sub-second focus
+# bounce (debounce) and post-rebuild sampling churn (cooldown/confirm), so
+# they stay small. Worst case a spurious write costs one extra ~1s Noctalia
+# rebuild with no panel to kill; the floats/attaches themselves self-correct
+# on the next event.
+DEBOUNCE=0.1
+# Hysteresis: switching back to attached REWRITES settings.toml and makes
+# Noctalia rebuild every plugin (killing any open panel). niri emits transient
+# focus states (e.g. is_focused=false blips when an exclusive-focus panel opens
+# or focus bounces between workspaces), so a single has_fs=0 must NOT switch.
+# The attached direction therefore waits ATTACHED_CONFIRM_DELAY and re-checks
+# fresh state before writing. The floating direction stays immediate (needed for
+# visibility over fullscreen).
+ATTACHED_CONFIRM_DELAY=0.25
+# Cooldown: after any successful switch, wait COOLDOWN seconds before allowing
+# the next write. Each settings.toml rewrite makes Noctalia rebuild every
+# plugin (~1s of layer-surface/focus churn in niri); sampling niri state during
+# that churn reports phantom has_fs flips, which caused write->rebuild->flip
+# feedback loops (see launcher-watcher.log 08:18 flapping). Spacing writes lets
+# each rebuild settle before the next sample. Kept small (rebuilds measure
+# ~1s) so toggling still feels responsive; the attached confirm below adds
+# its own settle time on top for the dangerous direction.
+COOLDOWN=2
+LAST_SWITCH_FILE="$STATE_DIR/.last_switch"
 
 log() {
   local ts
@@ -38,7 +64,7 @@ EOF
   fi
 }
 
-# Delegates to standalone Python helper (extracted for testability)
+# Delegates to standalone Python helper (all core + plugin panels)
 # Returns 0 if changed, 1 if no change, 2 on error
 set_placement() {
   local desired="$1" # attached|floating
@@ -53,7 +79,7 @@ set_placement() {
     log "ERROR: helper not found at $helper"
     return 2
   fi
-  "$helper" --settings "$SETTINGS" --desired "$desired" --position "$position" 2>>"$LOG"
+  "$helper" --settings "$SETTINGS" --desired "$desired" --position "$position" --all --verbose 2>>"$LOG"
   local ret=$?
   if [[ $ret -eq 0 ]]; then
     return 0
@@ -120,17 +146,17 @@ has_fullscreen() {
   fi
 }
 
-evaluate_and_apply() {
-  local logical wsid windows_json has_fs desired
+# detect_desired sets globals: logical, wsid, windows_json, has_fs, desired.
+detect_desired() {
   logical="$(get_logical || true)"
   if [[ -z "$logical" ]]; then
     log "warn: could not get logical output, skipping"
-    return
+    return 0
   fi
   wsid="$(get_focused_ws || true)"
   if [[ -z "$wsid" ]]; then
     log "warn: could not get focused workspace, skipping"
-    return
+    return 0
   fi
   windows_json="$(niri msg --json windows 2>/dev/null || echo "[]")"
 
@@ -140,6 +166,61 @@ evaluate_and_apply() {
   else
     has_fs=0
     desired="attached"
+  fi
+  return 0
+}
+
+# confirm_attached guards the destructive direction (settings rewrite +
+# full plugin rebuild). Returns 0 to proceed, 1 to skip.
+# Fail-safe: ANY doubt (status IPC failure, panel open) means SKIP. A missed
+# genuine attached switch self-heals on the next niri event; a wrong write
+# kills the user's open panel.
+confirm_attached() {
+  # Early check: if a panel is already open (or status is unreadable),
+  # skip without even sleeping.
+  local panel_open
+  panel_open="$(noctalia msg status 2>/dev/null | jq -r 'if has("panelOpen") then (.panelOpen|tostring) else "unknown" end' 2>/dev/null || echo "unknown")"
+  if [[ "$panel_open" != "false" ]]; then
+    log "evaluate: ws=$wsid has_fs=0 but panel state is '${panel_open}' (open/unknown), staying floating (no write)"
+    return 1
+  fi
+  # Re-query fresh state after a delay: transient has_fs=0 (focus blip,
+  # workspace bounce, animation, rebuild churn) must not rewrite settings.
+  sleep "$ATTACHED_CONFIRM_DELAY"
+  detect_desired || return 0
+  if [[ "$desired" == "floating" ]]; then
+    log "evaluate: ws=$wsid transient has_fs=0 cleared, staying floating (no write)"
+    return 1
+  fi
+  # Late check: the panel may have opened during the confirm sleep, and the
+  # status IPC may fail mid-rebuild — both mean SKIP.
+  panel_open="$(noctalia msg status 2>/dev/null | jq -r 'if has("panelOpen") then (.panelOpen|tostring) else "unknown" end' 2>/dev/null || echo "unknown")"
+  if [[ "$panel_open" != "false" ]]; then
+    log "evaluate: ws=$wsid has_fs=0 but panel state is '${panel_open}' (open/unknown), staying floating (no write)"
+    return 1
+  fi
+  return 0
+}
+
+evaluate_and_apply() {
+  local skip_cooldown="${1:-0}"
+  detect_desired || return
+  # Cooldown: if we switched recently, wait out the remainder then re-sample
+  # fresh so we never sample niri state mid-rebuild. --once bypasses this.
+  if [[ "$skip_cooldown" != "1" ]]; then
+    local now last wait
+    now="$(date +%s)"
+    last="$(cat "$LAST_SWITCH_FILE" 2>/dev/null || echo 0)"
+    [[ "$last" =~ ^[0-9]+$ ]] || last=0
+    if ((now - last < COOLDOWN)); then
+      wait=$((COOLDOWN - (now - last)))
+      log "evaluate: cooldown active (${wait}s left, desired=$desired), waiting for settle"
+      sleep "$wait"
+      detect_desired || return
+    fi
+  fi
+  if [[ "$desired" == "attached" ]]; then
+    confirm_attached || return 0
   fi
 
   # debug details
@@ -157,6 +238,7 @@ evaluate_and_apply() {
   ensure_settings_exists
   if set_placement "$desired"; then
     log "switch -> $desired ($reason) — writing $SETTINGS and reloading"
+    date +%s >"$LAST_SWITCH_FILE" 2>/dev/null || true
     # small delay to let niri update layout before next evaluate (avoid race where we evaluate too early after toggle)
     sleep 0.1
     # hot-reload via inotify is automatic, but explicit reload ensures immediate
@@ -165,10 +247,10 @@ evaluate_and_apply() {
       # optional validate
       noctalia config validate 2>&1 | head -n 50 | tee -a "$LOG" 2>/dev/null || true
     fi
-    # verify effective
+    # verify effective (all placements)
     local eff
-    eff="$(grep -E 'launcher_placement|launcher_position' "$SETTINGS" 2>/dev/null | tr '\n' ' ' || true)"
-    log "effective settings: $eff"
+    eff="$(grep -cE '_placement = "attached"|_placement = "floating"|-placement = "attached"|-placement = "floating"' "$SETTINGS" 2>/dev/null || true)"
+    log "effective placement keys: $eff (desired=$desired)"
   else
     rc=$?
     if [[ $rc -eq 1 ]]; then
@@ -187,15 +269,15 @@ evaluate_and_apply() {
 if [[ "${1:-}" == "--once" ]]; then
   log "=== once evaluate ==="
   ensure_settings_exists
-  evaluate_and_apply
+  evaluate_and_apply 1 || true
   exit 0
 fi
 
 log "=== noctalia-launcher-auto-placement starting (TOL=$TOL, DEBOUNCE=$DEBOUNCE) ==="
 log "SETTINGS=$SETTINGS"
 ensure_settings_exists
-# initial evaluate
-evaluate_and_apply
+# initial evaluate (never fatal under set -e)
+evaluate_and_apply || true
 
 # debounce state (kept for external inspection, used implicitly via sleep/drain)
 # shellcheck disable=SC2034
@@ -216,7 +298,7 @@ if ! command -v jq >/dev/null 2>&1; then
   log "ERROR: jq not found, falling back to polling every 2s"
   while true; do
     sleep 2
-    evaluate_and_apply
+    evaluate_and_apply || true
   done
   exit 0
 fi
@@ -248,14 +330,14 @@ while IFS= read -r line; do
     esac
   done || true
 
-  evaluate_and_apply
+  evaluate_and_apply || true
 done < <(niri msg --json event-stream 2>/dev/null)
 
 # If event-stream exits (niri restart), loop with backoff polling
 log "event-stream ended, entering poll fallback"
 while true; do
   sleep 2
-  evaluate_and_apply
+  evaluate_and_apply || true
   # try to re-attach to event-stream if available
   if niri msg --json workspaces >/dev/null 2>&1; then
     log "re-attaching to event-stream"

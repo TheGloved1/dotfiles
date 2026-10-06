@@ -5,4 +5,6 @@
 // late can still show the error until you click Settings → Shell → Clipboard → Retry.
 spawn-sh-at-startup "gnome-keyring-daemon --start --components=secrets >/dev/null 2>&1 & sleep 0.5; dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 spawn-at-startup "noctalia" "--daemon"
-spawn-at-startup "bash" "-c" "$HOME/.config/niri/scripts/noctalia-launcher-auto-placement.sh"
+// NOTE: launcher-auto-placement watcher runs as a systemd user unit
+// (noctalia-launcher-watcher.service), not spawned here, to avoid duplicate
+// watchers racing on the same settings file.
