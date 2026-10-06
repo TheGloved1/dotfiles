@@ -1,7 +1,8 @@
 [audio]
 enable_overdrive = true
 enable_sounds = true
-sound_volume = 0.29999999329447746
+sound_theme = "COSMIC"
+sound_volume = 0.24999999441206455
 
 [backdrop]
 blur_intensity = 0.24999999441206455
@@ -104,6 +105,12 @@ minimum_brightness = 0.39999999105930328
 sync_all_monitors = true
 
 [calendar]
+enabled = true
+
+    [calendar.account.local_calendar]
+    name = "Default"
+    path = "~/Documents/Calendar"
+    type = "vdir"
 
 [control_center]
 width = 800
@@ -318,25 +325,31 @@ temperature_night = 6000
 
 [notification]
 background_opacity = 0.89999997988343239
+follow_focused_output = true
 layer = "overlay"
 offset_x = 6
 offset_y = 4
 
 [osd]
 background_opacity = 0.89999997988343239
+follow_focused_output = true
 offset_x = 4
 offset_y = 0
 
 [plugin_settings."alexander/screen-toolkit"]
+panel-legacy_layer = "overlay"
 panel-legacy_placement = "attached"
+panel_layer = "overlay"
 panel_placement = "attached"
 record-audio-out = true
+result_layer = "overlay"
 result_placement = "attached"
 search-engine-url = "https://duckduckgo.com/?q="
 x02-expiry = "1h"
 
 [plugin_settings."blackbartblues/keymap"]
 niri_config = "~/.config/niri/modules/30-binds.kdl"
+panel_layer = "overlay"
 panel_placement = "attached"
 show_undescribed = false
 
@@ -344,6 +357,7 @@ show_undescribed = false
 overview-widget_position = "bottom_right"
 
 [plugin_settings."gloves/keybind-cheatsheet"]
+cheatsheet_layer = "overlay"
 cheatsheet_open_near_click = false
 cheatsheet_placement = "attached"
 columns = 3
@@ -355,14 +369,23 @@ show_undescribed = true
 overview-widget_position = "bottom_right"
 
 [plugin_settings."gloves/screenshot-actions"]
+actions_layer = "overlay"
 actions_placement = "attached"
+history_layer = "overlay"
 history_placement = "attached"
+ocr-result_layer = "overlay"
 ocr-result_placement = "attached"
 panel-placement = "attached"
 
 [plugin_settings."gloves/video-browser"]
+browser_layer = "overlay"
 browser_placement = "attached"
 panel-placement = "attached"
+preview_layer = "overlay"
+
+[plugin_settings."imjustdoingmypart/niri-animations"]
+docked_layer = "overlay"
+picker_layer = "overlay"
 
 [plugin_settings."kenn/keybind-cheatsheet"]
 cheatsheet_open_near_click = false
@@ -377,10 +400,18 @@ resolution = "1280x720"
 restore_portal = true
 video_source = "focused"
 
+[plugin_settings."noctalia/timer"]
+panel_layer = "overlay"
+
+[plugin_settings."noctalia/wallhaven"]
+browser_layer = "overlay"
+
 [plugin_settings."raycursive/discord-voice"]
+panel_layer = "overlay"
 panel_open_near_click = false
 
 [plugin_settings."tadomika_ari/config-swap"]
+panel_layer = "overlay"
 panel_placement = "attached"
 
 [plugin_settings."weinguyen/shell-command"]
@@ -395,15 +426,14 @@ enabled = [
     "alexander/screen-toolkit",
     "noctalia/timer",
     "weinguyen/shell-command",
-    "gloves/screenshot-actions",
-    "blackbartblues/keymap",
     "raycursive/discord-voice",
     "noctalia/bongocat",
     "gloves/keybind-cheatsheet",
     "gloves/activate-linux",
     "gloves/pokedash",
     "imjustdoingmypart/niri-animations",
-    "gloves/video-browser"
+    "gloves/video-browser",
+    "gloves/screenshot-actions"
 ]
 
     [[plugins.source]]
@@ -432,6 +462,7 @@ launch_apps_custom_command = ""
 niri_overview_type_to_launch_enabled = false
 panel_anchor_bar = "default"
 polkit_agent = true
+settings_expand_all_groups = true
 
     [shell.greeter_sync]
     auto_sync = false
@@ -442,31 +473,52 @@ polkit_agent = true
     compact = true
     show_app_actions = true
 
+        [shell.launcher.providers.calculator]
+        global = false
+        prefix = "c"
+
         [shell.launcher.providers.emoji]
         global = false
+        prefix = "e"
+
+        [shell.launcher.providers.panels]
+        prefix = "p"
+
+        [shell.launcher.providers.session]
+        prefix = "s"
+
+        [shell.launcher.providers.wallpaper]
+        prefix = "w"
 
     [shell.panel]
     clipboard_placement = "attached"
-    control_center_position = "center"
+    clipboard_position = "auto"
+    control_center_placement = "attached"
+    control_center_position = "auto"
     floating_layer = "overlay"
     floating_offset = 0
     launcher_placement = "attached"
     launcher_position = "auto"
     polkit_placement = "attached"
     polkit_position = "auto"
+    session_placement = "attached"
+    session_position = "auto"
     shadow = true
     transparency_mode = "soft"
+    wallpaper_placement = "attached"
+    wallpaper_position = "auto"
 
     [shell.screen_corners]
-    enabled = false
+    enabled = true
     size = 24
 
     [shell.screenshot]
-    annotate = true
+    annotate = false
     confirm_region = true
     directory = "~/Pictures/Screenshots"
-    pipe_command = ""
+    pipe_command = "cat > /dev/null; noctalia msg plugin gloves/screenshot-actions:service all captured \"$NOCTALIA_SCREENSHOT_PATH\""
     pipe_to_command = true
+    skip_annotate_on_copy_save = true
 
     [shell.session]
     grid = false
@@ -518,7 +570,7 @@ builtin = "Rosé Pine"
 community_palette = "Rose Pine Moon"
 custom_palette = "dragon-mc"
 mode = "dark"
-shell_mode = "dark"
+shell_mode = "follow"
 source = "builtin"
 wallpaper_scheme = "soft"
 
@@ -642,7 +694,7 @@ type = "raycursive/discord-voice:bar"
 enabled = false
 
 [widget.bluetooth]
-enabled = false
+enabled = true
 
 [widget.brightness]
 enabled = false
@@ -696,6 +748,9 @@ visualization = "none"
 [widget.recorder]
 enabled = false
 type = "noctalia/screen_recorder:recorder"
+
+[widget.screenshot]
+enabled = false
 
 [widget.sysmon]
 glyph = "tool"
