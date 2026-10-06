@@ -46,6 +46,58 @@ alias grhh='git reset HEAD --hard'
 alias reload='clear && exec zsh'
 alias relaod='reload'
 
+# Quick symlink helper: mklink [-f|--force] <target> <link_path>
+# Usage: mklink file.txt link.txt / mklink -f file.txt existing-link
+mklink() {
+  local force=0
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -f|--force) force=1; shift ;;
+      -h|--help)
+        echo "Usage: mklink [-f|--force] <target> <link_path>" >&2
+        echo "  Create a symlink <link_path> -> <target>." >&2
+        echo "  -f, --force  overwrite <link_path> if it exists (ln -sfn)" >&2
+        return 0
+        ;;
+      --) shift; break ;;
+      -*) echo "mklink: unknown option: $1" >&2; echo "Usage: mklink [-f|--force] <target> <link_path>" >&2; return 1 ;;
+      *) break ;;
+    esac
+  done
+
+  if (( $# != 2 )); then
+    echo "Usage: mklink [-f|--force] <target> <link_path>" >&2
+    echo "  Create a symlink <link_path> -> <target>." >&2
+    echo "  -f, --force  overwrite <link_path> if it exists (ln -sfn)" >&2
+    return 1
+  fi
+
+  local target="$1"
+  local link="$2"
+
+  if [[ ! -e "$target" && ! -L "$target" ]]; then
+    echo "mklink: warning: target '$target' does not exist (creating dangling link)" >&2
+  fi
+
+  if [[ -e "$link" || -L "$link" ]] && (( ! force )); then
+    echo "mklink: '$link' already exists (use -f to overwrite)" >&2
+    return 1
+  fi
+
+  # Create parent directory for the link if needed.
+  local parent="${link:h}"
+  if [[ -n "$parent" && "$parent" != "." && ! -d "$parent" ]]; then
+    mkdir -p -- "$parent" || return 1
+  fi
+
+  if (( force )); then
+    ln -sfnv -- "$target" "$link"
+  else
+    ln -svn -- "$target" "$link"
+  fi
+}
+
 # Set-up icons for files/directories in terminal using lsd
 # alias ls='lsd'
 alias ls='eza --icons -a --group-directories-first'
