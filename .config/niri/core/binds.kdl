@@ -5,6 +5,7 @@ binds {
     MOD+RETURN hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
     MOD+B hotkey-overlay-title="Open Browser" { spawn-sh "xdg-open https://"; }
     MOD+E hotkey-overlay-title="File Manager" { spawn-sh "/home/gloves/.config/niri/scripts/launch-file-manager.sh"; }
+    CTRL+SHIFT+ESCAPE hotkey-overlay-title="Open btop" { spawn-sh "/home/gloves/.config/niri/scripts/launch-in-kitty.sh btop"; }
     MOD+slash hotkey-overlay-title="Keybind cheatsheet" { show-hotkey-overlay; }
 
     // Desktop / Overview
