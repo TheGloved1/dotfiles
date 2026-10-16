@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec runuser -u crafty -- env HOME=/home/crafty XDG_CONFIG_HOME=/home/gloves/.config NVIM_APPNAME=nvim nvim ""
