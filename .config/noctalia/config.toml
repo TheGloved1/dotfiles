@@ -11,7 +11,7 @@ tint_intensity = 0.14999999664723873
 
 [bar.default]
 background_opacity = 0.9499999787658453
-border = "outline"
+border = "outline_variant"
 capsule = true
 capsule_opacity = 0.0
 capsule_padding = 6.0
@@ -43,7 +43,7 @@ widget_spacing = 4
     accordion = false
     accordion_direction = "end"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g1"
     members = [ "workspaces", "taskbar" ]
     opacity = 0.0
@@ -53,7 +53,7 @@ widget_spacing = 4
     accordion = false
     accordion_direction = "end"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g2"
     members = [
         "screenshot",
@@ -73,7 +73,7 @@ widget_spacing = 4
     accordion = false
     accordion_direction = "end"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g3"
     members = [ "ram", "cpu", "sysmon" ]
     opacity = 0.0
@@ -83,7 +83,7 @@ widget_spacing = 4
     accordion = true
     accordion_direction = "start"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g4"
     members = [ "session", "settings" ]
     opacity = 1.0
@@ -93,7 +93,7 @@ widget_spacing = 4
     accordion = true
     accordion_direction = "end"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g5"
     members = [ "tray" ]
     opacity = 1.0
@@ -260,7 +260,7 @@ widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1", 
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -287,7 +287,7 @@ widget_order = [ "lockscreen-login-box@winit", "lockscreen-login-box@HDMI-A-1", 
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@winit".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -393,6 +393,10 @@ columns = 2
 hyprland_parser = "lua"
 show_undescribed = false
 
+[plugin_settings."noctalia/mpvpaper"]
+auto_pause = "off"
+video_directory = "~/Videos/Wallpapers"
+
 [plugin_settings."noctalia/screen_recorder"]
 replay_duration = 60
 replay_enabled = true
@@ -433,7 +437,8 @@ enabled = [
     "gloves/pokedash",
     "imjustdoingmypart/niri-animations",
     "gloves/video-browser",
-    "gloves/screenshot-actions"
+    "gloves/screenshot-actions",
+    "noctalia/mpvpaper"
 ]
 
     [[plugins.source]]
@@ -572,7 +577,7 @@ custom_palette = "dragon-mc"
 mode = "dark"
 shell_mode = "follow"
 source = "builtin"
-wallpaper_scheme = "soft"
+wallpaper_scheme = "faithful"
 
     [theme.templates]
     builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
@@ -597,18 +602,22 @@ wallpaper_scheme = "soft"
     ]
 
 [wallpaper]
+directory = "~/Pictures/Wallpapers"
 fill_mode = "span"
 transition_duration = 2000
 transition_on_startup = true
 
+    [wallpaper.automation]
+    recursive = true
+
     [wallpaper.default]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/The Witcher/witcher2camp.gif"
 
     [wallpaper.last]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/The Witcher/witcher2camp.gif"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/solar-system.jpg"
+    path = "/home/gloves/Pictures/Wallpapers/The Witcher/witcher2camp.gif"
 
     [[wallpaper.favorite]]
     builtin_palette = "Rosé Pine"
@@ -667,6 +676,12 @@ transition_on_startup = true
     palette_source = "community"
     path = "/home/gloves/Pictures/Wallpapers/rose-pine/other/mix/abstract-3.jpg"
     theme_mode = "auto"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Rosé Pine"
+    palette_source = "builtin"
+    path = "/home/gloves/Pictures/Wallpapers/The Witcher/witcher2camp.gif"
+    theme_mode = "dark"
 
 [weather]
 unit = "imperial"
